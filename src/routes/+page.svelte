@@ -18,7 +18,7 @@
 <style>
     :global(body) {
         overflow-x: hidden;
-        background-image: url("background.webp");
+        background-image: url("/background.webp");
         width: 100vw;
         min-height: 100vh;
         background-repeat: no-repeat;
