@@ -11,7 +11,7 @@
     document.body.style.overflowY = "unset";
 </script>
 
-<ClearContainer className="w-7/12 ml-auto mr-auto mt-8 p-2">
+<ClearContainer className="md:w-7/12 w-10/12 ml-auto mr-auto mt-8 p-2">
     <h1>Images</h1>
 
     <div class="grid grid-cols-3 gap-1">

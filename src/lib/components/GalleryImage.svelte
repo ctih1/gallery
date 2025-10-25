@@ -21,7 +21,6 @@
     img.onload = _ =>  {
         imageLoaded = true;
     }
-    document.body.style.overflowY = "hidden";
 
     fetch(metadataPath).then(resposne => resposne.json()).then(data => {
         description = data["description"];
@@ -51,16 +50,16 @@
         />
 </svelte:head>
 
-<img class="w-screen max-h-screen top-0 left-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl absolute object-cover" alt={description} src={path}>
-<div class="container flex ml-auto mr-auto mt-8 w-10/12 min-w-60 max-h-screen">
-    <div class="img-container cursor-pointer min-w-32 w-10/12 max-w-4xl">
+<img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path}>
+<div class="container md:flex md:overflow-hidden ml-auto mr-auto mt-8 w-10/12 min-w-60">
+    <div class="img-container cursor-pointer min-w-32 md:w-10/12 w-full mb-8 md:mb-0 max-w-4xl">
         {#if imageLoaded}
-            <img onclick={_ => zoomed = true} class="rounded-md rounded-r-none w-full" alt={description} src={path}>
+            <img onclick={_ => zoomed = true} class="rounded-md md:rounded-r-none w-full" alt={description} src={path}>
         {:else}
-            <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description} src={path+".webp"}>
+            <img onclick={_ => zoomed = true} class="rounded-md md:rounded-r-none w-full" alt={description} src={path+".webp"}>
         {/if}
     </div>
-    <ClearContainer className="w-2/5 p-2 rounded-l-none">
+    <ClearContainer className="md:w-2/5 w-full p-2 md:rounded-l-none">
         <h2>{make} {model}</h2>
         <hr class="opacity-50">
         <p><i>{description}</i></p>
@@ -82,9 +81,3 @@
 </div>
 {/if}
 
-
-<style>
-    .container {
-        overflow-y: hidden;
-    }
-</style>
