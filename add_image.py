@@ -7,14 +7,28 @@ import piexif
 
 
 PHOTO_LOCATIONS = os.path.join("static", "images")
-PHOTO_SITE_LOCATION = os.path.join("src", "routes", "photos")
-IMAGE_SVELTE_FILE_TEMPPLATE = """
-<script lang="ts">
-    import GalleryImage from "$lib/components/GalleryImage.svelte";
-</script>
 
-<GalleryImage path="{path}" metadataPath="{metadataPath}" />
-"""
+# for _, _, files in os.walk(os.path.join("static", "images")):
+#     print(f"Checking {files}")
+#     fil = []
+#     for file in files:
+#         print(f"Checking {file}")
+#         if file.endswith(".json"):
+#             print("match")
+#             fil.append(file.replace(".json", ""))
+
+#     print(f"Files: {fil}")
+
+#     with open(os.path.join("src", "lib", "images.json"), "r") as f:
+#         data = list(json.load(f))
+#         data.extend(fil)
+#         data = list(set(data))
+        
+#         with open(os.path.join("src", "lib", "images.json"), "w") as f:
+#             json.dump(data, f)
+
+#     quit()
+    
 
 if __name__ == "__main__":
     image_path: str | None = None
@@ -68,10 +82,12 @@ if __name__ == "__main__":
 
         print("Created metadata file")
 
-    photo_site_dir = os.path.join(PHOTO_SITE_LOCATION, image_filename).lower()
-    os.makedirs(photo_site_dir)
-    with open(os.path.join(photo_site_dir, "+page.svelte"), "w") as f:
-        f.write(IMAGE_SVELTE_FILE_TEMPPLATE.replace("{path}", f"/images/{image_filename}").replace("{metadataPath}", f"/images/{image_filename}.json"))
+    with open(os.path.join("src", "lib", "images.json"), "r") as f:
+        data = json.load(f)
+        data.append(image_filename)
+
+        with open(os.path.join("src", "lib", "images.json"), "w") as f:
+            json.dump(data, f)
 
     print("Done!")
 
