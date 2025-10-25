@@ -48,6 +48,14 @@
             type="image/webp"
             crossorigin="anonymous" 
         />
+
+        <meta property="og:title" content="ctih1's gallery" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gallery.frii.site" />
+        <meta property="og:image" content={`https://gallery.frii.site/images/${path}.webp`} />
+        <meta property="og:description" content={description} />
+        <meta name="theme-color" content="#FFFFFF">
+
 </svelte:head>
 
 <img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
