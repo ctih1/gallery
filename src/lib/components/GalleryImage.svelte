@@ -50,7 +50,7 @@
         />
 </svelte:head>
 
-<img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path}>
+<img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
 <div class="container md:flex md:overflow-hidden ml-auto mr-auto mt-8 w-10/12 min-w-60">
     <div class="img-container cursor-pointer min-w-32 md:w-10/12 w-full mb-8 md:mb-0 max-w-4xl">
         {#if imageLoaded}
