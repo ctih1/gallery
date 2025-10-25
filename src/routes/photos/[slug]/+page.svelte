@@ -2,6 +2,7 @@
 	import { page } from "$app/stores";
 	import ClearContainer from "$lib/components/ClearContainer.svelte";
 
+    let filename = $page.params.slug;
     let path = "/images/"+$page.params.slug
     let metadataPath = $derived(path+".json");
 
@@ -51,13 +52,21 @@
             crossorigin="anonymous" 
         />
 
-        <meta property="og:title" content="ctih1's gallery" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://gallery.frii.site" />
-        <meta property="og:image" content={`https://gallery.frii.site/images/${path}.webp`} />
-        <meta property="og:description" content={description} />
-        <meta name="theme-color" content="#FFFFFF">
+        <title>ctih1's gallery</title>
+        <meta name="description" content="A gallery for some photos I've taken">
 
+        <meta property="og:url" content={`https://gallery.frii.site/photos/${filename}`}>
+        <meta property="og:type" content="website">
+        <meta property="og:title" content={filename}>
+        <meta property="og:description" content={description}>
+        <meta property="og:image" content="">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="twitter:domain" content="gallery.frii.site">
+        <meta property="twitter:url" content="https://gallery.frii.site">
+        <meta name="twitter:title" content="ctih1's gallery">
+        <meta name="twitter:description" content={description}>
+        <meta name="twitter:image" content={`https://gallery.frii.site/images/${filename}.webp`}>
 </svelte:head>
 
 <img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
