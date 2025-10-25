@@ -6,5 +6,10 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	server: {
 		host: true
+	},
+	preview: {
+		allowedHosts: [
+			"gallery.frii.site"
+		]
 	}
 });
