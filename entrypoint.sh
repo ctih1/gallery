@@ -1,11 +1,7 @@
 #!/bin/sh
 set -e
 
-mkdir -p /app/static
-
-if [ ! -f /app/static/speedtest ]; then
-  echo "generating 100mb speedtest file"
-  dd if=/dev/urandom of=/app/static/speedtest-100m bs=1M count=100
-fi
+mkdir -p /app/build/static
+dd if=/dev/urandom of=/app/build/static/speedtest-100m bs=1M count=100
 
 exec node build
