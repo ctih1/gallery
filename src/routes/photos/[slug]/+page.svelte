@@ -81,7 +81,7 @@
 <img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
 
 {#if !imageLoaded}
-    <div class="flex items-center" transition:slide={{delay: 500}}>
+    <div class="flex items-center" transition:slide={{delay: 200}}>
         <Loader/>
         <p>Loading full resolution image...</p>
     </div>
