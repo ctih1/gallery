@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { STRAVA_CLIENT_SECRET, STRAVA_CLIENT_ID, STRAVA_REFRESH_TOKEN } from '$env/static/private';
+import { STRAVA_CLIENT_SECRET, STRAVA_CLIENT_ID, STRAVA_REFRESH_TOKEN } from '$env/dynamic/private';
 import type { ActivityType } from './types.js';
 
 const cache = new Map<string, any>();
