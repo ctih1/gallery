@@ -1,7 +1,10 @@
 <h1>yellooo</h1>
-<h2>Hallooo!</h2>
 <p>This is a cool lil webpage I made for sharin stuff</p>
 
+<div class="grid grid-cols-2 grid-rows-[repeat(10, 1fr)] items-[flex-start] items-center">
+    <iframe title="frii.site badge" class="pointer-events-none h-30" type="text/html" src="https://www.frii.site/badges/modern.html" sandbox></iframe>
+    <img src="/orangepi.png" alt="Hosted on orange pi 3b badge">
+</div>
 
 <!-- 
 <style>
