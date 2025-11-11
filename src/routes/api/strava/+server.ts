@@ -42,7 +42,7 @@ async function getAthleteId(fetch: FetchFunction): Promise<string> {
 }
 
 async function getActivityHistory(fetch: FetchFunction): Promise<ActivityType[]> {
-    const res = await fetch("https://www.strava.com/api/v3/athlete/activities?per_page=5", {
+    const res = await fetch("https://www.strava.com/api/v3/athlete/activities?per_page=10", {
         headers: {
             "Authorization": `Bearer ${cache.get('accessToken')}`
         }
@@ -78,7 +78,8 @@ export async function GET({ url, fetch }) {
         startTime: activity.start_date,
         kilojoules: activity.kilojoules,
         averageSpeed: activity.average_speed,
-        maxSpeed: activity.max_speed
+        maxSpeed: activity.max_speed,
+        name: activity.name
     }));
 
     cache.set("processedActivities", processedActivities);

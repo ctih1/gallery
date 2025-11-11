@@ -14,7 +14,9 @@ WORKDIR /app
 
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package*.json ./
-RUN npm install --omit=dev
+COPY entrypoint.sh ./   
+
+RUN npm install --omit=dev && chmod +x /app/entrypoint.sh
 
 EXPOSE 3000
-CMD ["node", "build"]
+ENTRYPOINT ["./entrypoint.sh"]

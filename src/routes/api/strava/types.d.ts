@@ -51,3 +51,14 @@ export interface ActivityType {
   has_kudoed: boolean
   suffer_score: number
 }
+
+export interface ProcessedActivity {
+  distance: number,
+  type: string,
+  time: number,
+  startTime: string,
+  kilojoules: number,
+  averageSpeed: number,
+  maxSpeed: number,
+  name: string
+}
