@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import ClearContainer from "$lib/components/ClearContainer.svelte";
+	import Loader from "$lib/components/Loader.svelte";
+	import { fade, fly, scale, slide } from "svelte/transition";
 
     let filename = $page.params.slug;
     let path = "/images/"+$page.params.slug
@@ -25,6 +26,7 @@
         imageLoaded = true;
     }
 
+
     fetch(metadataPath).then(resposne => resposne.json()).then(data => {
         description = data["description"];
         model = data["model"]
@@ -41,6 +43,13 @@
         const aperatureParts = data["aperature"];
         aperature = aperatureParts[0] / aperatureParts[1];
     })
+
+    // https://stackoverflow.com/a/43084928
+    function parseDate(exifDate: string): Date {
+        let b = exifDate.split(/\D/);
+        // @ts-ignore
+        return new Date(b[0],b[1]-1,b[2],b[3],b[4],b[5]);
+    }
 </script>
 
 <svelte:head>
@@ -70,33 +79,42 @@
 </svelte:head>
 
 <img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
-<div class="container md:flex md:overflow-hidden ml-auto mr-auto mt-8 w-10/12 min-w-60">
-    <div class="img-container cursor-pointer min-w-32 md:w-10/12 w-full mb-8 md:mb-0 max-w-4xl">
-        {#if imageLoaded}
-            <img onclick={_ => zoomed = true} class="rounded-md md:rounded-r-none w-full" alt={description} src={path}>
-        {:else}
-            <img onclick={_ => zoomed = true} class="rounded-md md:rounded-r-none w-full" alt={description} src={path+".webp"}>
-        {/if}
+
+{#if !imageLoaded}
+    <div class="flex items-center" transition:slide>
+        <Loader/>
+        <p>Loading full resolution image...</p>
     </div>
-    <ClearContainer className="md:w-2/5 w-full p-2 md:rounded-l-none">
-        <h2>{make} {model}</h2>
-        <hr class="opacity-50">
-        <p><i>{description}</i></p>
-        <div class="bottom">
-        <h3 class="mb-0 mt-auto">@ {time} (Local)</h3>
+{/if}
+<div class="img-container cursor-pointer min-w-32 w-full mb-8 md:mb-0 max-w-4xl">
+    {#if imageLoaded}
+        <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description} src={path}>
+    {:else}
+        <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description + "(loading)"} src={path+".webp"}>
+    {/if}
+</div>
+<div>
+    <h2>{make} {model}</h2>
+    <hr class="opacity-50">
+    <p><i>{description}</i></p>
+    <div class="bottom">
+        <h3 class="mb-0 mt-auto">Captured on: {parseDate(time).toLocaleString()} <small>(local)</small></h3>
         <h3 class="mb-0 mt-auto">Aperature: f/{aperature}</h3>
         <h3 class="mb-0 mt-auto">Expousure: {Math.round(expousure*1000)/1000}s</h3>
         <h3 class="mb-0 mt-auto">Focal length: {focalLength}mm</h3>
         <h3 class="mb-0 mt-auto">ISO: {iso}</h3>
-        </div>
-    </ClearContainer>
+    </div>  
 </div>
+<p class="opacity-50 mt-4">/photos/{$page.params.slug}</p>
+
 
 
 {#if zoomed}
 <div class="w-screen h-screen bg-[#000000dd] absolute top-0 left-0">
     <img class="ml-auto mr-auto max-w-screen max-h-screen" alt={description} src={path}>
-    <button class="top-10 right-10 absolute text-4xl" onclick={_ => zoomed = false}>x</button>
+    <button class="hover:cursor-pointer w-8 top-10 right-10 absolute text-4xl outline-1 outline-white rounded-full aspect-square items-center justify-center flex"
+        onclick={_ => zoomed = false}
+    ><span class="leading-6 pb-1">x</span></button>
 </div>
 {/if}
 

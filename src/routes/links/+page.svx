@@ -1,0 +1,9 @@
+# Links
+
+GitHub: https://github.com/ctih1
+
+This repo: https://github.com/ctih1/gallery
+
+frii.site: https://www.frii.site
+
+CDN: https://homecdn.frii.site

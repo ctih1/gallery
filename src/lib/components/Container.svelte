@@ -1,11 +1,7 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
-	import ClearContainer from "./ClearContainer.svelte";
-
-    let { children }: {children: Snippet} = $props();
+    let { children } = $props();
 </script>
 
-
-<ClearContainer className="min-w-80 p-2 mt-8 ml-auto mr-auto w-7/12 ">
-    {@render children?.()}
-</ClearContainer>
+<div class="w-8/12 bg-zinc-800 ml-auto mr-auto rounded-2xl p-2 mt-4 max-w-2xl">
+    {@render children?.()}  
+</div>
