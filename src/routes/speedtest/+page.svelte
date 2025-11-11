@@ -43,9 +43,9 @@
 <div class="donut absolute">
     <div bind:this={progressElement} id="progress" class="absolute progress-bar aspect-square w-80 rounded-full">
         <div class="absolute progress-bar aspect-square w-72 ml-4 mt-4 rounded-full bg-zinc-800 items-center flex flex-col justify-center">
-            <h1>{Math.round(speed*10)/10}mbps</h1>
+            <h1>{Math.round(speed*10)/10}MB/s</h1>
             {#if !ongoing && speeds.length > 1}
-                <h2>Average: {Math.round(speeds.reduce((a,b) => a + b) / speeds.length)}mbps</h2>
+                <h2>Average: {Math.round(speeds.reduce((a,b) => a + b) / speeds.length)}MB/s</h2>
             {/if}
         </div>
     </div>
