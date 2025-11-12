@@ -27,7 +27,7 @@
     <h1>Strava activities</h1>
     <div class="strava-container overflow-x-scroll flex flex-row-reverse" >
         {#each stravaData as activity}
-            <StravaCard name={activity.name} avgSpeed={activity.averageSpeed} distance={activity.distance} maxSpeed={activity.maxSpeed} started={activity.startTime} time={activity.time} type={activity.type!} kilojoules={activity.kilojoules} />
+            <StravaCard name={activity.name} avgSpeed={activity.averageSpeed} distance={activity.distance} maxSpeed={activity.maxSpeed} started={activity.startTime} time={activity.time} type={activity.type as "Run" | "Ride"} kilojoules={activity.kilojoules} />
         {/each}
     </div>
     <div>

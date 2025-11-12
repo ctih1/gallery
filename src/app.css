@@ -12,6 +12,19 @@
   src: url("/fonts/JetBrainsMonoSemiBold.woff2") format('woff2');
 }
 
+code * {
+    font-family: "JetBrains-Mono", sans-serif;
+}
+
+code > span {
+    padding-left: 5px;
+}
+
+pre {
+    background-color: var(--color-zinc-900);
+    border-radius: var(--radius-xl);
+    padding: 2px;
+}
 
 * {
     font-family: "Inter", sans-serif;
