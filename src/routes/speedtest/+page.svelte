@@ -16,7 +16,7 @@
         xhr.addEventListener("progress", e => {
             progress = e.loaded / e.total;
             const now = new Date();
-            speed = (e.loaded - lastAmount) / ((now.getTime() / 1000) - (lastEvent.getTime() / 1000)) / 1000000;
+            speed = (e.loaded - lastAmount) / ((now.getTime() / 1000) - (lastEvent.getTime() / 1000)) / 1000000*8;
             speeds.push(speed);
             requestAnimationFrame(() => {
                 if(!progressElement) {
@@ -36,16 +36,18 @@
 </script>
 
 <h1>speedtest</h1>
-<p>Test your connection speed to this server!</p>
-<p>note: this test will use approximately 100MB of bandwidth each run</p>
+<p>Test your connection speed to this server! Mostly meant to measure my server's internet speed, as it's most likely the bottleneck. </p>
+<p>My internet caps out at around ~40mbps upload speed (which this test is measuring). You can also try running <code>traceroute</code> to this server</p>
+
+<p class="mt-4  "><b>NOTE</b>: this test will use approximately 100MB of bandwidth each run</p>
 <button onclick={_ => beginTest()} class="bg-sky-600 p-2 rounded-xl">Begin test</button>
 
 <div class="donut absolute">
     <div bind:this={progressElement} id="progress" class="absolute progress-bar aspect-square w-80 rounded-full">
         <div class="absolute progress-bar aspect-square w-72 ml-4 mt-4 rounded-full bg-zinc-800 items-center flex flex-col justify-center">
-            <h1>{Math.round(speed*10)/10}MB/s</h1>
+            <h1>{Math.round(speed*10)/10} mbps</h1>
             {#if !ongoing && speeds.length > 1}
-                <h2>Average: {Math.round(speeds.reduce((a,b) => a + b) / speeds.length)}MB/s</h2>
+                <h2>Average: {Math.round(speeds.reduce((a,b) => a + b) / speeds.length)} mbps</h2>
             {/if}
         </div>
     </div>

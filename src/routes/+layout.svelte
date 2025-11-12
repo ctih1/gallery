@@ -28,6 +28,7 @@
 	<a href="/">Home</a>
 	<a href="/photos">Photos</a>
 	<a href="/links">Links</a>
+	<a href="/speedtest">Speedtest</a>
 </Navbar>
 
 <Container>
