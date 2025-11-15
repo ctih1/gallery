@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import Loader from "$lib/components/Loader.svelte";
+	import { onMount } from "svelte";
 	import { fade, fly, scale, slide } from "svelte/transition";
 
     let filename = $page.params.slug;
@@ -21,33 +22,36 @@
 
     let zoomed = $state(false);
     
-    const img = new Image();
-    img.src = path!;
-    img.onload = _ =>  {
-        imageLoaded = true;
-    }
-
-
-    fetch(metadataPath).then(resposne => resposne.json()).then(data => {
-        description = data["description"];
-        model = data["model"]
-        make = data["make"]
-        time = data["time"];
-        iso = data["iso"];
-        
-        const expousureParts = data["expousure"];
-        if(expousureParts[0] === 1) {
-            expousureText = `1/${expousureParts[1]}s`;
-        } else {
-            expousureText = `${expousureParts[0]/expousureParts[1]}"`;
+    onMount(() => {
+        const img = new Image();
+        img.src = path!;
+        img.onload = _ =>  {
+            imageLoaded = true;
         }
 
-        const focalLengthParts = data["focal-length"];
-        focalLength = focalLengthParts[0] / focalLengthParts[1];
 
-        const aperatureParts = data["aperature"];
-        aperature = aperatureParts[0] / aperatureParts[1];
+        fetch(metadataPath).then(resposne => resposne.json()).then(data => {
+            description = data["description"];
+            model = data["model"]
+            make = data["make"]
+            time = data["time"];
+            iso = data["iso"];
+            
+            const expousureParts = data["expousure"];
+            if(expousureParts[0] === 1) {
+                expousureText = `1/${expousureParts[1]}s`;
+            } else {
+                expousureText = `${expousureParts[0]/expousureParts[1]}"`;
+            }
+
+            const focalLengthParts = data["focal-length"];
+            focalLength = focalLengthParts[0] / focalLengthParts[1];
+
+            const aperatureParts = data["aperature"];
+            aperature = aperatureParts[0] / aperatureParts[1];
+        })
     })
+   
 
     // https://stackoverflow.com/a/43084928
     function parseDate(exifDate: string): Date {
