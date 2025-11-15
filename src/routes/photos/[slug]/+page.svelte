@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import Loader from "$lib/components/Loader.svelte";
+	import { onMount } from "svelte";
 	import { fade, fly, scale, slide } from "svelte/transition";
 
     let filename = $page.params.slug;
@@ -12,37 +13,45 @@
     let make = $state("");
     let time = $state("");
     let iso = $state(0);
-    let expousure = $state(0);
     let focalLength = $state(0);
     let aperature = $state(0);
+
+    let expousureText = $state("");
 
     let imageLoaded = $state(false);
 
     let zoomed = $state(false);
     
-    const img = new Image();
-    img.src = path!;
-    img.onload = _ =>  {
-        imageLoaded = true;
-    }
+    onMount(() => {
+        const img = new Image();
+        img.src = path!;
+        img.onload = _ =>  {
+            imageLoaded = true;
+        }
 
 
-    fetch(metadataPath).then(resposne => resposne.json()).then(data => {
-        description = data["description"];
-        model = data["model"]
-        make = data["make"]
-        time = data["time"];
-        iso = data["iso"];
-        
-        const expousureParts = data["expousure"];
-        expousure = expousureParts[0] / expousureParts[1];
+        fetch(metadataPath).then(resposne => resposne.json()).then(data => {
+            description = data["description"];
+            model = data["model"]
+            make = data["make"]
+            time = data["time"];
+            iso = data["iso"];
+            
+            const expousureParts = data["expousure"];
+            if(expousureParts[0] === 1) {
+                expousureText = `1/${expousureParts[1]}s`;
+            } else {
+                expousureText = `${expousureParts[0]/expousureParts[1]}"`;
+            }
 
-        const focalLengthParts = data["focal-length"];
-        focalLength = focalLengthParts[0] / focalLengthParts[1];
+            const focalLengthParts = data["focal-length"];
+            focalLength = focalLengthParts[0] / focalLengthParts[1];
 
-        const aperatureParts = data["aperature"];
-        aperature = aperatureParts[0] / aperatureParts[1];
+            const aperatureParts = data["aperature"];
+            aperature = aperatureParts[0] / aperatureParts[1];
+        })
     })
+   
 
     // https://stackoverflow.com/a/43084928
     function parseDate(exifDate: string): Date {
@@ -53,29 +62,29 @@
 </script>
 
 <svelte:head>
-    	<link
-            rel="preload"
-            as="image"
-            href={`${path}.webp`}
-            type="image/webp"
-            crossorigin="anonymous" 
-        />
+    <link
+        rel="preload"
+        as="image"
+        href={`${path}.webp`}
+        type="image/webp"
+        crossorigin="anonymous" 
+    />
 
-        <title>ctih1's gallery</title>
-        <meta name="description" content="A gallery for some photos I've taken">
+    <title>ctih1's gallery</title>
+    <meta name="description" content="A gallery for some photos I've taken">
 
-        <meta property="og:url" content={`https://gallery.frii.site/photos/${filename}`}>
-        <meta property="og:type" content="website">
-        <meta property="og:title" content={filename}>
-        <meta property="og:description" content={description}>
-        <meta property="og:image" content="">
+    <meta property="og:url" content={`https://gallery.frii.site/photos/${filename}`}>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content={filename}>
+    <meta property="og:description" content={`${description}`}>
+    <meta property="og:image" content={`https://gallery.frii.site/images/${filename}.webp`}>
 
-        <meta name="twitter:card" content="summary_large_image">
-        <meta property="twitter:domain" content="gallery.frii.site">
-        <meta property="twitter:url" content="https://gallery.frii.site">
-        <meta name="twitter:title" content="ctih1's gallery">
-        <meta name="twitter:description" content={description}>
-        <meta name="twitter:image" content={`https://gallery.frii.site/images/${filename}.webp`}>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="gallery.frii.site">
+    <meta property="twitter:url" content="https://gallery.frii.site">
+    <meta name="twitter:title" content="ctih1's gallery">
+    <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={`https://gallery.frii.site/images/${filename}.webp`}>
 </svelte:head>
 
 <img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
@@ -100,7 +109,7 @@
     <div class="bottom">
         <h3 class="mb-0 mt-auto">Captured on: {parseDate(time).toLocaleString()} <small>(local)</small></h3>
         <h3 class="mb-0 mt-auto">Aperature: f/{aperature}</h3>
-        <h3 class="mb-0 mt-auto">Expousure: {Math.round(expousure*1000)/1000}s</h3>
+        <h3 class="mb-0 mt-auto">Expousure: {expousureText}</h3>
         <h3 class="mb-0 mt-auto">Focal length: {focalLength}mm</h3>
         <h3 class="mb-0 mt-auto">ISO: {iso}</h3>
     </div>  

@@ -1,12 +1,5 @@
 <script>
-    import ClearContainer from "$lib/components/ClearContainer.svelte";
-	import Container from "$lib/components/Container.svelte";
     import images from "$lib/images.json";
-
-    const modules = import.meta.glob('/src/routes/photos/*/+page.svelte');
-
-
-    document.body.style.overflowY = "unset";
 </script>
 
 <h1>Images</h1>

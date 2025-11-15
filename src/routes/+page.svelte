@@ -2,11 +2,16 @@
 	import StravaCard from "$lib/components/StravaCard.svelte";
 	import { isFlagDay } from "$lib/flagdays";
 	import { usingImperial } from "$lib/store";
+	import { onMount } from "svelte";
     import type { ProcessedActivity } from "./api/strava/types";
     let stravaData: ProcessedActivity[] | undefined = $state()
-    fetch("/api/strava").then(data => data.json()).then(json => {
-        stravaData = json
-    });
+
+    onMount(() => {
+        fetch("/api/strava").then(data => data.json()).then(json => {
+            stravaData = json
+        });
+    })
+
 
     let checked = $state(false);
 
@@ -48,4 +53,4 @@
     .strava-container {
         scrollbar-color: #FC5200 var(--color-zinc-900);
     }
-</style>
+</style>    
