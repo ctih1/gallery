@@ -95,10 +95,6 @@ class flagDay { // please forgive me for my sins
           return true;
         };
 
-        if ((this.day >= 15 && this.day <= 21) && this.weekDay === "sunday") {
-          console.log("Happy remembrance day");
-          return true;
-        }
         if((this.day >= 19 && this.day <= 25) && this.weekDay === "sunday" && this.month === "may") {
           return true;
         }
