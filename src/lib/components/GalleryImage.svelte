@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import ClearContainer from "./ClearContainer.svelte";
 
     let {path, metadataPath} = $props();
@@ -16,28 +17,30 @@
 
     let zoomed = $state(false);
     
-    const img = new Image();
-    img.src = path;
-    img.onload = _ =>  {
-        imageLoaded = true;
-    }
+    onMount(() => {
+        const img = new Image();
+        img.src = path;
+        img.onload = _ =>  {
+            imageLoaded = true;
+        }
 
-    fetch(metadataPath).then(resposne => resposne.json()).then(data => {
-        description = data["description"];
-        model = data["model"]
-        make = data["make"]
-        time = data["time"];
-        iso = data["iso"];
-        
-        const expousureParts = data["expousure"];
-        expousure = expousureParts[0] / expousureParts[1];
+        fetch(metadataPath).then(resposne => resposne.json()).then(data => {
+            description = data["description"];
+            model = data["model"]
+            make = data["make"]
+            time = data["time"];
+            iso = data["iso"];
+            
+            const expousureParts = data["expousure"];
+            expousure = expousureParts[0] / expousureParts[1];
 
-        const focalLengthParts = data["focal-length"];
-        focalLength = focalLengthParts[0] / focalLengthParts[1];
+            const focalLengthParts = data["focal-length"];
+            focalLength = focalLengthParts[0] / focalLengthParts[1];
 
-        const aperatureParts = data["aperature"];
-        aperature = aperatureParts[0] / aperatureParts[1];
-    })
+            const aperatureParts = data["aperature"];
+            aperature = aperatureParts[0] / aperatureParts[1];
+        })
+    });
 </script>
 
 <svelte:head>
