@@ -76,7 +76,7 @@
     <meta property="og:url" content={`https://gallery.frii.site/photos/${filename}`}>
     <meta property="og:type" content="website">
     <meta property="og:title" content={filename}>
-    <meta property="og:description" content={`${description}\n\nTaken on ${make} ${model}\nTaken at ${parseDate(time).toLocaleString()}`}>
+    <meta property="og:description" content={`${description}`}>
     <meta property="og:image" content={`https://gallery.frii.site/images/${filename}.webp`}>
 
     <meta name="twitter:card" content="summary_large_image">
