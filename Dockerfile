@@ -15,6 +15,7 @@ WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package*.json ./
 RUN npm install --omit=dev
+RUN apk update && apk add traceroute
 
 EXPOSE 3000
 CMD ["node", "build"]
