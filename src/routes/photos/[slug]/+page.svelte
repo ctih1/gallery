@@ -12,9 +12,10 @@
     let make = $state("");
     let time = $state("");
     let iso = $state(0);
-    let expousure = $state(0);
     let focalLength = $state(0);
     let aperature = $state(0);
+
+    let expousureText = $state("");
 
     let imageLoaded = $state(false);
 
@@ -35,7 +36,11 @@
         iso = data["iso"];
         
         const expousureParts = data["expousure"];
-        expousure = expousureParts[0] / expousureParts[1];
+        if(expousureParts[0] === 1) {
+            expousureText = `1/${expousureParts[1]}s`;
+        } else {
+            expousureText = `${expousureParts[0]/expousureParts[1]}"`;
+        }
 
         const focalLengthParts = data["focal-length"];
         focalLength = focalLengthParts[0] / focalLengthParts[1];
@@ -100,7 +105,7 @@
     <div class="bottom">
         <h3 class="mb-0 mt-auto">Captured on: {parseDate(time).toLocaleString()} <small>(local)</small></h3>
         <h3 class="mb-0 mt-auto">Aperature: f/{aperature}</h3>
-        <h3 class="mb-0 mt-auto">Expousure: {Math.round(expousure*1000)/1000}s</h3>
+        <h3 class="mb-0 mt-auto">Expousure: {expousureText}</h3>
         <h3 class="mb-0 mt-auto">Focal length: {focalLength}mm</h3>
         <h3 class="mb-0 mt-auto">ISO: {iso}</h3>
     </div>  
