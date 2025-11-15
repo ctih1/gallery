@@ -48,4 +48,4 @@
     .strava-container {
         scrollbar-color: #FC5200 var(--color-zinc-900);
     }
-</style>
+</style>    
