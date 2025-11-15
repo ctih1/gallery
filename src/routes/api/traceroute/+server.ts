@@ -70,6 +70,8 @@ function parseOutput(lines: string[]): ProbeResult[] {
 export async function GET({ request }) {
     const ip = request.headers.get("X-Real-IP");
     if(!net.isIP(ip!)) {
+        console.log("Invalid ip! Headers: ");
+        console.log(request.headers);
         return error(422);
     }
 
