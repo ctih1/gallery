@@ -75,8 +75,18 @@ export async function GET({ request }) {
         return error(422);
     }
 
-    const tracerouteOutput = await exec(`traceroute -w 0.5 -q 1 -m 25 ${ip}`);
-    return new Response(JSON.stringify(parseOutput(String(tracerouteOutput.stdout!).trim().split("\n"))), {
-        headers: {"Content-Type": "application/json"}
+    return new Promise((resolve) => {
+        exec(`traceroute -w 0.5 -q 1 -m 25 ${ip}`, (err, stdout, stderr) => {
+            if (err) {
+                resolve(new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } }));
+                return;
+            }
+
+            resolve(new Response(JSON.stringify(parseOutput(stdout.trim().split("\n"))), {
+                headers: { "Content-Type": "application/json" }
+            }));
+        });
     });
+
+
 }
