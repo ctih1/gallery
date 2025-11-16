@@ -6,6 +6,8 @@ import { error } from '@sveltejs/kit';
 import { parse } from "csv-parse/sync";
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import airports from "$lib/airports.json";
+import worldCities from "$lib/cities/worldcities.json";
 
 const KNOWN_REPLACEMENTS = new Map(Object.entries({
     "hls": "hel",
@@ -40,25 +42,13 @@ const TEST_TRACEROUTE = `traceroute to 104.248.99.119 (104.248.99.119), 25 hops 
 24  203.208.186.174 (203.208.186.174)  366.542 ms
 25  *`
 
-async function readCsv(path: string) {
-    const content = await readFile(path, "utf8");
-    const records = parse(content, {
-        columns: true,
-        skip_empty_lines: true
-    });
-    return records;
-}
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const worldCsvPath = path.join(__dirname, "../../../lib/cities/worldcities.csv");
-const airportCsvPath = path.join(__dirname, "../../../lib/airports.csv");
-// @ts-ignore
-const rawCityData: CSVCities[] = await readCsv(worldCsvPath);
-// @ts-ignore
+
+// @ts-expect-error TS2740
+const rawCityData: CSVCities[] = worldCities;
 const cityData: CityMap = Object.fromEntries(rawCityData.map(city => [city.city_ascii.toLowerCase(), {...city}]));
 
 // @ts-ignore
-const rawAirportData: AirportCSV[] = await readCsv(airportCsvPath);
-// @ts-ignore
+const rawAirportData: AirportCSV[] = airports
 const airportData: AirportMap = Object.fromEntries(rawAirportData.map(airport => [airport.code.toLowerCase(), {...airport}]));
 console.log(airportData[0]);
 function parseOutput(lines: string[]): ProbeResult[] {
