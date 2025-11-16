@@ -54,7 +54,7 @@
 <h1>Sensor size comparison</h1>
 
 <div class="sensors h-96 bg-zinc-900">
-    {#each sensors.toReversed() as sensor, index} 
+    {#each sensors.toSorted((a,b) => b.diagonal - a.diagonal) as sensor, index} 
         {@const width = sensor.diagonal * sensor.aspectRatio[0] / Math.sqrt(Math.pow(sensor.aspectRatio[0],2) + Math.pow(sensor.aspectRatio[1], 2))}
         {@const height =  sensor.diagonal * sensor.aspectRatio[1] / Math.sqrt(Math.pow(sensor.aspectRatio[0],2) + Math.pow(sensor.aspectRatio[1], 2))}
         <div style={`width: ${width * offset}mm; height: ${height * offset}mm; outline-color: ${COLORS[index]}`} class="absolute outline-2 bg-transparent"></div>
