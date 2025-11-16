@@ -37,7 +37,7 @@
                 index: 0,
                 ip: "192.168.32.1",
                 domainAnalysis: {
-                    airport: "",
+                    cityOrAirport: "",
                     coordinates: [62.4102635, 25.9500597]
                 }
             };
@@ -61,7 +61,7 @@
                     smoothFactor: 1
                 });
 
-                L.marker([lastData.domainAnalysis.coordinates[0], lastData.domainAnalysis.coordinates[1]]).addTo(map!).bindPopup(lastData.domain);
+                L.marker([lastData.domainAnalysis.coordinates[0], lastData.domainAnalysis.coordinates[1]]).addTo(map!).bindPopup(`Hop #${lastData.index}: ${lastData.domain} (${lastData.ip}) ${lastData.delay}ms`);
 
                 lastData = data;
                 
@@ -70,7 +70,7 @@
             
             // Adding the last point's marker
             // @ts-ignore
-            L.marker([lastData.domainAnalysis.coordinates[0], lastData.domainAnalysis.coordinates[1]]).addTo(map!).bindPopup(lastData.domain);
+            L.marker([lastData.domainAnalysis.coordinates[0], lastData.domainAnalysis.coordinates[1]]).addTo(map!).bindPopup(`Hop #${lastData.index}: ${lastData.domain} (${lastData.ip}) ${lastData.delay}ms`);
     }
 </script>
 
@@ -96,6 +96,7 @@
 </svelte:head>
 <h1>Traceroute checker</h1>
 <p>Does a traceroute to your IP. Parses locations from domains found on the route (e.g sto03 -&gt; Stockholm). Note: click the popups to see the domains on the route</p>
+<p>NOTE: this data is most likely inaccurate</p>
 {#if loading}
     <div class="flex items-center" transition:slide>
         <Loader></Loader>

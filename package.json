@@ -33,6 +33,7 @@
 	},
 	"dependencies": {
 		"@bitmachina/highlighter": "^1.0.0-alpha.7",
+		"csv-parse": "^6.1.0",
 		"leaflet": "^1.9.4",
 		"leaflet-providers": "^3.0.0",
 		"tailwind-merge": "^3.3.1"

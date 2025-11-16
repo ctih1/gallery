@@ -41,7 +41,7 @@ if __name__ == "__main__":
         image_path = input("Please enter the path to your file: ")
 
     metadata_path = image_path
-    if "-merge" in sys.argv:
+    if "-merge" in sys.argv or "--merge" in sys.argv:
         metadata_path = input("Please enter the path to your file containing metadata: ")
         
 
