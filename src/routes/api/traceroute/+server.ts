@@ -4,6 +4,8 @@ import net from "node:net"
 import type { AirportCSV, AirportMap, CityMap, CSVCities, ProbeResult } from './types';
 import { error } from '@sveltejs/kit';
 import { parse } from "csv-parse/sync";
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const KNOWN_REPLACEMENTS = new Map(Object.entries({
     "hls": "hel",
@@ -46,13 +48,16 @@ async function readCsv(path: string) {
     });
     return records;
 }
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const worldCsvPath = path.join(__dirname, "../../../lib/cities/worldcities.csv");
+const airportCsvPath = path.join(__dirname, "../../../lib/airports.csv");
 // @ts-ignore
-const rawCityData: CSVCities[] = await readCsv("src/lib/cities/worldcities.csv");
+const rawCityData: CSVCities[] = await readCsv(worldCsvPath);
 // @ts-ignore
 const cityData: CityMap = Object.fromEntries(rawCityData.map(city => [city.city_ascii.toLowerCase(), {...city}]));
 
 // @ts-ignore
-const rawAirportData: AirportCSV[] = await readCsv("src/lib/airports.csv");
+const rawAirportData: AirportCSV[] = await readCsv(airportCsvPath);
 // @ts-ignore
 const airportData: AirportMap = Object.fromEntries(rawAirportData.map(airport => [airport.code.toLowerCase(), {...airport}]));
 console.log(airportData[0]);
