@@ -9,7 +9,8 @@ export default defineConfig({
 	},
 	preview: {
 		allowedHosts: [
-			"gallery.frii.site"
+			"gallery.frii.site",
+			"ctih1.frii.site"
 		]
 	}
 });
