@@ -172,17 +172,13 @@ async function getLocationFromIp(ip: string): Promise<[number, number]> {
 }
 
 export async function GET({ request }) {
-    // const ip = request.headers.get("X-Real-IP");
-    // if(!net.isIP(ip!)) {
-    //     console.log("Invalid ip! Headers: ");
-    //     console.log(request.headers);
-    //     return error(422);
-    // }
+    const ip = request.headers.get("X-Real-IP");
+    if(!net.isIP(ip!)) {
+        console.log("Invalid ip! Headers: ");
+        console.log(request.headers);
+        return error(422);
+    }
 
-    const output = await parseOutput(TEST_TRACEROUTE.split("\n"));
-    return new Response(JSON.stringify(output), {
-        headers: { "Content-Type": "application/json" }
-    });
 
     return new Promise(async (resolve) => {
         exec(`traceroute -w 0.5 -q 1 -m 25 ${ip}`, async (err, stdout, stderr) => {
