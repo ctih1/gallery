@@ -8,11 +8,15 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import airports from "$lib/airports.json";
 import worldCities from "$lib/cities/worldcities.json";
+import Database from "better-sqlite3";
 
 const KNOWN_REPLACEMENTS = new Map(Object.entries({
     "hls": "hel",
     "sto": "arn",
-    "kbn": "cph"
+    "kbn": "cph",
+    "kan": "mci",
+    "pal": "pao",
+    "chi": "ord"
 }));
 
 const TEST_TRACEROUTE = `traceroute to 104.248.99.119 (104.248.99.119), 25 hops max, 60 byte packets
@@ -42,6 +46,7 @@ const TEST_TRACEROUTE = `traceroute to 104.248.99.119 (104.248.99.119), 25 hops 
 24  203.208.186.174 (203.208.186.174)  366.542 ms
 25  *`
 
+const database = new Database('ips.db');
 
 // @ts-expect-error TS2740
 const rawCityData: CSVCities[] = worldCities;
@@ -50,8 +55,8 @@ const cityData: CityMap = Object.fromEntries(rawCityData.map(city => [city.city_
 // @ts-ignore
 const rawAirportData: AirportCSV[] = airports
 const airportData: AirportMap = Object.fromEntries(rawAirportData.map(airport => [airport.code.toLowerCase(), {...airport}]));
-console.log(airportData[0]);
-function parseOutput(lines: string[]): ProbeResult[] {
+
+async function parseOutput(lines: string[]): Promise<ProbeResult[]> {
     console.log(lines);
     const domainLocationRegex = /[a-z]{3}/g;
     let results: ProbeResult[] = [];
@@ -79,7 +84,7 @@ function parseOutput(lines: string[]): ProbeResult[] {
         }
         
         for(let city of rawCityData) {
-            if(domain.toLowerCase().includes(city.city.toLocaleLowerCase())) {
+            if(domain.toLowerCase().includes(city.city.toLocaleLowerCase()) && city.city.length > 5) {
                 if(Number(city.population) > (result.domainAnalysis?.population || 0)) {
                     console.log("Matched city " + city.city);
                     result.domainAnalysis = {
@@ -93,11 +98,10 @@ function parseOutput(lines: string[]): ProbeResult[] {
 
         if(!result.domainAnalysis)  {
             const matches = domain.match(domainLocationRegex);
-            if(!matches) {
-                console.log("no matches for " + domain);
-            } else {
+            if(matches) {
                 for(let match of matches) {
-                    const replacement = KNOWN_REPLACEMENTS.get(match.toLocaleLowerCase())
+                    const replacement = KNOWN_REPLACEMENTS.get(match.toLocaleLowerCase().trim())
+                    console.log(match);
                     if(replacement) {
                         match = replacement;
                     }
@@ -105,7 +109,7 @@ function parseOutput(lines: string[]): ProbeResult[] {
                     console.log("Checking match " + match);
 
                     const data = airportData[match.toLocaleLowerCase()];
-                    if(!data || !data.url || !data.icao || Number(cityData[data.city.toLocaleLowerCase().trim()]?.population ?? 0) < 5000) {
+                    if(!data || !data.url || !data.icao || Number(cityData[data.city.toLocaleLowerCase().trim()]?.population ?? 0) < 25000) {
                         console.log("Skipping airport because URL isnt there");
                     } else {
                         console.log("Which was succesfull");
@@ -121,29 +125,74 @@ function parseOutput(lines: string[]): ProbeResult[] {
             }
         }
 
-       
+       if(!result.domainAnalysis) {
+            const geolocation = await getLocationFromIp(ip);
+            if(geolocation[0]) {
+                result.domainAnalysis = {
+                    cityOrAirport: "unknown",
+                    coordinates: geolocation,
+                    population: 0
+                }
+            }
+       }
         results.push(result);
     }
 
+    console.log(results);
     return results.slice(1);
 } 
 
-export async function GET({ request }) {
-    const ip = request.headers.get("X-Real-IP");
-    if(!net.isIP(ip!)) {
-        console.log("Invalid ip! Headers: ");
-        console.log(request.headers);
-        return error(422);
-    }
+async function getLocationFromIp(ip: string): Promise<[number, number]> {
+    database.exec(`
+        CREATE TABLE IF NOT EXISTS ips (
+            ip  TEXT primary key,
+            lat REAL NOT     NULL,
+            lng REAL NOT     NULL
+        )
+    `)
 
-    return new Promise((resolve) => {
-        exec(`traceroute -w 0.5 -q 1 -m 25 ${ip}`, (err, stdout, stderr) => {
+    // @ts-expect-error
+    const result: {lat: number, lng: number} | undefined = database.prepare("SELECT * FROM ips WHERE ip=?").get(ip);
+
+    if(result) {
+        console.log(`Found ip ${ip} in database`);
+        return [result.lat, result.lng]
+    } else {
+        console.log(`Getting geolocation for ip ${ip}`);
+        const result = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,lat,lon`);
+        const json = await result.json();
+
+        const [lat, lng] = [Number(json["lat"]), Number(json["lon"])];
+        if(lat && lng) {
+            database.prepare("INSERT INTO ips (ip, lat, lng) VALUES (?, ?, ?)").run(ip, lat, lng);
+        }
+        
+        return [lat, lng];
+    }
+}
+
+export async function GET({ request }) {
+    // const ip = request.headers.get("X-Real-IP");
+    // if(!net.isIP(ip!)) {
+    //     console.log("Invalid ip! Headers: ");
+    //     console.log(request.headers);
+    //     return error(422);
+    // }
+
+    const output = await parseOutput(TEST_TRACEROUTE.split("\n"));
+    return new Response(JSON.stringify(output), {
+        headers: { "Content-Type": "application/json" }
+    });
+
+    return new Promise(async (resolve) => {
+        exec(`traceroute -w 0.5 -q 1 -m 25 ${ip}`, async (err, stdout, stderr) => {
             if (err) {
                 resolve(new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { "Content-Type": "application/json" } }));
                 return;
             }
 
-            resolve(new Response(JSON.stringify(parseOutput(stdout.trim().split("\n"))), {
+            const output = await parseOutput(stdout.trim().split("\n"));
+            resolve(new Response(JSON.stringify(output), {
                 headers: { "Content-Type": "application/json" }
             }));
         });
