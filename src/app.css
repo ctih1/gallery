@@ -66,19 +66,13 @@ h1, h2 {
 }
 
 a {
-    border-bottom: 0px solid white;
-    padding-bottom: 2px;
+    border-bottom: 1px solid white;
 }
 
 p {
     font-size: 1.1em;
 }
 
-a:hover {
-    animation-duration: 2s;
-    border-bottom-width: 2px;
-    padding-bottom: 0px;
-}
 
 body {
     overflow-x: hidden;

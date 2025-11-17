@@ -28,9 +28,8 @@
 	<a href="/">Home</a>
 	<a href="/photos">Photos</a>
 	<a href="/links">Links</a>
-	<a href="/speedtest">Speedtest</a>
-	<a href="/route">Traceroute</a>
-	<a href="/sensors">Sensor size comparison</a>
+	<a href="/tools">Tools</a>
+
 </Navbar>
 
 <Container>
