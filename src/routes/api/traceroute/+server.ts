@@ -85,7 +85,7 @@ async function parseOutput(lines: string[]): Promise<ProbeResult[]> {
         
         for(let city of rawCityData) {
             if(domain.toLowerCase().includes(city.city.toLocaleLowerCase()) && city.city.length > 5) {
-                if(Number(city.population) > (result.domainAnalysis?.population || 0)) {
+                if(Number(city.population) > 5000 && Number(city.population) > (result.domainAnalysis?.population || 0)) {
                     console.log("Matched city " + city.city);
                     result.domainAnalysis = {
                         cityOrAirport: city.city.toLocaleLowerCase(),
