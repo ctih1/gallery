@@ -1,11 +1,7 @@
 import { exec } from 'node:child_process';
-import { readFile } from "node:fs/promises";
 import net from "node:net"
 import type { AirportCSV, AirportMap, CityMap, CSVCities, ProbeResult } from './types';
 import { error } from '@sveltejs/kit';
-import { parse } from "csv-parse/sync";
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
 import airports from "$lib/airports.json";
 import worldCities from "$lib/cities/worldcities.json";
 import Database from "better-sqlite3";
@@ -125,16 +121,23 @@ async function parseOutput(lines: string[]): Promise<ProbeResult[]> {
             }
         }
 
-       if(!result.domainAnalysis) {
-            const geolocation = await getLocationFromIp(ip);
-            if(geolocation[0]) {
+        const geolocation = await getLocationFromIp(ip);
+        if(geolocation[0]) {
+            const coordinates = result.domainAnalysis?.coordinates ?? [0,0];
+            const xDiff = Math.abs(geolocation[0] - coordinates[0]);
+            const yDiff = Math.abs(geolocation[1] - coordinates[1]);
+            
+            if(xDiff > 10 || yDiff > 10) {
+                console.log("Coordinates are too different, preferring IP")
+
                 result.domainAnalysis = {
-                    cityOrAirport: "unknown",
+                    cityOrAirport: result.domainAnalysis?.cityOrAirport ?? "unknown",
                     coordinates: geolocation,
-                    population: 0
+                    population: result.domainAnalysis?.population ?? 0
                 }
             }
-       }
+        }
+    
         results.push(result);
     }
 
