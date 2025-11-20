@@ -5,6 +5,7 @@
 	import { onMount } from "svelte";
     import type { ProcessedActivity } from "./api/strava/types";
 	import BodyClass from "$lib/components/BodyClass.svelte";
+	import Badge from "$lib/components/Badge.svelte";
     let stravaData: ProcessedActivity[] | undefined = $state()
 
     onMount(() => {
@@ -37,7 +38,17 @@
         <label for="imperial-check">Use imperial units</label>
         <input bind:checked id="imperial-check" type="checkbox">
     </div>
+</div>
 
+<div class="badges grid grid-flow-col grid-rows-2 gap-0.5 w-fit ml-auto mr-auto">
+    <Badge redirect="/" imageUrl="/badges/ctih1.png"/>
+    <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png"/>
+    <Badge redirect="https://www.telia.fi/" imageUrl="/badges/telia.png"/>
+    <Badge redirect="" imageUrl="/badges/human.png"/>
+    <Badge redirect="https://en.wikipedia.org/wiki/Port_forwarding" imageUrl="/badges/port-forwarded.png"/>
+    <Badge redirect="https://en.wikipedia.org/wiki/Self-hosting_(network)" imageUrl="/badges/self-host.png"/>
+    <Badge redirect="https://www.frii.site" imageUrl="/badges/friisite.png"/>
+    <Badge redirect="https://www.powerpcfan.xyz" imageUrl="/badges/powerpcfan.png"/>
 </div>
 
 
