@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import BodyClass from "$lib/components/BodyClass.svelte";
+	import ClearContainer from "$lib/components/ClearContainer.svelte";
 	import Loader from "$lib/components/Loader.svelte";
 	import { onMount } from "svelte";
 	import { fade, fly, scale, slide } from "svelte/transition";
@@ -21,6 +23,7 @@
     let imageLoaded = $state(false);
 
     let zoomed = $state(false);
+    let previousScroll = 0;
     
     onMount(() => {
         const img = new Image();
@@ -50,6 +53,15 @@
             const aperatureParts = data["aperature"];
             aperature = aperatureParts[0] / aperatureParts[1];
         })
+    })
+
+    $effect(() => {
+        if(zoomed) {
+            previousScroll = window.scrollY;
+            window.scrollTo(0,0);
+        } else {
+            window.scrollTo(0, previousScroll);
+        }
     })
    
 
@@ -87,43 +99,47 @@
     <meta name="twitter:image" content={`https://ctih1.frii.site/images/${filename}.webp`}>
 </svelte:head>
 
-<img class="w-screen h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-2xl fixed object-cover" alt={description} src={path+".webp"}>
+<img class="w-screen min-h-screen top-0 left-0 bottom-0 right-0 pointer-events-none scale-150 saturate-75 -z-10 blur-lg fixed object-cover" alt={description} src={path+".webp"}>
 
-{#if !imageLoaded}
-    <div class="flex items-center" transition:slide={{delay: 200}}>
-        <Loader/>
-        <p>Loading full resolution image...</p>
-    </div>
-{/if}
-<div class="img-container cursor-pointer min-w-32 w-full mb-8 md:mb-0 max-w-4xl">
-    {#if imageLoaded}
-        <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description} src={path}>
-    {:else}
-        <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description + "(loading)"} src={path+".webp"}>
+<ClearContainer>
+    {#if !imageLoaded}
+        <div class="flex items-center" transition:slide={{delay: 200}}>
+            <Loader/>
+            <p>Loading full resolution image...</p>
+        </div>
     {/if}
-</div>
-<div>
-    <h2>{make} {model}</h2>
-    <hr class="opacity-50">
-    <p><i>{description}</i></p>
-    <div class="bottom">
-        <h3 class="mb-0 mt-auto">Captured on: {parseDate(time).toLocaleString()} <small>(local)</small></h3>
-        <h3 class="mb-0 mt-auto">Aperature: f/{aperature}</h3>
-        <h3 class="mb-0 mt-auto">Expousure: {expousureText}</h3>
-        <h3 class="mb-0 mt-auto">Focal length: {focalLength}mm</h3>
-        <h3 class="mb-0 mt-auto">ISO: {iso}</h3>
-    </div>  
-</div>
-<p class="opacity-50 mt-4">/photos/{$page.params.slug}</p>
-
-
+    <div class="img-container cursor-pointer min-w-32 w-full md:mb-0 max-w-4xl">
+        {#if imageLoaded}
+            <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description} src={path}>
+        {:else}
+            <img onclick={_ => zoomed = true} class="rounded-md w-full" alt={description + "(loading)"} src={path+".webp"}>
+        {/if}
+    </div>
+    <div>
+        <h2>{make} {model}</h2>
+        <hr class="opacity-50">
+        <p><i>{description}</i></p>
+        <div class="bottom">
+            <h3 class="mb-0 mt-auto">Captured on: {parseDate(time).toLocaleString()} <small>(local)</small></h3>
+            <h3 class="mb-0 mt-auto">Aperature: f/{aperature}</h3>
+            <h3 class="mb-0 mt-auto">Expousure: {expousureText}</h3>
+            <h3 class="mb-0 mt-auto">Focal length: {focalLength}mm</h3>
+            <h3 class="mb-0 mt-auto">ISO: {iso}</h3>
+        </div>  
+    </div>
+    <p class="opacity-50 mt-4">/photos/{$page.params.slug}</p>
+</ClearContainer>
 
 {#if zoomed}
-<div class="w-screen h-screen bg-[#000000dd] absolute top-0 left-0">
-    <img class="ml-auto mr-auto max-w-screen max-h-screen" alt={description} src={path}>
-    <button class="hover:cursor-pointer w-8 top-10 right-10 absolute text-4xl outline-1 outline-white rounded-full aspect-square items-center justify-center flex"
-        onclick={_ => zoomed = false}
-    ><span class="leading-6 pb-1">x</span></button>
-</div>
+    <div class="w-screen min-h-screen items-center flex bg-[#000000dd] absolute top-0 left-0">
+        <div class="ml-auto mr-auto">
+            <img class="ml-auto mr-auto max-w-screen max-h-screen" alt={description} src={path}>
+            <button class="hover:cursor-pointer w-8 top-10 right-10 absolute text-4xl outline-1 outline-white rounded-full aspect-square items-center justify-center flex"
+                onclick={_ => zoomed = false}
+            ><span class="leading-6 pb-1">x</span></button>
+        </div>
+    </div>
+    <BodyClass className="overflow-y-hidden"></BodyClass>
 {/if}
+
 

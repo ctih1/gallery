@@ -10,7 +10,7 @@
 
 </script>
 
-<div class="min-w-80 min-h-40 bg-zinc-900 m-1 rounded-xl p-2 outline-2 outline-[#FC5200]">
+<div class="min-w-80 min-h-40 bg-[rgba(6,6,6,0.4)] m-1 rounded-xl p-2 outline-2 outline-[#0097fc]">
     <h2>{name}</h2>
     <p>Duration: {formatMinutes(Math.round(time/6)/10)} mins</p>
     {#if type === "Run"}

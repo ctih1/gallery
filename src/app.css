@@ -38,7 +38,7 @@ h1, h2, h3, p, a {
 h1 {
     font-size: 3em;
     font-weight: 650;
-    line-height: 46px;
+    line-height: 42px;
     margin-bottom: 12px;
 }
 
@@ -59,7 +59,7 @@ h3 {
 h1, h2 {
     font-family: "JetBrains-mono", monospace;
     text-transform: lowercase;
-    background-color: var(--color-zinc-900);
+    background-color: rgba(0, 0, 0, 0.2);
     height: fit-content;
     width: fit-content;
 
@@ -75,5 +75,10 @@ p {
 
 
 body {
+    background-color: var(--color-zinc-800);
     overflow-x: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    backdrop-filter: blur(8px);
+    min-height: 100vh;
 }

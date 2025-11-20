@@ -4,6 +4,7 @@
 	import { usingImperial } from "$lib/store";
 	import { onMount } from "svelte";
     import type { ProcessedActivity } from "./api/strava/types";
+	import BodyClass from "$lib/components/BodyClass.svelte";
     let stravaData: ProcessedActivity[] | undefined = $state()
 
     onMount(() => {
@@ -21,10 +22,7 @@
     })
 </script>
 
-{#if isFlagDay}
-    <img src="/fi.webp" alt="Finnish flag" class="w-full">
-    <h1>Happy flag day!</h1>
-{/if}
+
 <h1>yellooo</h1>
 <p>This is a cool lil webpage I made for sharin stuff</p>
 
@@ -42,15 +40,10 @@
 
 </div>
 
-<div class="grid sm:grid-cols-2 grid-rows-[repeat(10, 1fr)] items-[flex-start] items-center mt-8">
-    <img src="https://www.frii.site/badges/modern.png" alt="frii.site badge">
-    <img class="bg-zinc-700 pb-0 rounded-xl w-full" src="/orangepi.png" alt="Hosted on orange pi 3b badge">
-</div>
-<p class="ml-4 leading-3 mt-2"><small class="opacity-70">note: I'm affiliated with frii.site</small></p>
-
 
 <style>
     .strava-container {
-        scrollbar-color: #FC5200 var(--color-zinc-900);
+        scrollbar-color: blue #00000010;
     }
+
 </style>    

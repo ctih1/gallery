@@ -3,6 +3,9 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Container from '$lib/components/Container.svelte';
+	import ClearContainer from '$lib/components/ClearContainer.svelte';
+	import { page } from '$app/state';
+	import BodyClass from '$lib/components/BodyClass.svelte';
 
 	let { children } = $props();
 </script>
@@ -29,15 +32,20 @@
 	<a href="/photos">Photos</a>
 	<a href="/links">Links</a>
 	<a href="/tools">Tools</a>
-
 </Navbar>
 
-<Container>
+<BodyClass className="basic-bg"></BodyClass>
+
+{#if !page.url.pathname.includes("/photos/")}
+<ClearContainer>
 	{@render children?.()}
-</Container>
+</ClearContainer>
+{:else}
+	{@render children?.()}
+{/if}
 
 <style>
-	:global(body) {
-		background-color: var(--color-zinc-900);
+	:global(.basic-bg) {
+        background-image: url("/images/dsc05835.jpg.webp");
 	}
 </style>
