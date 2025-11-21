@@ -171,18 +171,18 @@ async function getLocationFromIp(ip: string): Promise<[number, number]> {
 }
 
 export async function GET({ request }) {
-    // const ip = request.headers.get("X-Real-IP");
-    // if(!net.isIP(ip!)) {
-    //     console.log("Invalid ip! Headers: ");
-    //     console.log(request.headers);
-    //     return error(422);
-    // }
+    const ip = request.headers.get("X-Real-IP");
+    if(!net.isIP(ip!)) {
+        console.log("Invalid ip! Headers: ");
+        console.log(request.headers);
+        return error(422);
+    }
 
-    return new Response(JSON.stringify(await parseOutput(TEST_TRACEROUTE.split("\n"))), {
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
+    // return new Response(JSON.stringify(await parseOutput(TEST_TRACEROUTE.split("\n"))), {
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     }
+    // });
 
 
     return new Promise(async (resolve) => {
