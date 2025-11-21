@@ -67,7 +67,7 @@
     }
 
     setInterval(() => {
-        if(Math.round((Math.round(Math.random()*10)/10)*(Math.max(0,95-wattage))) == 0 && wattage > maxWattageForDevice) {
+        if(charging && Math.round((Math.round(Math.random()*30)/10)*(Math.max(0,95-wattage))) == 0 && wattage > maxWattageForDevice) {
             bricked = true;
         }
 
