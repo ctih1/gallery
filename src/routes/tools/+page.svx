@@ -3,3 +3,4 @@
 ## [Speedtest](/speedtest)
 ## [Lightpollution visualization](/lightpollution)
 ## [Phone charging simulator](/games/phone-charging-sim)
+## [Account creation simulator](/games/account-creation)

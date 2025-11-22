@@ -3,7 +3,7 @@
     import { twMerge } from "tailwind-merge";
 	import { onMount, type Snippet } from "svelte";
 
-    let { children, className }: {children: Snippet, className: string | undefined} = $props();
+    let { children, className }: {children: Snippet, className: string | undefined } = $props();
 
     let ball: HTMLDivElement;
     let container: HTMLDivElement;
