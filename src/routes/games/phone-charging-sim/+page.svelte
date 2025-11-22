@@ -81,7 +81,7 @@
 
 <h1>Phone charging sim</h1>
 
-<div class="wattage w-96">
+<div class="wattage max-w-96 w-full">
     <p>Charger wattage: {wattage}w</p>
     <input class="w-96" type="range" bind:value={wattage} min=0 max=100>
     <div class="flex justify-between">

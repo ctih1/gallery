@@ -6,12 +6,21 @@
     import type { ProcessedActivity } from "./api/strava/types";
 	import BodyClass from "$lib/components/BodyClass.svelte";
 	import Badge from "$lib/components/Badge.svelte";
+	import type { ServerResponse } from "./api/weather/types";
+	import ClearBase from "$lib/components/ClearBase.svelte";
+	import ConvertableFormat from "$lib/components/ConvertableFormat.svelte";
+
     let stravaData: ProcessedActivity[] | undefined = $state()
+    let weatherData: ServerResponse | undefined = $state();
 
     onMount(() => {
         fetch("/api/strava").then(data => data.json()).then(json => {
             stravaData = json
         });
+        
+        fetch("/api/weather").then(data => data.json()).then(json => {
+            weatherData = json;
+        })
     })
 
 
@@ -38,6 +47,16 @@
         <label for="imperial-check">Use imperial units</label>
         <input bind:checked id="imperial-check" type="checkbox">
     </div>
+    <h1>weather</h1>
+    <ClearBase className="p-2 max-w-80 min-h-40 mb-8">
+        {#if weatherData}
+            <p><b>Sunrise</b>: {new Date(weatherData.sunrise ?? 0).toLocaleTimeString("en-US", {timeZone: "Europe/Helsinki"})}</p>
+            <p><b>Sunset</b>: {new Date(weatherData.sunset ?? 0).toLocaleTimeString("en-US", {timeZone: "Europe/Helsinki"})}</p>
+            <p><b>Coldest</b>: <ConvertableFormat imperialUnit="°F" metricUnit="°C" type="c" metricValue={Math.min(...Object.entries(weatherData.temperature).values().map(e => e[1]))} /></p>
+            <p><b>Warmest</b>: <ConvertableFormat imperialUnit="°F" metricUnit="°C" type="c" metricValue={Math.max(...Object.entries(weatherData.temperature).values().map(e => e[1]))} /></p>
+            <p><b>Snowfall in 24h</b>: <ConvertableFormat imperialUnit="inches" metricUnit="cm" metricValue={Math.round(Object.entries(weatherData.snowfall).map(e => e[1]).reduce((partialSum, a) => partialSum + a, 0)*1000)/1000}/></p>
+        {/if}
+    </ClearBase>
 </div>
 
 <div class="badges grid grid-flow-col grid-rows-2 gap-0.5 w-fit ml-auto mr-auto">
