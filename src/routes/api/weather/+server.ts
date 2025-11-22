@@ -15,25 +15,28 @@ function formatOffset(stamp: string) {
     return `${sign}${hours}:00`;
 }
 
+let cacheMap: [Date, unknown] = [new Date(-1), undefined];
 
 export async function GET({ request, fetch }) {
-    const url = new URL("https://api.open-meteo.com/v1/forecast");
-    url.search = new URLSearchParams({
-        "latitude": LATITUDE as string,
-        "longitude": LONGITUDE as string,
-        "daily": "sunrise,sunset,sunshine_duration",
-        "hourly": "temperature_2m,cloud_cover,snowfall",
-        // even though the code normalizes this into GMT+0, we can get the current offset in Helsinki and use it for other stuff
-        "timezone": "Europe/Helsinki",
-        "forecast_days": "1"
-    }).toString()
+    if(cacheMap[0].getTime()/1000 + 28800 < new Date().getTime()) {
+        const url = new URL("https://api.open-meteo.com/v1/forecast");
+        url.search = new URLSearchParams({
+            "latitude": LATITUDE as string,
+            "longitude": LONGITUDE as string,
+            "daily": "sunrise,sunset,sunshine_duration",
+            "hourly": "temperature_2m,cloud_cover,snowfall",
+            // even though the code normalizes this into GMT+0, we can get the current offset in Helsinki and use it for other stuff
+            "timezone": "Europe/Helsinki",
+            "forecast_days": "1"
+        }).toString()
 
-    const res = await fetch(url);
-    const json: MeteoResponse = await res.json();
-
-    console.log(url);
-
-    console.log(json);
+        const res = await fetch(url);
+        const json: MeteoResponse = await res.json();
+        cacheMap = [new Date(), json];
+    }
+    
+    // @ts-ignore
+    const json: MeteoResponse = cacheMap[1];
 
     const stringOffset = json.timezone_abbreviation.split("GMT")[1];
     const timezoneOffset = formatOffset(stringOffset);
