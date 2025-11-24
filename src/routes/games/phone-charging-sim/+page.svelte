@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
+	import Input from "$lib/components/Input.svelte";
 
     let percentage = $state(0);
     let charging = $state(false);
@@ -83,7 +84,7 @@
 
 <div class="wattage max-w-96 w-full">
     <p>Charger wattage: {wattage}w</p>
-    <input class="w-96" type="range" bind:value={wattage} min=0 max=100>
+    <Input class="w-96" type="range" bind:value={wattage} min=0 max=100 />
     <div class="flex justify-between">
         <p>0w</p>
         <p>100w</p>

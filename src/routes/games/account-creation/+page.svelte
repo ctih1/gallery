@@ -91,7 +91,8 @@
     <Input disablePasting={true} bind:value={passwordConfirmConfirm} type="password" label="Confirm confirmation password" />    
     
     <Input disablePasting={true} bind:value={bestRegion} label="Which region are you from? hint: Finland" />        
-    <Input bind:value={zipCode} type="number" label="Your postal code" />        
+    <Input bind:value={zipCode} type="number" label="Your postal code" />    
+    <Input bind:value={lyric} label="Continue the lyric: I'm an alien, I'm a legal alien" />        
     <Input bind:value={loves} label="Liebst du mich? <3 (ja oder nein)" />        
     <Input bind:value={gdLevelId} type="number" label="Geometry Dash level id for 'Sunshine'" />        
 </div>
