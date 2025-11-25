@@ -3,7 +3,7 @@
     import { twMerge } from "tailwind-merge";
 	import { onMount, type Snippet } from "svelte";
 
-    let { children, className }: {children: Snippet, className: string | undefined } = $props();
+    let { children, className, styleOverride }: {children: Snippet, className: string | undefined, styleOverride?: string } = $props();
 
     let ball: HTMLDivElement;
     let container: HTMLDivElement;
@@ -30,7 +30,7 @@
 </script>
 
 
-<div bind:this={container} class={twMerge(
+<div bind:this={container} style={styleOverride} class={twMerge(
         "outline-1 overflow-hidden bg-white/10 outline-[#ffffff66] drop-shadow-2xl backdrop-blur-sm backdrop-saturate-150 backdrop-brightness-75 rounded-xl",
         className
     )}>
