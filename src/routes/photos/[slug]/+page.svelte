@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import Accordion from "$lib/components/Accordion.svelte";
 	import BodyClass from "$lib/components/BodyClass.svelte";
 	import ClearContainer from "$lib/components/ClearContainer.svelte";
 	import Loader from "$lib/components/Loader.svelte";
@@ -127,7 +128,25 @@
             <h3 class="mb-0 mt-auto">ISO: {iso}</h3>
         </div>  
     </div>
-    <p class="opacity-50 mt-4">/photos/{$page.params.slug}</p>
+    <div class="opacity-50 flex flex-col mt-16">
+        <Accordion title="CC BY-NC 4.0">
+            <p> © ctih1. Licensed under CC BY-NC 4.0. Personal use allowed with credit. No commercial use.</p>
+            <p>All images share this license unless explicitly stated otherwise in the description.</p>
+            <p><b>You can:</b></p>
+            <ul>
+                <li>Use these images in personal or non-commercial projects (with credit).</li>
+                <li>Modify or edit them as long as attribution is kept.</li>
+            </ul>
+            <p><b>You can't:</b></p>
+            <ul>
+                <li>Use these images for any commercial purposes.</li>
+                <li>Use them without giving proper credit.</li>
+                <li>Claim any of the images as your own.</li>
+                <li>Re-license the images under a different license.</li>
+            </ul>
+        </Accordion>
+        <p>/photos/{$page.params.slug}</p>
+    </div>  
 </ClearContainer>
 
 {#if zoomed}
