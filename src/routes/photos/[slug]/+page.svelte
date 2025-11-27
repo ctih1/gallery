@@ -130,7 +130,7 @@
     </div>
     <div class="opacity-50 flex flex-col mt-16">
         <Accordion title="CC BY-NC 4.0">
-            <p> © ctih1. Licensed under CC BY-NC 4.0. Personal use allowed with credit. No commercial use.</p>
+            <p>© ctih1. Licensed under CC BY-NC 4.0. Personal use allowed with credit. No commercial use.</p>
             <p>All images share this license unless explicitly stated otherwise in the description.</p>
             <p><b>You can:</b></p>
             <ul>
