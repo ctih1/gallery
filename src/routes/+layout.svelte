@@ -17,15 +17,16 @@
 		as="font"
 		href="/fonts/InterVariable.woff2"
 		type="font/woff2"
-		crossorigin="anonymous" />
+		crossorigin="anonymous"
+	/>
 	<link
 		rel="preload"
 		as="font"
 		href="/fonts/JetBrainsMonoSemiBold.woff2"
 		type="font/woff2"
-		crossorigin="anonymous" />
+		crossorigin="anonymous"
+	/>
 </svelte:head>
-
 
 <Navbar>
 	<a href="/">Home</a>
@@ -36,16 +37,16 @@
 
 <BodyClass className="basic-bg"></BodyClass>
 
-{#if !page.url.pathname.includes("/photos/")}
-<ClearContainer>
-	{@render children?.()}
-</ClearContainer>
+{#if !page.url.pathname.includes('/photos/')}
+	<ClearContainer>
+		{@render children?.()}
+	</ClearContainer>
 {:else}
 	{@render children?.()}
 {/if}
 
 <style>
 	:global(.basic-bg) {
-        background-image: url("/images/dsc05835.jpg.webp");
+		background-image: url('/images/dsc05835.jpg.webp');
 	}
 </style>

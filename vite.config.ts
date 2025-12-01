@@ -8,9 +8,6 @@ export default defineConfig({
 		host: true
 	},
 	preview: {
-		allowedHosts: [
-			"gallery.frii.site",
-			"ctih1.frii.site"
-		]
+		allowedHosts: ['gallery.frii.site', 'ctih1.frii.site']
 	}
 });

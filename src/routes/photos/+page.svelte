@@ -1,13 +1,17 @@
 <script>
-    import images from "$lib/images.json";
+	import images from '$lib/images.json';
 </script>
 
 <h1>Images</h1>
 
-<div class="grid md:grid-cols-3 lg:grid-cols-4 grid-cols-2 gap-1">
-    {#each images as link}
-        <a style="border-bottom: 0px; padding-bottom: 0px" href={`photos/${link}`}>
-            <img alt={link} class="bg-cover object-cover bg-center rounded-md aspect-square opacity-95 hover:opacity-100 transition-opacity md:w-96 w-80 " src={`images/${link}.webp`}>
-        </a>
-    {/each}
+<div class="grid grid-cols-2 gap-1 md:grid-cols-3 lg:grid-cols-4">
+	{#each images as link}
+		<a style="border-bottom: 0px; padding-bottom: 0px" href={`photos/${link}`}>
+			<img
+				alt={link}
+				class="aspect-square w-80 rounded-md bg-cover bg-center object-cover opacity-95 transition-opacity hover:opacity-100 md:w-96"
+				src={`images/${link}.webp`}
+			/>
+		</a>
+	{/each}
 </div>
