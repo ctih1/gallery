@@ -10,13 +10,15 @@
 
     onMount(() => {
         container.addEventListener("mousemove", event => {
-            const rect: DOMRect = container.getBoundingClientRect();
-            const left = event.clientX - rect.left;
-            const top = event.clientY - rect.top;
+            requestAnimationFrame(() => {
+                const rect: DOMRect = container.getBoundingClientRect();
+                const left = event.clientX - rect.left;
+                const top = event.clientY - rect.top;
 
 
-            ball.style.top = top - ball.clientHeight/2 + "px";
-            ball.style.left = left - ball.clientWidth/2 + "px";
+                ball.style.top = top - ball.clientHeight/2 + "px";
+                ball.style.left = left - ball.clientWidth/2 + "px";
+            });
         });
 
         container.addEventListener("mouseleave", _ => {
@@ -35,6 +37,6 @@
         className
     )}>
 
-    <div class="w-40 aspect-square transition-opacity absolute rounded-[100%] blur-[120px] bg-blend-lighten -z-10 -top-full bg-white" bind:this={ball}></div>
+    <div class="w-40 aspect-square transition-opacity absolute rounded-[100%] blur-[120px] -z-10 -top-full bg-white" bind:this={ball}></div>
     {@render children?.()}
 </div>

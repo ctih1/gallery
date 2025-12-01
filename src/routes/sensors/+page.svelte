@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Input from "$lib/components/Input.svelte";
+
     type Millimeters = number;
 
     interface Sensor {
@@ -76,24 +78,23 @@
 <div class="flex justify-between w-full">
     <div class="label flex flex-col">
         <label for="diagonal">Diagonal size (mm)</label>
-        <input bind:value={sensorSize} type="number" class="bg-zinc-900 p-1 rounded-md w-48" id="diagonal" placeholder="0mm">
+        <Input bind:value={sensorSize} type="number" class="bg-zinc-900 p-1 rounded-md w-48" id="diagonal" placeholder="0mm" />
     </div>
 
     <div class="label flex flex-col">
         <label for="ratio">Aspect ratio</label>
-        <input bind:value={sensorRatio} type="text" class="bg-zinc-900 p-1 rounded-md w-48" id="ratio" placeholder="4/3">
+        <Input bind:value={sensorRatio} type="text" class="bg-zinc-900 p-1 rounded-md w-48" id="ratio" placeholder="4/3" />
     </div>
 
     <div class="label flex flex-col">
         <label for="name">Name</label>
-        <input bind:value={sensorName} type="text" class="bg-zinc-900 p-1 rounded-md" id="name" placeholder="my sensor">
+        <Input bind:value={sensorName} type="text" class="bg-zinc-900 p-1 rounded-md" id="name" placeholder="my sensor" />
     </div>
 </div>
 <button onclick={_ => addSensor()} class="bg-sky-600 pl-2 pr-2 w-full rounded-xl mt-2 h-8 mb-8">add</button>
 
 
-<label for="offset-slider">Size offset</label>
-<input id="offset-slider" class="w-full" type="range" max="5" min="0" step="0.05" bind:value={offset}>
+<Input label="Size offset" class="w-full" type="range" max="5" min="0" step="0.05" bind:value={offset} />
 
 
 <div style={`width: ${2*offset}cm`} class="bg-white aspect-square"></div>

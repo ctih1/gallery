@@ -1,15 +1,16 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
-	import type { HTMLInputAttributes } from "svelte/elements";
+	import type { HTMLInputAttributes, HTMLInputTypeAttribute } from "svelte/elements";
 	import { twMerge } from "tailwind-merge";
 	import ClearBase from "./ClearBase.svelte";
-	import { blur, fade } from "svelte/transition";
-
+	import { fade } from "svelte/transition";
+    
     let { value = $bindable(""), element = $bindable<HTMLInputElement>(), disablePasting, label, children, ...rest }: HTMLInputAttributes & { value: any, disablePasting?: boolean, element?: HTMLInputElement, label?: string, children?: Snippet } = $props();
 
     let hintShown: boolean = $state(false);
 
     let className = $state("");
+
     if (rest.type === "range") {
         className = "min-w-12 min-h-4 accent-sky-600";
     } else {
@@ -47,7 +48,6 @@
                 </ClearBase>
             {/key}
         </div>
-
     {/if}
     <input ontouchstart={_ => hintShown = true} onmousedown={_ => hintShown = true} ontouchend={_ => setTimeout(_ => hintShown = false, 500)} onmouseup={_ => setTimeout(_ => hintShown = false, 500)} onpaste={e => disablePasting ? e.preventDefault() : ""} bind:this={element} bind:value id={label+"-input"} {...rest} class={twMerge(className, ...rest.class?.toString() ?? "")}>
 </div>

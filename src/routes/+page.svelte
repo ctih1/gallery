@@ -59,7 +59,7 @@
     </ClearBase>
 </div>
 
-<div class="badges grid grid-flow-col grid-rows-2 gap-0.5 w-fit ml-auto mr-auto">
+<div class="badges grid grid-flow-col grid-rows-3 gap-0.5 w-fit ml-auto mr-auto">
     <Badge redirect="/" imageUrl="/badges/ctih1.png"/>
     <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png"/>
     <Badge redirect="https://www.telia.fi/" imageUrl="/badges/telia.png"/>
@@ -68,6 +68,7 @@
     <Badge redirect="https://en.wikipedia.org/wiki/Self-hosting_(network)" imageUrl="/badges/self-host.png"/>
     <Badge redirect="https://www.frii.site" imageUrl="/badges/friisite.png"/>
     <Badge redirect="https://www.powerpcfan.xyz" imageUrl="/badges/powerpcfan.png"/>
+    <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png"/>
 </div>
 
 
