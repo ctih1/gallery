@@ -8,6 +8,10 @@
     let ongoing = $state(false);
 
     function beginTest() {
+        if(ongoing) {
+            return
+        }
+        
         ongoing = true;
         speed = 0;
         speeds = [];

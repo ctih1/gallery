@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { formatMinutes } from "$lib";
+	import ClearBase from "./ClearBase.svelte";
 	import ConvertableFormat from "./ConvertableFormat.svelte";
 
     let { type, maxSpeed, avgSpeed, time, started, distance, kilojoules, name }: 
@@ -10,7 +11,7 @@
 
 </script>
 
-<div class="min-w-80 min-h-40 bg-[rgba(6,6,6,0.4)] m-1 rounded-xl p-2 outline-2 outline-[#0097fc]">
+<ClearBase className="min-w-80 min-h-40 p-2 m-1 hover:bg-sky-600/20">
     <h2>{name}</h2>
     <p>Duration: {formatMinutes(Math.round(time/6)/10)} mins</p>
     {#if type === "Run"}
@@ -25,4 +26,4 @@
         <p>Calories burnt: {Math.round(kilojoules/0.239005) || 0} kcal</p>
     {/if}
     <p>Date: {new Date(started).toLocaleString()}</p>
-</div>
+</ClearBase>

@@ -18,7 +18,7 @@ function formatOffset(stamp: string) {
 let cacheMap: [Date, unknown] = [new Date(-1), undefined];
 
 export async function GET({ request, fetch }) {
-    if(cacheMap[0].getTime()/1000 + 28800 < new Date().getTime()) {
+    if(cacheMap[0].getTime()/1000 + 10800 < new Date().getTime()) {
         const url = new URL("https://api.open-meteo.com/v1/forecast");
         url.search = new URLSearchParams({
             "latitude": LATITUDE as string,

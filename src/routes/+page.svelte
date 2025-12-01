@@ -47,6 +47,9 @@
         <label for="imperial-check">Use imperial units</label>
         <input bind:checked id="imperial-check" type="checkbox">
     </div>
+</div>
+
+<div class="mt-16">
     <h1>weather</h1>
     <ClearBase className="p-2 max-w-80 min-h-40 mb-8">
         {#if weatherData}
@@ -74,7 +77,7 @@
 
 <style>
     .strava-container {
-        scrollbar-color: blue #00000010;
+        scrollbar-color: white #00000010;
     }
 
 </style>    
