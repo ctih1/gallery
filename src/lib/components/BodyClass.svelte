@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { onDestroy, onMount } from 'svelte';
+    import { browser } from "$app/environment";
+    import { onDestroy, onMount } from "svelte";
 
-	let { className } = $props();
+    let { className } = $props();
 
-	onMount(() => {
-		if (browser) {
-			document.body.classList.add(className);
-		}
-	});
+    onMount(() => {
+        if (browser) {
+            document.body.classList.add(className);
+        }
+    });
 
-	onDestroy(() => {
-		if (browser) {
-			document.body.classList.remove(className);
-		}
-	});
+    onDestroy(() => {
+        if (browser) {
+            document.body.classList.remove(className);
+        }
+    });
 </script>

@@ -1,133 +1,134 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import Input from '$lib/components/Input.svelte';
+    import { browser } from "$app/environment";
+    import Input from "$lib/components/Input.svelte";
 
-	let percentage = $state(0);
-	let charging = $state(false);
-	let turnedOn = $state(false);
-	let bricked = $state(false);
-	let wattage = $state(2);
+    let percentage = $state(0);
+    let charging = $state(false);
+    let turnedOn = $state(false);
+    let bricked = $state(false);
+    let wattage = $state(2);
 
-	let maxWattageForDevice = $state(Math.random() * 95 + 5);
+    let maxWattageForDevice = $state(Math.random() * 95 + 5);
 
-	let cable: HTMLDivElement | undefined = $state();
-	let chargingPort: HTMLDivElement | undefined = $state();
+    let cable: HTMLDivElement | undefined = $state();
+    let chargingPort: HTMLDivElement | undefined = $state();
 
-	let dragging = false;
-	let offsetX = 0;
-	let offsetY = 0;
+    let dragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
 
-	type MoveEvent = MouseEvent & { currentTarget: EventTarget & HTMLElement };
+    type MoveEvent = MouseEvent & { currentTarget: EventTarget & HTMLElement };
 
-	function cableMoveStart(event: MoveEvent) {
-		if (!cable) return;
+    function cableMoveStart(event: MoveEvent) {
+        if (!cable) return;
 
-		offsetX = event.clientX - cable.offsetLeft;
-		offsetY = event.clientY - cable.offsetTop;
-		dragging = true;
-		document.body.style.userSelect = 'none';
-	}
+        offsetX = event.clientX - cable.offsetLeft;
+        offsetY = event.clientY - cable.offsetTop;
+        dragging = true;
+        document.body.style.userSelect = "none";
+    }
 
-	function cableMoveEnd() {
-		dragging = false;
-		document.body.style.userSelect = '';
-	}
+    function cableMoveEnd() {
+        dragging = false;
+        document.body.style.userSelect = "";
+    }
 
-	if (browser) {
-		document.addEventListener('mousemove', (event) => {
-			if (!dragging || !cable || !chargingPort) return;
+    if (browser) {
+        document.addEventListener("mousemove", event => {
+            if (!dragging || !cable || !chargingPort) return;
 
-			let topPos = event.clientY - offsetY;
+            let topPos = event.clientY - offsetY;
 
-			if (topPos < document.body.clientHeight - cable.clientHeight) {
-				topPos = document.body.clientHeight - cable.clientHeight;
-			}
+            if (topPos < document.body.clientHeight - cable.clientHeight) {
+                topPos = document.body.clientHeight - cable.clientHeight;
+            }
 
-			let leftPos = event.clientX - offsetX;
+            let leftPos = event.clientX - offsetX;
 
-			let chargingRect = chargingPort.getBoundingClientRect();
-			let cableRect = cable.getBoundingClientRect();
+            let chargingRect = chargingPort.getBoundingClientRect();
+            let cableRect = cable.getBoundingClientRect();
 
-			cable.style.left = leftPos + 'px';
-			cable.style.top = topPos + 'px';
+            cable.style.left = leftPos + "px";
+            cable.style.top = topPos + "px";
 
-			if (
-				Math.abs(chargingRect.left - cableRect.left) < 20 &&
-				Math.abs(chargingRect.right - cableRect.right) < 20 &&
-				Math.abs(chargingRect.top - cableRect.top) < 20
-			) {
-				if (!charging) {
-					turnedOn = true;
-				}
-				charging = true;
-			} else {
-				charging = false;
-			}
-		});
-	}
+            if (
+                Math.abs(chargingRect.left - cableRect.left) < 20 &&
+                Math.abs(chargingRect.right - cableRect.right) < 20 &&
+                Math.abs(chargingRect.top - cableRect.top) < 20
+            ) {
+                if (!charging) {
+                    turnedOn = true;
+                }
+                charging = true;
+            } else {
+                charging = false;
+            }
+        });
+    }
 
-	setInterval(() => {
-		if (
-			charging &&
-			Math.round((Math.round(Math.random() * 30) / 10) * Math.max(0, 95 - wattage)) == 0 &&
-			wattage > maxWattageForDevice
-		) {
-			bricked = true;
-		}
+    setInterval(() => {
+        if (
+            charging &&
+            Math.round((Math.round(Math.random() * 30) / 10) * Math.max(0, 95 - wattage)) == 0 &&
+            wattage > maxWattageForDevice
+        ) {
+            bricked = true;
+        }
 
-		if (charging) {
-			percentage += wattage / 100;
-		} else if (percentage > 0) {
-			percentage -= 0.005;
-		}
-	}, 1000);
+        if (charging) {
+            percentage += wattage / 100;
+        } else if (percentage > 0) {
+            percentage -= 0.005;
+        }
+    }, 1000);
 </script>
 
 <h1>Phone charging sim</h1>
 
 <div class="wattage w-full max-w-96">
-	<p>Charger wattage: {wattage}w</p>
-	<Input class="w-96" type="range" bind:value={wattage} min="0" max="100" />
-	<div class="flex justify-between">
-		<p>0w</p>
-		<p>100w</p>
-	</div>
+    <p>Charger wattage: {wattage}w</p>
+    <Input class="w-96" type="range" bind:value={wattage} min="0" max="100" />
+    <div class="flex justify-between">
+        <p>0w</p>
+        <p>100w</p>
+    </div>
 
-	<p>
-		note: ramping up the wattage may cause the device to explode<br />
-		<i>Explodes at a level 6 with deeper combustion at a level 7</i>
-	</p>
+    <p>
+        note: ramping up the wattage may cause the device to explode<br />
+        <i>Explodes at a level 6 with deeper combustion at a level 7</i>
+    </p>
 </div>
 
 <div id="phone" class="w-80">
-	<div class="flex items-center">
-		<div class="flex aspect-9/20 w-80 items-center justify-center rounded-2xl bg-black">
-			{#if bricked}
-				<div class="flex flex-col justify-center">
-					<h1 class="text-center">your device exploded <br /> :(</h1>
-					<button class="mr-auto ml-auto" onclick={(_) => location.reload()}>restart</button>
-				</div>
-			{:else if turnedOn}
-				<h1>{Math.round(percentage * 100) / 100}%</h1>
-			{/if}
-		</div>
-		<button onclick={(_) => (turnedOn = !turnedOn)} class="h-32 w-2 bg-zinc-900 active:bg-white"
-			>I</button
-		>
-	</div>
+    <div class="flex items-center">
+        <div class="flex aspect-9/20 w-80 items-center justify-center rounded-2xl bg-black">
+            {#if bricked}
+                <div class="flex flex-col justify-center">
+                    <h1 class="text-center">your device exploded <br /> :(</h1>
+                    <button class="mr-auto ml-auto" onclick={_ => location.reload()}>restart</button
+                    >
+                </div>
+            {:else if turnedOn}
+                <h1>{Math.round(percentage * 100) / 100}%</h1>
+            {/if}
+        </div>
+        <button onclick={_ => (turnedOn = !turnedOn)} class="h-32 w-2 bg-zinc-900 active:bg-white"
+            >I</button
+        >
+    </div>
 
-	<div bind:this={chargingPort} id="charging-port" class="mr-auto ml-auto h-2 w-8 bg-white"></div>
+    <div bind:this={chargingPort} id="charging-port" class="mr-auto ml-auto h-2 w-8 bg-white"></div>
 </div>
 
 <div
-	bind:this={cable}
-	onmouseup={cableMoveEnd}
-	onmousedown={cableMoveStart}
-	id="cable"
-	class="absolute -z-10 w-6"
+    bind:this={cable}
+    onmouseup={cableMoveEnd}
+    onmousedown={cableMoveStart}
+    id="cable"
+    class="absolute -z-10 w-6"
 >
-	<div id="top" class="mr-auto ml-auto h-4 w-4 rounded-t-md bg-amber-300"></div>
-	<div id="bottom" class="h-96 w-6 rounded-t-md bg-white"></div>
+    <div id="top" class="mr-auto ml-auto h-4 w-4 rounded-t-md bg-amber-300"></div>
+    <div id="bottom" class="h-96 w-6 rounded-t-md bg-white"></div>
 </div>
 
 <div class="spacer h-40 w-1"></div>

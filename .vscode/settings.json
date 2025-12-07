@@ -1,16 +1,16 @@
 {
-	"svelte.plugin.svelte.compilerWarnings": {
-		"a11y_click_events_have_key_events": "ignore",
-		"a11y_no_static_element_interactions": "ignore",
-		"a11y_no_noninteractive_element_interactions": "ignore",
-		"a11y_consider_explicit_label": "ignore",
-		"a11y_autofocus": "ignore"
-	},
-	"gitlens.advanced.blame.customArguments": ["--ignore-revs-file", ".git-blame-ignore-revs"], 
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.formatOnSave": true,
-	"editor.codeActionsOnSave": {
-		"source.organizeImports": "always",
-		"source.fixAll.eslint": "always"
-	}
+    "svelte.plugin.svelte.compilerWarnings": {
+        "a11y_click_events_have_key_events": "ignore",
+        "a11y_no_static_element_interactions": "ignore",
+        "a11y_no_noninteractive_element_interactions": "ignore",
+        "a11y_consider_explicit_label": "ignore",
+        "a11y_autofocus": "ignore"
+    },
+    "gitlens.advanced.blame.customArguments": ["--ignore-revs-file", ".git-blame-ignore-revs"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always",
+        "source.fixAll.eslint": "always"
+    }
 }
