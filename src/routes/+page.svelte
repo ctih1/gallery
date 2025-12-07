@@ -1,14 +1,12 @@
 <script lang="ts">
+	import Badge from '$lib/components/Badge.svelte';
+	import ClearBase from '$lib/components/ClearBase.svelte';
+	import ConvertableFormat from '$lib/components/ConvertableFormat.svelte';
 	import StravaCard from '$lib/components/StravaCard.svelte';
-	import { isFlagDay } from '$lib/flagdays';
 	import { usingImperial } from '$lib/store';
 	import { onMount } from 'svelte';
 	import type { ProcessedActivity } from './api/strava/types';
-	import BodyClass from '$lib/components/BodyClass.svelte';
-	import Badge from '$lib/components/Badge.svelte';
 	import type { ServerResponse } from './api/weather/types';
-	import ClearBase from '$lib/components/ClearBase.svelte';
-	import ConvertableFormat from '$lib/components/ConvertableFormat.svelte';
 
 	let stravaData: ProcessedActivity[] | undefined = $state();
 	let weatherData: ServerResponse | undefined = $state();
