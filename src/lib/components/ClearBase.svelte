@@ -43,7 +43,7 @@
     bind:this={container}
     style={styleOverride}
     class={twMerge(
-        "overflow-hidden rounded-2xl bg-white/10 outline-1 outline-[#ffffff66] drop-shadow-2xl backdrop-blur-sm backdrop-brightness-150 backdrop-saturate-150",
+        "overflow-hidden squircle bg-white/10 outline-1 outline-[#ffffff66] drop-shadow-2xl backdrop-blur-sm backdrop-brightness-75 backdrop-saturate-150",
         className
     )}
 >

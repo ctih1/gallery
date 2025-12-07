@@ -61,7 +61,7 @@
 
 <div class="mt-8 flex flex-col">
     <Input id="pollution" type="range" min="16" max="22" step="0.1" bind:value={pollutionValue}>
-        Sky brightness: <input bind:value={pollutionValue} class="w-8 bg-zinc-900" /> mag/arcsec²
+        Sky brightness: <input bind:value={pollutionValue} class="w-8 bg-zinc-900/10" /> mag/arcsec²
     </Input>
 </div>
 <p>Pollution percentage: {Math.round(relative * 100)}%</p>

@@ -60,7 +60,7 @@
 
 <div class="mt-16">
     <h1>weather</h1>
-    <ClearBase className="p-2 max-w-80 min-h-40 mb-8">
+    <ClearBase className="p-2 max-w-80 min-h-40 mb-8 squircle-md">
         {#if weatherData}
             <p>
                 <b>Sunrise</b>: {new Date(weatherData.sunrise ?? 0).toLocaleTimeString("en-US", {

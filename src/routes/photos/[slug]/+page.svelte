@@ -117,14 +117,14 @@
         {#if imageLoaded}
             <img
                 onclick={_ => (zoomed = true)}
-                class="w-full rounded-md"
+                class="w-full squircle-md"
                 alt={description}
                 src={path}
             />
         {:else}
             <img
                 onclick={_ => (zoomed = true)}
-                class="w-full rounded-md"
+                class="w-full squircle-md"
                 alt={description + "(loading)"}
                 src={path + ".webp"}
             />
