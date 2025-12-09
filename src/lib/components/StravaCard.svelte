@@ -24,7 +24,7 @@
     } = $props();
 </script>
 
-<ClearBase className="min-w-80 min-h-40 p-2 m-1 hover:bg-white/5 transition-colors squircle-md">
+<ClearBase className="min-w-80 min-h-40 p-2 m-1 hover:bg-white/5 transition-colors squircle-md 	">
     <h2>{name}</h2>
     <p>Duration: {formatMinutes(Math.round(time / 6) / 10)} mins</p>
     {#if type === "Run"}
