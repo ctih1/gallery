@@ -1,7 +1,6 @@
 <script lang="ts">
     import { page } from "$app/state";
     import favicon from "$lib/assets/favicon.svg";
-    import BodyClass from "$lib/components/BodyClass.svelte";
     import ClearContainer from "$lib/components/ClearContainer.svelte";
     import Navbar from "$lib/components/Navbar.svelte";
     import "../app.css";
@@ -34,8 +33,6 @@
     <a href="/tools">Tools</a>
 </Navbar>
 
-<BodyClass className="basic-bg"></BodyClass>
-
 {#if !page.url.pathname.includes("/photos/")}
     <ClearContainer>
         {@render children?.()}
@@ -43,10 +40,3 @@
 {:else}
     {@render children?.()}
 {/if}
-
-<style>
-    :global(.basic-bg) {
-        background-image: url("/images/img_6973.jpg.webp");
-        padding-bottom: 48px;
-    }
-</style>

@@ -20,6 +20,7 @@
     let aperature = $state(0);
 
     let expousureText = $state("");
+    let rawImage: string | undefined = $state();
 
     let imageLoaded = $state(false);
 
@@ -41,6 +42,8 @@
                 make = data["make"];
                 time = data["time"];
                 iso = data["iso"];
+
+                rawImage = data["unedited"];
 
                 const expousureParts = data["expousure"];
                 if (expousureParts[0] === 1) {
@@ -106,7 +109,7 @@
     src={path + ".webp"}
 />
 
-<ClearContainer>
+<ClearContainer clear={true}>
     {#if !imageLoaded}
         <div class="flex items-center" transition:slide={{ delay: 200 }}>
             <Loader />
@@ -145,27 +148,34 @@
         </div>
     </div>
     <div class="mt-16 flex flex-col opacity-50">
-        <Accordion title="CC BY-NC 4.0">
-            <p>
-                © ctih1. Licensed under CC BY-NC 4.0. Personal use allowed with credit. No
-                commercial use.
-            </p>
-            <p>
-                All images share this license unless explicitly stated otherwise in the description.
-            </p>
-            <p><b>You can:</b></p>
-            <ul>
-                <li>Use these images in personal or non-commercial projects (with credit).</li>
-                <li>Modify or edit them as long as attribution is kept.</li>
-            </ul>
-            <p><b>You can't:</b></p>
-            <ul>
-                <li>Use these images for any commercial purposes.</li>
-                <li>Use them without giving proper credit.</li>
-                <li>Claim any of the images as your own.</li>
-                <li>Re-license the images under a different license.</li>
-            </ul>
-        </Accordion>
+        <div class="flex items-center space-x-4">
+            <Accordion title="CC BY-NC 4.0">
+                <p>
+                    © ctih1. Licensed under CC BY-NC 4.0. Personal use allowed with credit. No
+                    commercial use.
+                </p>
+                <p>
+                    All images share this license unless explicitly stated otherwise in the
+                    description.
+                </p>
+                <p><b>You can:</b></p>
+                <ul>
+                    <li>Use these images in personal or non-commercial projects (with credit).</li>
+                    <li>Modify or edit them as long as attribution is kept.</li>
+                </ul>
+                <p><b>You can't:</b></p>
+                <ul>
+                    <li>Use these images for any commercial purposes.</li>
+                    <li>Use them without giving proper credit.</li>
+                    <li>Claim any of the images as your own.</li>
+                    <li>Re-license the images under a different license.</li>
+                </ul>
+            </Accordion>
+            {#if rawImage}
+                <a href={"/images/" + rawImage}>View unedited version</a>
+            {/if}
+        </div>
+
         <p>/photos/{$page.params.slug}</p>
     </div>
 </ClearContainer>

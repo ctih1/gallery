@@ -1,5 +1,6 @@
 <script lang="ts">
     import Badge from "$lib/components/Badge.svelte";
+    import BodyClass from "$lib/components/BodyClass.svelte";
     import ClearBase from "$lib/components/ClearBase.svelte";
     import ConvertableFormat from "$lib/components/ConvertableFormat.svelte";
     import StravaCard from "$lib/components/StravaCard.svelte";
@@ -114,7 +115,6 @@
 <div class="badges mr-auto ml-auto grid w-fit grid-flow-col grid-rows-3 gap-0.5">
     <Badge redirect="/" imageUrl="/badges/ctih1.png" />
     <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png" />
-    <Badge redirect="https://www.telia.fi/" imageUrl="/badges/telia.png" />
     <Badge redirect="" imageUrl="/badges/human.png" />
     <Badge
         redirect="https://en.wikipedia.org/wiki/Port_forwarding"
@@ -129,8 +129,16 @@
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
 </div>
 
+<BodyClass className="index-body"></BodyClass>
+
 <style>
     .strava-container {
         scrollbar-color: white #00000010;
+    }
+
+    :global(.index-body) {
+        background: url("/images/img_6973.jpg.webp");
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 </style>

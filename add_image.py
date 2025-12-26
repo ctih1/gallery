@@ -43,12 +43,34 @@ if __name__ == "__main__":
     metadata_path = image_path
     if "-merge" in sys.argv or "--merge" in sys.argv:
         metadata_path = input("Please enter the path to your file containing metadata: ")
+    
+    if "--add-unedited" in sys.argv:
+        unedited_path = input("Please enter the path to your unedited file: ")
+        real_image = input("Filename for your edited image: ")
         
+        with open(os.path.join(PHOTO_LOCATIONS, real_image + ".json"), "r") as f:
+            existing_data = json.load(f)
+
+        unedited_image = Image.open(unedited_path)
+
+        moved_unedited = Image.new(unedited_image.mode, unedited_image.size)
+        moved_unedited.putdata(unedited_image.getdata())
+        unedited_filename = "unedited_"+real_image
+        moved_unedited.save(os.path.join(PHOTO_LOCATIONS, unedited_filename))
+
+        existing_data["unedited"] = unedited_filename
+
+        with open(os.path.join(PHOTO_LOCATIONS, real_image + ".json"), "w") as f:
+            json.dump(existing_data, f)
+
+        print("Done!")
+        
+        quit()
 
     print("Opening and processing EXIF tags")
-    exif_image = Image.open(metadata_path)
+    unedited_image = Image.open(metadata_path)
     image: Image.Image = Image.open(image_path)
-    exif = exif_image.getexif()
+    exif = unedited_image.getexif()
     exif_dict = {ExifTags.TAGS[k]: str(v) for k, v in exif.items()}
     exif_data = piexif.load(metadata_path)
     exif_ifd = exif_data.get("Exif", {})
@@ -58,6 +80,12 @@ if __name__ == "__main__":
     moved_image.putdata(image.getdata())
     image_filename: str = str(image.filename).split(os.path.sep)[-1].lower()
     moved_image.save(os.path.join(PHOTO_LOCATIONS, image_filename))
+
+    print(f"Creating unedited version {PHOTO_LOCATIONS}/unedited_{image_filename}")
+    moved_unedited = Image.new(unedited_image.mode, unedited_image.size)
+    moved_unedited.putdata(unedited_image.getdata())
+    unedited_filename = "unedited_"+image_filename
+    moved_unedited.save(os.path.join(PHOTO_LOCATIONS, unedited_filename))
 
     print("Creating a thumbnail")
     moved_image.convert("RGB")
@@ -77,6 +105,7 @@ if __name__ == "__main__":
             "expousure": exif_ifd.get(piexif.ExifIFD.ExposureTime),
             "focal-length": exif_ifd.get(piexif.ExifIFD.FocalLength),
             "aperature": exif_ifd.get(piexif.ExifIFD.FNumber),
+            "unedited": unedited_filename,
             "description": "No description"
         }, f)
 

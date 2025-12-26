@@ -85,7 +85,7 @@ h2 {
 }
 
 a {
-    border-bottom: 1px solid white;
+    text-decoration: underline white 1px;
 }
 
 p {
