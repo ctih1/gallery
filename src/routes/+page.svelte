@@ -137,7 +137,7 @@
     }
 
     :global(.index-body) {
-        background: url("/images/img_6973.jpg.webp");
+        background: url("/images/img_6973.jpg/thumbnail.webp");
         background-repeat: no-repeat;
         background-size: cover;
     }

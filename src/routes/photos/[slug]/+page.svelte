@@ -8,8 +8,12 @@
     import { slide } from "svelte/transition";
 
     let filename = $page.params.slug;
-    let path = "/images/" + $page.params.slug;
-    let metadataPath = $derived(path + ".json");
+    let basePath: string = "/images/" + $page.params.slug;
+    let metadataPath: string = $derived(basePath + "/metadata.json");
+    let imageType = $derived($page.params.slug?.split(".").pop());
+
+    let imagePath: string = $derived(basePath + `/primary.${imageType}`);
+    let thumbnailPath: string = $derived(basePath + "/thumbnail.webp");
 
     let description = $state("");
     let model = $state("");
@@ -29,7 +33,7 @@
 
     onMount(() => {
         const img = new Image();
-        img.src = path!;
+        img.src = imagePath!;
         img.onload = _ => {
             imageLoaded = true;
         };
@@ -78,13 +82,7 @@
 </script>
 
 <svelte:head>
-    <link
-        rel="preload"
-        as="image"
-        href={`${path}.webp`}
-        type="image/webp"
-        crossorigin="anonymous"
-    />
+    <link rel="preload" as="image" href={thumbnailPath} type="image/webp" crossorigin="anonymous" />
 
     <title>ctih1's gallery</title>
     <meta name="description" content="A gallery for some photos I've taken" />
@@ -106,7 +104,7 @@
 <img
     class="pointer-events-none fixed top-0 right-0 bottom-0 left-0 -z-10 min-h-screen w-screen scale-150 object-cover blur-lg saturate-75"
     alt={description}
-    src={path + ".webp"}
+    src={thumbnailPath}
 />
 
 <ClearContainer clear={true}>
@@ -122,14 +120,14 @@
                 onclick={_ => (zoomed = true)}
                 class="w-full rounded-xl"
                 alt={description}
-                src={path}
+                src={imagePath}
             />
         {:else}
             <img
                 onclick={_ => (zoomed = true)}
                 class="w-full rounded-xl"
                 alt={description + "(loading)"}
-                src={path + ".webp"}
+                src={thumbnailPath}
             />
         {/if}
     </div>
@@ -172,7 +170,11 @@
                 </ul>
             </Accordion>
             {#if rawImage}
-                <a href={"/images/" + rawImage}>View unedited version</a>
+                {#if rawImage === "self"}
+                    <p>This image has not been edited.</p>
+                {:else}
+                    <a href={basePath + "/" + rawImage}>View unedited version</a>
+                {/if}
             {/if}
         </div>
 
@@ -183,7 +185,11 @@
 {#if zoomed}
     <div class="absolute top-0 left-0 flex min-h-screen w-screen items-center bg-[#000000dd]">
         <div class="mr-auto ml-auto">
-            <img class="mr-auto ml-auto max-h-screen max-w-screen" alt={description} src={path} />
+            <img
+                class="mr-auto ml-auto max-h-screen max-w-screen"
+                alt={description}
+                src={imagePath}
+            />
             <button
                 class="absolute top-10 right-10 flex aspect-square w-8 items-center justify-center rounded-full text-4xl outline-1 outline-white hover:cursor-pointer"
                 onclick={_ => (zoomed = false)}><span class="pb-1 leading-6">x</span></button

@@ -10,7 +10,7 @@
             <img
                 alt={link}
                 class="aspect-square w-80 rounded-md bg-cover bg-center object-cover opacity-95 transition-opacity hover:opacity-100 lg:w-96"
-                src={`images/${link}.webp`}
+                src={`images/${link}/thumbnail.webp`}
             />
         </a>
     {/each}
