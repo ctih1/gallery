@@ -23,7 +23,7 @@
     let focalLength = $state(0);
     let aperature = $state(0);
 
-    let expousureText = $state("");
+    let exposureText = $state("");
     let rawImage: string | undefined = $state();
 
     let imageLoaded = $state(false);
@@ -49,11 +49,11 @@
 
                 rawImage = data["unedited"];
 
-                const expousureParts = data["expousure"];
-                if (expousureParts[0] === 1) {
-                    expousureText = `1/${expousureParts[1]}s`;
+                const exposureParts = data["exposure"];
+                if (exposureParts[0] === 1) {
+                    exposureText = `1/${exposureParts[1]}s`;
                 } else {
-                    expousureText = `${expousureParts[0] / expousureParts[1]}"`;
+                    exposureText = `${exposureParts[0] / exposureParts[1]}"`;
                 }
 
                 const focalLengthParts = data["focal-length"];
@@ -140,7 +140,7 @@
                 Captured on: {parseDate(time).toLocaleString()} <small>(local)</small>
             </h3>
             <h3 class="mt-auto mb-0">Aperature: f/{aperature}</h3>
-            <h3 class="mt-auto mb-0">Expousure: {expousureText}</h3>
+            <h3 class="mt-auto mb-0">Exposure: {exposureText}</h3>
             <h3 class="mt-auto mb-0">Focal length: {focalLength}mm</h3>
             <h3 class="mt-auto mb-0">ISO: {iso}</h3>
         </div>

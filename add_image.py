@@ -77,6 +77,24 @@ def migrate_structure():
 
         print(f"Conmverted {image}")
 
+def migrate_exposure():
+    with open(SAVE_PATH, "r") as f:
+        images: List[str] = json.load(f)
+    
+    for image in images:
+        image_path = os.path.join(PHOTO_LOCATIONS, image)
+        metadata_path = os.path.join(image_path, "metadata.json")
+
+        with open(metadata_path, "r") as f:
+            metadata = json.load(f)
+
+        if metadata.get("expousure"):
+            metadata["exposure"] = metadata["expousure"]
+            del metadata["expousure"]
+
+        with open(metadata_path, "w") as f:
+            json.dump(metadata, f)
+
 def remove_metadata(image: ImageFile.ImageFile) -> Image.Image:
     new_image = Image.new(image.mode, image.size) # Removes EXIF data
     new_image.putdata(image.getdata())
@@ -84,6 +102,8 @@ def remove_metadata(image: ImageFile.ImageFile) -> Image.Image:
     return new_image
 
 if __name__ == "__main__":
+    migrate_exposure()
+    quit()
     image_path: str | None = None
     try:
         if not sys.argv[1].startswith("-"):
@@ -137,6 +157,11 @@ if __name__ == "__main__":
     metadataless_image.thumbnail((width, height), Image.Resampling.LANCZOS)
     metadataless_image.save(os.path.join(image_base_path, "thumbnail.webp"), "webp")
 
+    edited = ""
+
+    if not "--ask-unedited" in sys.argv:
+        edited = input("Specify that the image has not been edited? Press enter to skip. ")
+
     print("Creating metadata json file")
     with open(os.path.join(image_base_path, "metadata.json"), "w") as f:
         metadata: Metadata = Metadata(**{
@@ -148,7 +173,7 @@ if __name__ == "__main__":
             "focal-length": exif_ifd.get(piexif.ExifIFD.FocalLength),
             "aperature": exif_ifd.get(piexif.ExifIFD.FNumber),
             "description": "No description",
-            "unedited": False
+            "unedited": "self" if len("edited") == 0 else False
         })
 
         json.dump(metadata, f)
