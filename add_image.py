@@ -102,8 +102,6 @@ def remove_metadata(image: ImageFile.ImageFile) -> Image.Image:
     return new_image
 
 if __name__ == "__main__":
-    migrate_exposure()
-    quit()
     image_path: str | None = None
     try:
         if not sys.argv[1].startswith("-"):
