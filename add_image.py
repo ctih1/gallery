@@ -1,34 +1,76 @@
 import sys
 import os
 import shutil
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, ImageFile
 import json
 import piexif
-
+from typing import List, TypedDict, Tuple, Optional
 
 PHOTO_LOCATIONS = os.path.join("static", "images")
+SAVE_PATH = os.path.join("src", "lib", "images.json")
 
-# for _, _, files in os.walk(os.path.join("static", "images")):
-#     print(f"Checking {files}")
-#     fil = []
-#     for file in files:
-#         print(f"Checking {file}")
-#         if file.endswith(".json"):
-#             print("match")
-#             fil.append(file.replace(".json", ""))
-
-#     print(f"Files: {fil}")
-
-#     with open(os.path.join("src", "lib", "images.json"), "r") as f:
-#         data = list(json.load(f))
-#         data.extend(fil)
-#         data = list(set(data))
-        
-#         with open(os.path.join("src", "lib", "images.json"), "w") as f:
-#             json.dump(data, f)
-
-#     quit()
+Metadata = TypedDict("Metadata", {
+    "model": str,
+    "make": str,
+    "time": str,
+    "iso": int,
+    "exposure": Tuple[int, int],
+    "focal-length": Tuple[int, int],
+    "aperature": Tuple[int, int],
+    "unedited": Optional[str],
+    "description": str
+})
     
+
+def ask_unedited():
+    unedited_path = input("Please enter the path to your unedited file: ")
+    real_image = input("Filename for your edited image: ")
+    
+    with open(os.path.join(PHOTO_LOCATIONS, real_image + ".json"), "r") as f:
+        existing_data = json.load(f)
+
+    unedited_image = Image.open(unedited_path)
+
+    moved_unedited = Image.new(unedited_image.mode, unedited_image.size)
+    moved_unedited.putdata(unedited_image.getdata())
+    unedited_filename = "unedited_"+real_image
+    moved_unedited.save(os.path.join(PHOTO_LOCATIONS, unedited_filename))
+
+    existing_data["unedited"] = unedited_filename
+
+    with open(os.path.join(PHOTO_LOCATIONS, real_image + ".json"), "w") as f:
+        json.dump(existing_data, f)
+
+    print("Done!")
+
+def split_filename_and_extension(filename: str) -> Tuple[str, str]:
+    return tuple(filename.rsplit(".", maxsplit=1)) # type: ignore[assignment]
+
+def migrate_structure():
+    with open(SAVE_PATH, "r") as f:
+        images: List[str] = json.load(f)
+    
+    for image in images:
+        image_path = os.path.join(PHOTO_LOCATIONS, image)
+
+        with open(image_path+".json", "r") as f:
+            metadata: Metadata = json.load(f)
+
+        os.rename(image_path, image_path+".tmp")
+        os.mkdir(image_path)
+
+        _, extension = split_filename_and_extension(image_path)
+
+        os.rename(image_path+".tmp", os.path.join(image_path, f"primary.{extension}"))
+        os.rename(image_path+".webp", os.path.join(image_path, f"thumbnail.webp"))
+        os.rename(image_path+".json", os.path.join(image_path, f"metadata.json"))
+
+        unedited: str | None = metadata.get("unedited")
+        if unedited:
+            _, extension = split_filename_and_extension(unedited)
+            os.rename(os.path.join(PHOTO_LOCATIONS, unedited), os.path.join(image_path, f"unedited.{extension}"))
+
+        print(f"Conmverted {image}")
 
 if __name__ == "__main__":
     image_path: str | None = None
@@ -44,27 +86,8 @@ if __name__ == "__main__":
     if "-merge" in sys.argv or "--merge" in sys.argv:
         metadata_path = input("Please enter the path to your file containing metadata: ")
     
-    if "--add-unedited" in sys.argv:
-        unedited_path = input("Please enter the path to your unedited file: ")
-        real_image = input("Filename for your edited image: ")
-        
-        with open(os.path.join(PHOTO_LOCATIONS, real_image + ".json"), "r") as f:
-            existing_data = json.load(f)
-
-        unedited_image = Image.open(unedited_path)
-
-        moved_unedited = Image.new(unedited_image.mode, unedited_image.size)
-        moved_unedited.putdata(unedited_image.getdata())
-        unedited_filename = "unedited_"+real_image
-        moved_unedited.save(os.path.join(PHOTO_LOCATIONS, unedited_filename))
-
-        existing_data["unedited"] = unedited_filename
-
-        with open(os.path.join(PHOTO_LOCATIONS, real_image + ".json"), "w") as f:
-            json.dump(existing_data, f)
-
-        print("Done!")
-        
+    if "--add-unedited" in sys.argv and "--quit" in sys.argv:
+        ask_unedited()
         quit()
 
     print("Opening and processing EXIF tags")
@@ -117,6 +140,9 @@ if __name__ == "__main__":
 
         with open(os.path.join("src", "lib", "images.json"), "w") as f:
             json.dump(data, f)
+
+    if "--add-unedited" in sys.argv:
+        ask_unedited()
 
     print("Done!")
 
