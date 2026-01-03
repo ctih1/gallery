@@ -79,7 +79,7 @@ def migrate_structure():
 
 def migrate_exposure():
     with open(SAVE_PATH, "r") as f:
-        images: List[str] = json.load(f)
+        images: List[str] = jsonx.load(f)
     
     for image in images:
         image_path = os.path.join(PHOTO_LOCATIONS, image)
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     edited = ""
 
-    if not "--ask-unedited" in sys.argv:
+    if not "--add-unedited" in sys.argv:
         edited = input("Specify that the image has not been edited? Press enter to skip. ")
 
     print("Creating metadata json file")
