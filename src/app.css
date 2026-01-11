@@ -96,7 +96,5 @@ body {
     background-color: var(--color-zinc-800);
     overflow-x: hidden;
     background-repeat: no-repeat;
-    background-size: cover;
-    backdrop-filter: blur(8px) saturate(150%);
     min-height: 100vh;
 }

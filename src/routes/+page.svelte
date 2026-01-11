@@ -140,5 +140,6 @@
         background: url("/images/img_6973.jpg/thumbnail.webp");
         background-repeat: no-repeat;
         background-size: cover;
+        backdrop-filter: blur(8px) saturate(150%);
     }
 </style>
