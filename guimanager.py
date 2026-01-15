@@ -29,9 +29,6 @@ class App(customtkinter.CTk):
         self.geometry("650x500")
         self.title("Gallery GUI Manager")
 
-        self.add_button = customtkinter.CTkButton(self, text="Add image")
-        self.add_button.pack()
-
         self.photo_container = customtkinter.CTkScrollableFrame(self, 600, 500)
         self.photo_container.pack()
 
@@ -58,6 +55,8 @@ class App(customtkinter.CTk):
                 width=100, height=100, 
                 fg_color="transparent",
                 border_width=0,
+                bg_color="transparent",
+                border_spacing=0,
                 command=lambda img=image[1]: self.summon_window(img) # type: ignore[assignment]
             )
             image_button.grid(row=row, column=i-(row*cols)-1, padx=2, pady=2)

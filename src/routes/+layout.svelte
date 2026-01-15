@@ -33,7 +33,7 @@
     <a href="/tools">Tools</a>
 </Navbar>
 
-{#if !page.url.pathname.includes("/photos/")}
+{#if !page.url.pathname.includes("/photos/") && !page.url.pathname.includes("local-docs")}
     <ClearContainer>
         {@render children?.()}
     </ClearContainer>
