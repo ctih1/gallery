@@ -59,7 +59,7 @@
             {#key value}
                 <ClearBase
                     styleOverride={calculateHintStyling()}
-                    className="min-w-12 max-w-32 w-fit h-6 flex items-center justify-center absolute z-20 -translate-x-1/2"
+                    className="min-w-12 max-w-32 w-fit h-6 flex items-center justify-center absolute z-20 pointer-events-none -translate-x-1/2"
                 >
                     <p class="p-0">{value}</p>
                 </ClearBase>
