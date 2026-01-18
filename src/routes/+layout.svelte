@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onNavigate } from "$app/navigation";
+    import { afterNavigate } from "$app/navigation";
     import { page } from "$app/state";
     import favicon from "$lib/assets/favicon.svg";
     import ClearContainer from "$lib/components/ClearContainer.svelte";
@@ -19,7 +19,7 @@
     function hslToHex(h: number, s: number, l: number) {
         l /= 100;
         const a = (s * Math.min(l, 1 - l)) / 100;
-        const f = n => {
+        const f = (n: number) => {
             const k = (n + h / 30) % 12;
             const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
             return Math.round(255 * color)
@@ -29,27 +29,58 @@
         return `#${f(0)}${f(8)}${f(4)}`;
     }
 
+    function createColor(baseHue: number, offset: number) {
+        let result: number = 0;
+
+        result = baseHue + offset;
+        if (result > 360) {
+            result = Math.abs(result) - 360;
+        }
+        if (result < 0) {
+            result = 360 - Math.abs(result);
+        }
+        return result;
+    }
+
     function generateRandomGradient() {
         if (document.body.classList.contains("index-body")) return;
 
         console.log("creating new gradient");
-        const grainCss = createGrain(2);
+        const grainCss = createGrain(Math.random() + 2);
 
-        const x = Math.random() * 500 - 50;
-        const y = Math.random() * 460 - 80;
+        const x = Math.random() * 300 - 50;
+        const y = Math.random() * 360 - 80;
 
-        const hue = Math.random() * 360;
-        const color = hslToHex(hue, 30, 50);
+        const x2 = Math.random() * 200 - 50;
+        const y2 = Math.random() * 260 - 80;
 
-        console.log(color);
+        const hue = Math.random() * 200;
+        const color = hslToHex(hue, 30, 30);
 
-        document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, ${color} 0%, rgba(255,255,255, 0.4) 100%), url("${grainCss}")`;
+        const color2 = hslToHex(createColor(hue, -60), 50, 50);
+        const color3 = hslToHex(createColor(hue, 60), 50, 50);
+
+        const linearGradient = `linear-gradient(${Math.round(Math.random() * 1000) / 1000}turn, ${color} 0%, rgba(255,255,255, 0.4) 100%)`;
+        const radialGradient = `radial-gradient(circle at ${x}% ${y}%, ${color2} 0%, rgba(255,255,255, 0.4) 100%)`;
+        const radialGradient2 = `radial-gradient(circle at ${x2}% ${y2}%, ${color3} 0%, rgba(255,255,255, 0.4) 100%)`;
+
+        const gradients =
+            radialGradient +
+            ", " +
+            `url("${grainCss}")` +
+            ", " +
+            radialGradient2 +
+            ", " +
+            linearGradient;
+
+        document.body.style.background = gradients;
+
         document.body.style.backdropFilter = "invert(1)";
 
         gradientEnabled = true;
     }
 
-    onNavigate(() => {
+    afterNavigate(() => {
         generateRandomGradient();
         if (window.location.pathname === "/" && gradientEnabled) {
             window.location.reload();
