@@ -108,6 +108,11 @@
         type="font/woff2"
         crossorigin="anonymous"
     />
+    <script
+        defer
+        src="https://analytics.koti.frii.site/script.js"
+        data-website-id="6cb4b927-0ef8-418b-8463-3818804b2c90"
+    ></script>
 </svelte:head>
 
 <Navbar>
