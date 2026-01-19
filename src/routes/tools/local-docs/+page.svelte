@@ -128,6 +128,22 @@
                 }
             ],
             urlParams: []
+        },
+        {
+            type: "GET",
+            body: [],
+            headers: [],
+            domain: "api.koti.frii.site",
+            endpoint: "/thumbnail",
+            urlParams: [
+                {
+                    name: "url",
+                    description: "The URL to take a photo of. (Without the http(s):// prefix)",
+                    type: "string",
+                    value: "",
+                    optional: false
+                }
+            ]
         }
     ]);
 
