@@ -1,0 +1,4 @@
+# A collection of my devices
+And some info about them
+
+* [Orange Pi 3B](/devices/orangepi3b)

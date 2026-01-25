@@ -98,3 +98,8 @@ body {
     background-repeat: no-repeat;
     min-height: 100vh;
 }
+
+li {
+    list-style: disc;
+    margin-left: 2em;
+}

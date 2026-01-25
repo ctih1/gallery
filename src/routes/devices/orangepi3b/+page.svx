@@ -1,0 +1,61 @@
+# Devices: Orange Pi 3B
+*A budget SBC*
+
+<br>
+
+I bought this thing in early August of 2025, and I have definitely gotten my money's worth on it. This website is being served on this very machine. 
+I decided to buy the **8GB version of this board**, since I knew that I would be using it for a lot of different things. I don't regret this decision, as I can run basically anything I want.
+
+<br>
+
+Here's a list of what's currently being hosted on it:
+
+Media:
+* Jellyfin
+* Bazarr
+* Sonarr
+* Radarr
+* Jellyseerr
+* FlareSolverr
+* Transmission
+* Jackett
+
+Productivity:
+* Umami analytics
+* Uptime Kuma
+
+Programming:
+* MongoDB
+
+Services:
+* This website (**ctih1.frii.site**)
+* Thumbnail generator (api.koti.frii.site/thumbnail)
+* AI-model trained on my & some friends' messages (ai.koti.frii.site/generate)
+* API-Wrapper for [KAVI](https://en.wikipedia.org/wiki/National_Audiovisual_Institute_(Finland)) (kavi.frii.site)
+* Personal fileserver (homecdn.frii.site)
+
+
+Misc:
+* frii.site's login notification bot
+* "Goober" discord bot to interact with the AI-Wrapper
+* Room noise measurements (dB counter)
+* WireGuard VPN
+
+Upcoming / planned projects:
+* Immich server to replace Google Photos
+> I would need to buy two 2TB hard drives, to setup RAID.
+
+* Price scraper for local stores here 
+> Again, I would need more storage, since I'm currently running out
+
+* Indoor Air Quality & Temperature monitoring
+> I would need a soldering iron for the sensor
+
+* Wireless phone backup (iOS)
+> I don't think this is possible on Linux.
+
+* PxE server with iVentoy
+> I don't have enough ethernet ports in my router to allow for more than one device (+the orange pi). I have an old router which I could use as a switch, but I only have 3 ethernet cables.
+
+![Image of my Orange Pi 3B](/devices/orangepi/ondesk.webp)
+The heatsink has been harvested from an old router
