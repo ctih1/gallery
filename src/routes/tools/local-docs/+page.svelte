@@ -97,6 +97,53 @@
                     optional: true
                 }
             ]
+        },
+        {
+            type: "POST",
+            body: [
+                {
+                    name: "prompt",
+                    description: "The beginning of the sentence that will be completed",
+                    type: "string",
+                    value: "",
+                    optional: false
+                },
+                {
+                    name: "person",
+                    description: "The model used.",
+                    type: "string",
+                    value: "",
+                    optional: true
+                }
+            ],
+            domain: "ai.koti.frii.site",
+            endpoint: "/generate",
+            headers: [
+                {
+                    name: "X-Auth",
+                    description: "Authentication string to prove that you arent a random guy",
+                    type: "string",
+                    value: "",
+                    optional: false
+                }
+            ],
+            urlParams: []
+        },
+        {
+            type: "GET",
+            body: [],
+            headers: [],
+            domain: "api.koti.frii.site",
+            endpoint: "/thumbnail",
+            urlParams: [
+                {
+                    name: "url",
+                    description: "The URL to take a photo of. (Without the http(s):// prefix)",
+                    type: "string",
+                    value: "",
+                    optional: false
+                }
+            ]
         }
     ]);
 
@@ -138,7 +185,7 @@
 </script>
 
 {#snippet Type(type: RequestTypes)}
-    <div class="w-fit rounded-xl bg-green-700 p-2">
+    <div class={`w-fit rounded-xl p-2 ${type === "GET" ? "bg-green-700" : "bg-yellow-500"}`}>
         <span class="text-3xl font-semibold">{type}</span>
     </div>
 {/snippet}
@@ -158,14 +205,35 @@
 
                 {#if req.open}
                     <br />
-
+                    {#if req.headers.length >= 1}
+                        <h2>Headers</h2>
+                    {/if}
                     {#each req.headers as header}
-                        <Input bind:value={header.value} label={header.name} />
+                        <div>
+                            <span class="text-xl font-semibold">{header.name}</span>
+                            <p>
+                                {header.description} <span class="opacity-70">({header.type})</span>
+                            </p>
+                            {#if header.optional}
+                                <p>(optional)</p>
+                            {/if}
+                        </div>
+                        <Input bind:value={header.value} />
                     {/each}
+                    {#if req.body.length >= 1}
+                        <h2>JSON body</h2>
+                    {/if}
                     {#each req.body as body}
-                        <Input bind:value={body.value} label={body.name} />
+                        <div>
+                            <span class="text-xl font-semibold">{body.name}</span>
+                            <p>{body.description} <span class="opacity-70">({body.type})</span></p>
+                            {#if body.optional}
+                                <p>(optional)</p>
+                            {/if}
+                        </div>
+                        <Input bind:value={body.value} />
                     {/each}
-                    {#if req.urlParams}
+                    {#if req.urlParams.length >= 1}
                         <h2>Query Parameters</h2>
                     {/if}
                     {#each req.urlParams as param}
