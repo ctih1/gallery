@@ -55,10 +55,10 @@
         const y2 = Math.random() * 260 - 80;
 
         const hue = Math.random() * 200;
-        const color = hslToHex(hue, 10, 30);
+        const color = hslToHex(hue, 10, 90);
 
-        const color2 = hslToHex(createColor(hue, -60), 30, 30);
-        const color3 = hslToHex(createColor(hue, 60), 30, 30);
+        const color2 = hslToHex(createColor(hue, -60), 5, 80);
+        const color3 = hslToHex(createColor(hue, 60), 15, 45);
 
         const linearGradient = `linear-gradient(${Math.round(Math.random() * 1000) / 1000}turn, ${color} 0%, rgba(255,255,255, 0.4) 100%)`;
         const radialGradient = `radial-gradient(circle at ${x}% ${y}%, ${color2} 0%, rgba(255,255,255, 0.4) 100%)`;
