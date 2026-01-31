@@ -158,7 +158,7 @@ if __name__ == "__main__":
     edited = ""
 
     if not "--add-unedited" in sys.argv:
-        edited = input("Specify that the image has not been edited? Press enter to skip. ")
+        edited = input("Specify that the image has not been edited? Press enter to indicate it has not. ")
 
     print("Creating metadata json file")
     with open(os.path.join(image_base_path, "metadata.json"), "w") as f:
