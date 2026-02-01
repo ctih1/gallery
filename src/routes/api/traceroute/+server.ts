@@ -1,14 +1,10 @@
-import { exec } from "node:child_process";
-import { readFile } from "node:fs/promises";
-import net from "node:net";
-import type { AirportCSV, AirportMap, CityMap, CSVCities, ProbeResult } from "./types";
-import { error } from "@sveltejs/kit";
-import { parse } from "csv-parse/sync";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
 import airports from "$lib/airports.json";
 import worldCities from "$lib/cities/worldcities.json";
-import Database from "better-sqlite3";
+import { error } from "@sveltejs/kit";
+import { exec } from "node:child_process";
+import net from "node:net";
+import { getLocationFromIp } from "./helpers";
+import type { AirportCSV, AirportMap, CityMap, CSVCities, ProbeResult } from "./types";
 
 const KNOWN_REPLACEMENTS = new Map(
     Object.entries({
@@ -46,8 +42,6 @@ const TEST_TRACEROUTE = `traceroute to koti.frii.site (193.208.10.244), 25 hops 
 21  141.208.192.78 (141.208.192.78)  118.424 ms
 22  *
 23  mobile-access-c1d00a-244.dhcp.inet.fi (193.208.10.244)  124.233 ms`;
-
-const database = new Database("ips.db");
 
 // @ts-expect-error TS2740
 const rawCityData: CSVCities[] = worldCities;
@@ -157,37 +151,6 @@ async function parseOutput(lines: string[]): Promise<ProbeResult[]> {
 
     console.log(results);
     return results.slice(1);
-}
-
-async function getLocationFromIp(ip: string): Promise<[number, number]> {
-    database.exec(`
-        CREATE TABLE IF NOT EXISTS ips (
-            ip  TEXT primary key,
-            lat REAL NOT     NULL,
-            lng REAL NOT     NULL
-        )
-    `);
-
-    // @ts-expect-error
-    const result: { lat: number; lng: number } | undefined = database
-        .prepare("SELECT * FROM ips WHERE ip=?")
-        .get(ip);
-
-    if (result) {
-        console.log(`Found ip ${ip} in database`);
-        return [result.lat, result.lng];
-    } else {
-        console.log(`Getting geolocation for ip ${ip}`);
-        const result = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,lat,lon`);
-        const json = await result.json();
-
-        const [lat, lng] = [Number(json["lat"]), Number(json["lon"])];
-        if (lat && lng) {
-            database.prepare("INSERT INTO ips (ip, lat, lng) VALUES (?, ?, ?)").run(ip, lat, lng);
-        }
-
-        return [lat, lng];
-    }
 }
 
 export async function GET({ request }) {

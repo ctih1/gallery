@@ -37,6 +37,11 @@ export async function GET({ request, fetch }) {
 
     // @ts-ignore
     const json: MeteoResponse = cacheMap[1];
+    if (json.error === true) {
+        return new Response("failed to get weather", {
+            status: 500
+        });
+    }
 
     const stringOffset = json.timezone_abbreviation.split("GMT")[1];
     const timezoneOffset = formatOffset(stringOffset);
