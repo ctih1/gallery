@@ -171,7 +171,7 @@ if __name__ == "__main__":
             "focal-length": exif_ifd.get(piexif.ExifIFD.FocalLength),
             "aperature": exif_ifd.get(piexif.ExifIFD.FNumber),
             "description": "No description",
-            "unedited": "self" if len("edited") == 0 else False
+            "unedited": "self" if len(edited) == 0 else False
         })
 
         json.dump(metadata, f)
