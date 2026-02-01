@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import Badge from "$lib/components/Badge.svelte";
     import BodyClass from "$lib/components/BodyClass.svelte";
     import ClearBase from "$lib/components/ClearBase.svelte";
@@ -18,8 +19,10 @@
     let squaresAvailableIn: Date = $state(new Date());
     let currentTime: Date = $state(new Date());
     let nextOccupationRefresh: Date = $state(new Date());
+    nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
 
     async function getOccupations() {
+        if (!browser) return;
         fetch("/api/occupation")
             .then(data => data.json())
             .then(json => {
@@ -56,6 +59,8 @@
     let checked = $state(false);
 
     async function claimSpace(index: number) {
+        if (!browser) return;
+
         disabledIndexes[index] = true;
 
         const req = await fetch(`/api/occupation?i=${index}`, {
@@ -128,17 +133,21 @@
                                 <p>Loading...</p>
                             {:else}
                                 <div class="ml-2 text-left">
-                                    <p>{data?.nation}</p>
-                                    <p class="opacity-60"><i>{data?.isp}</i></p>
-                                    <p class="opacity-40">
-                                        Claimed {new Date(data?.occupied).toLocaleDateString()}
-                                    </p>
+                                    <p>{data?.nation ?? "Unclaimed"}</p>
+                                    {#if data}
+                                        <p class="opacity-60"><i>{data?.isp}</i></p>
+                                        <p class="opacity-40">
+                                            Claimed {new Date(data?.occupied).toLocaleDateString()}
+                                        </p>
+                                    {/if}
                                 </div>
-                                <img
-                                    class="mr-0 ml-auto w-12"
-                                    alt={`Flag of ${data?.nation}`}
-                                    src={`/flags/${data?.country.toUpperCase()}.webp`}
-                                />
+                                {#if data}
+                                    <img
+                                        class="mr-0 ml-auto w-12"
+                                        alt={`Flag of ${data?.nation}`}
+                                        src={`/flags/${data?.country.toUpperCase()}.webp`}
+                                    />
+                                {/if}
                             {/if}
                         {/if}
                     </ClearBase>
