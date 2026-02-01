@@ -13,16 +13,31 @@
     let stravaData: ProcessedActivity[] | undefined = $state([]);
     let weatherData: ServerResponse | undefined = $state();
     let occupationData: OccupationColumn[] = $state([]);
-    let disabledIndexes: number[] = $state([]);
+    let disabledIndexes: boolean[] = $state(new Array(3 * 3).fill(false));
     let squaresDisabled: boolean = $state(false);
-    let squaresAvailableIn: Date | undefined = $state(new Date());
+    let squaresAvailableIn: Date = $state(new Date());
     let currentTime: Date = $state(new Date());
+    let nextOccupationRefresh: Date = $state(new Date());
+
+    async function getOccupations() {
+        fetch("/api/occupation")
+            .then(data => data.json())
+            .then(json => {
+                occupationData = json;
+            });
+    }
 
     setInterval(() => {
         currentTime = new Date();
     }, 1000);
 
-    onMount(() => {
+    setInterval(async () => {
+        await getOccupations();
+        nextOccupationRefresh.setTime(new Date().getTime() + 5000);
+        nextOccupationRefresh = nextOccupationRefresh;
+    }, 5000);
+
+    onMount(async () => {
         fetch("/api/strava")
             .then(data => data.json())
             .then(json => {
@@ -35,24 +50,16 @@
                 weatherData = json;
             });
 
-        fetch("/api/occupation")
-            .then(data => data.json())
-            .then(json => {
-                occupationData = json;
-            });
+        await getOccupations();
     });
 
     let checked = $state(false);
 
     async function claimSpace(index: number) {
-        disabledIndexes.push(index);
-        disabledIndexes = disabledIndexes;
+        disabledIndexes[index] = true;
 
         const req = await fetch(`/api/occupation?i=${index}`, {
-            method: "POST",
-            headers: {
-                "X-Real-IP": "193.208.14.33"
-            }
+            method: "POST"
         });
 
         if (req.ok) {
@@ -60,7 +67,7 @@
             occupationData = occupationData.filter(obj => obj.id !== json.id);
             occupationData.push(json);
         }
-        disabledIndexes = disabledIndexes.filter(i => i !== index);
+        disabledIndexes[index] = false;
         squaresDisabled = true;
         squaresAvailableIn = new Date();
         squaresAvailableIn.setSeconds(squaresAvailableIn.getSeconds() + 30);
@@ -104,7 +111,7 @@
 <div class="mt-16">
     <h1>Take over the area</h1>
     <p>Click a square to occupy it</p>
-    <div class="grid grid-cols-3 grid-rows-3 gap-1">
+    <div class="grid grid-cols-2 grid-rows-3 gap-1 lg:grid-cols-3">
         {#each new Array(3 * 3) as _, index}
             {#key disabledIndexes}
                 <button
@@ -138,13 +145,22 @@
                 </button>
             {/key}
         {/each}
-
-        {#key currentTime}
-            {#if squaresDisabled}
-                <p>Cooldown: {squaresAvailableIn.getSeconds() - currentTime.getSeconds()}s</p>
-            {/if}
-        {/key}
     </div>
+    {#key currentTime}
+        {#if squaresDisabled}
+            <p>
+                Cooldown: {Math.round(
+                    (squaresAvailableIn.getTime() - currentTime.getTime()) / 1000
+                )}s
+            </p>
+        {/if}
+
+        <p>
+            Next refresh: {Math.round(
+                (nextOccupationRefresh.getTime() - currentTime.getTime()) / 1000
+            )}s
+        </p>
+    {/key}
 </div>
 
 <div class="mt-16">
