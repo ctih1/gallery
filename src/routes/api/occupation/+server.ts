@@ -51,7 +51,8 @@ export async function POST({ request, url }) {
 
     return new Response(JSON.stringify(result), {
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         }
     });
 }
@@ -75,7 +76,8 @@ export async function GET({ url, fetch }) {
 
     return new Response(JSON.stringify(result), {
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
         }
     });
 }
