@@ -19,7 +19,7 @@ export async function POST({ request, url }) {
         return error(422);
     }
 
-    if (ipMap.get(ip) && new Date().getTime() / 1000 - ipMap.get(ip).getTime() / 1000 < 30) {
+    if (ipMap.get(ip) && new Date().getTime() - ipMap.get(ip)!.getTime() < 30000) {
         return error(429);
     }
 
@@ -42,6 +42,7 @@ export async function POST({ request, url }) {
             new Date().toISOString().replace("T", " ").substring(0, 19)
         );
 
+    // @ts-expect-error
     const result: OccupationColumn | undefined = database
         .prepare("SELECT * from areas WHERE id=?")
         .get(square);
@@ -67,6 +68,7 @@ export async function GET({ url, fetch }) {
             occupied  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );`);
 
+    // @ts-expect-error
     const result: OccupationColumn[] | undefined = database.prepare("SELECT * from areas").all();
 
     return new Response(JSON.stringify(result), {

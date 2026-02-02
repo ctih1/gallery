@@ -1,9 +1,9 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import Accordion from "$lib/components/Accordion.svelte";
-    import BodyClass from "$lib/components/BodyClass.svelte";
     import ClearContainer from "$lib/components/ClearContainer.svelte";
     import Loader from "$lib/components/Loader.svelte";
+    import PageConfig from "$lib/components/PageConfig.svelte";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -82,9 +82,9 @@
 </script>
 
 <svelte:head>
-    <link rel="preload" as="image" href={thumbnailPath} type="image/webp" crossorigin="anonymous" />
+    <link rel="preload" as="image" href={thumbnailPath} type="image/webp" />
 
-    <title>ctih1's gallery</title>
+    <title>{filename?.toUpperCase()} | ctih1.frii.site</title>
     <meta name="description" content="A gallery for some photos I've taken" />
 
     <meta property="og:url" content={`https://ctih1.frii.site/photos/${filename}`} />
@@ -196,5 +196,5 @@
             >
         </div>
     </div>
-    <BodyClass className="overflow-y-hidden"></BodyClass>
+    <PageConfig className="overflow-y-hidden" />
 {/if}

@@ -1,9 +1,9 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import Badge from "$lib/components/Badge.svelte";
-    import BodyClass from "$lib/components/BodyClass.svelte";
     import ClearBase from "$lib/components/ClearBase.svelte";
     import ConvertableFormat from "$lib/components/ConvertableFormat.svelte";
+    import PageConfig from "$lib/components/PageConfig.svelte";
     import StravaCard from "$lib/components/StravaCard.svelte";
     import { usingImperial } from "$lib/store";
     import { onMount } from "svelte";
@@ -242,7 +242,7 @@
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
 </div>
 
-<BodyClass className="index-body"></BodyClass>
+<PageConfig className="index-body" />
 
 <style>
     .strava-container {

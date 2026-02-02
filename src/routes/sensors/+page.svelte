@@ -1,5 +1,6 @@
 <script lang="ts">
     import Input from "$lib/components/Input.svelte";
+    import PageConfig from "$lib/components/PageConfig.svelte";
 
     type Millimeters = number;
 
@@ -63,6 +64,8 @@
         sensors = sensors.filter(sensor => sensor.model !== name);
     }
 </script>
+
+<PageConfig title="Sensor size comparison" />
 
 <h1>Sensor size comparison</h1>
 

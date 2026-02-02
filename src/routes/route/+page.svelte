@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import type { ProbeResult } from "../api/traceroute/types";
-    import L, { LatLng } from "leaflet";
     import Loader from "$lib/components/Loader.svelte";
+    import PageConfig from "$lib/components/PageConfig.svelte";
+    import L, { LatLng } from "leaflet";
+    import { onMount } from "svelte";
     import { slide } from "svelte/transition";
+    import type { ProbeResult } from "../api/traceroute/types";
 
     let traceData: ProbeResult[] | undefined = $state();
     let map: L.Map | undefined = undefined;
@@ -118,6 +119,8 @@
         }
     </style>
 </svelte:head>
+<PageConfig title="Traceroute map" />
+
 <h1>Traceroute checker</h1>
 <p>
     Does a traceroute to your IP. Parses locations from domains found on the route (e.g sto03 -&gt;

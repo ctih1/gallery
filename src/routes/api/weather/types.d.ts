@@ -10,6 +10,7 @@ export interface MeteoResponse {
     hourly: Hourly;
     daily_units: DailyUnits;
     daily: Daily;
+    error?: boolean;
 }
 
 export interface HourlyUnits {

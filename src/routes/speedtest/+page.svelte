@@ -1,4 +1,6 @@
 <script lang="ts">
+    import PageConfig from "$lib/components/PageConfig.svelte";
+
     let progress = $state(0);
     let speed = $state(0);
     let progressElement: HTMLDivElement | undefined = $state();
@@ -42,6 +44,8 @@
         xhr.send();
     }
 </script>
+
+<PageConfig title="Speedtest" />
 
 <h1>speedtest</h1>
 <p>

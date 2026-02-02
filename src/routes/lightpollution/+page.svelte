@@ -1,5 +1,6 @@
 <script lang="ts">
     import Input from "$lib/components/Input.svelte";
+    import PageConfig from "$lib/components/PageConfig.svelte";
 
     const LEAST_POLLUTION = 22;
     const MAX_POLLUTION = 16;
@@ -47,6 +48,8 @@
         return Math.log10(RATIO) / Math.log10(MAX_RATIO);
     }
 </script>
+
+<PageConfig title="Light pollution simulator" />
 
 <h1>Light pollution simulator</h1>
 <p>

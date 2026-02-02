@@ -37,7 +37,7 @@ export async function GET({ request, fetch }) {
 
     // @ts-ignore
     const json: MeteoResponse = cacheMap[1];
-    if (json.error === true) {
+    if (json.error) {
         return new Response("failed to get weather", {
             status: 500
         });
