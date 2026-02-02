@@ -69,7 +69,9 @@ export async function GET({ url, fetch }) {
         );`);
 
     // @ts-expect-error
-    const result: OccupationColumn[] | undefined = database.prepare("SELECT * from areas").all();
+    const result: OccupationColumn[] | undefined = database
+        .prepare("SELECT id,country,nation,isp,continent,occupied from areas")
+        .all();
 
     return new Response(JSON.stringify(result), {
         headers: {
