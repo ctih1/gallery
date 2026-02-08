@@ -292,7 +292,7 @@
         ctx.arc(150, 300 - sunPos, 50, 0, 2 * Math.PI, false);
         ctx.fill();
 
-        const sunGradientSize = (300 - sunPos) / 2;
+        const sunGradientSize = (250 - sunPos) / 2;
         const sunGradient = ctx.createRadialGradient(
             150,
             300 - sunPos,
@@ -302,7 +302,7 @@
             Math.max(50, sunGradientSize)
         );
         sunGradient.addColorStop(0, sunColor);
-        sunGradient.addColorStop(1, "transparent");
+        sunGradient.addColorStop(1, relativeSunStrength > 0.44 ? "#ffffff05" : "transparent");
 
         ctx.fillStyle = sunGradient;
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
