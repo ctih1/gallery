@@ -25,12 +25,13 @@
 
                 <div class="mt-1 mb-1 flex">
                     {#if major}
-                        <span class="absolute -translate-x-8 -translate-y-2.5 text-blue-500!"
+                        <span
+                            class={`absolute -translate-x-8 -translate-y-2.5 ${temp > 0 ? "text-red-400!" : "text-blue-500!"}`}
                             >{temp}</span
                         >
                     {/if}
                     <div
-                        class={`mr-auto ml-auto ${major ? "h-0.5" : "h-px"} ${major ? "w-2/3" : "w-1/3"} bg-blue-300`}
+                        class={`mr-auto ml-auto ${major ? "h-0.5" : "h-px"} ${major ? "w-1/2" : "w-1/3"} ${temp > 0 ? "bg-red-300!" : "bg-blue-300!"}`}
                     ></div>
                 </div>
             {/each}

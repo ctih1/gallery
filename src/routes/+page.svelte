@@ -31,24 +31,37 @@
     );
     let renderEnvironment = $state({
         snowFallSpeed: 0.5,
-        snowAmount: 1500
+        snowAmount: 1500,
+
+        waterAmount: 1.0,
+        waterSpeed: 1,
+
+        visibilityMeters: 0,
+        cloudCover: 0,
+
+        windSpeed: 0
     });
+
     let renderObjects: {
-        flakes: SnowFlake[];
+        flakes: RainlikeParticle[];
+        rain: RainlikeParticle[];
         sun: {
             x: number;
             y: number;
         };
-    } = { flakes: createFlakes(), sun: { x: 0, y: 0 } };
+    } = {
+        flakes: createParticles(renderEnvironment.snowAmount),
+        rain: createParticles(500),
+        sun: { x: 0, y: 0 }
+    };
 
-    let debugMonth = $state(11);
-    let debugHour = $state(10);
-    let debugCloud = $state(50);
-    let debugVisibilityMeters = $state(30_000);
+    let debugMonth = $state(-1);
+    let debugHour = $state(-1);
+    let debugWeather: boolean = $state(false);
 
     let renderTick = 0;
 
-    interface SnowFlake {
+    interface RainlikeParticle {
         offset: number;
         position: {
             x: number;
@@ -86,6 +99,25 @@
             .then(data => data.json())
             .then(json => {
                 weatherData = json;
+
+                if (weatherData) {
+                    const d = new Date();
+                    const searchString = `${d.getFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${d.getHours()}:00+02:00`;
+
+                    const coverNow = weatherData.cloudCover[searchString] || 0;
+                    const rainNow = weatherData.rain[searchString] || 0;
+                    const snowNow = weatherData.snowfall[searchString] || 0;
+
+                    renderEnvironment = {
+                        cloudCover: coverNow,
+                        snowFallSpeed: weatherData.windNow / 4,
+                        waterAmount: rainNow * 100,
+                        waterSpeed: 6 + weatherData.windNow * 3,
+                        snowAmount: snowNow * 50,
+                        visibilityMeters: weatherData.visibilityNow,
+                        windSpeed: weatherData.windNow
+                    };
+                }
             });
 
         await getOccupations();
@@ -100,11 +132,11 @@
         usingImperial.set(checked);
     });
 
-    function createFlakes(): SnowFlake[] {
-        let flakes: SnowFlake[] = [];
-        for (let i = 0; i < renderEnvironment.snowAmount; i++) {
+    function createParticles(amount: number): RainlikeParticle[] {
+        let particles: RainlikeParticle[] = [];
+        for (let i = 0; i < amount; i++) {
             const offset = Math.random() * 300;
-            flakes.push({
+            particles.push({
                 offset: offset,
                 position: {
                     x: Math.random() * 300,
@@ -112,11 +144,17 @@
                 }
             });
         }
-        return flakes;
+        return particles;
     }
+
     $effect(() => {
         renderEnvironment.snowAmount;
-        renderObjects.flakes = createFlakes();
+        renderObjects.flakes = createParticles(renderEnvironment.snowAmount);
+    });
+
+    $effect(() => {
+        renderEnvironment.waterAmount;
+        renderObjects.rain = createParticles(renderEnvironment.waterAmount);
     });
 
     function dayOfYear(date: Date): number {
@@ -154,44 +192,37 @@
 
     function getSunPositionY(date: Date): number {
         const y = 350 * Math.tan(getSunAngle(date));
-
         return y;
     }
 
+    // TODO: Move everything into a separate component (but I know I'll never do that.) 08/02/2026 (dd/mm/yyyy)
     function canvasUpdate() {
         if (!weatherCtx || !weatherCanvas) return;
         const ctx = weatherCtx;
 
-        const date = new Date(
-            `2026-${debugMonth.toString().padStart(2, "0")}-21T${debugHour.toString().padStart(2, "0")}:12:00`
-        );
+        let date = new Date();
+        if (debugMonth !== -1 && debugHour !== -1) {
+            date = new Date(
+                `2026-${debugMonth.toString().padStart(2, "0")}-21T${debugHour.toString().padStart(2, "0")}:12:00`
+            );
+        }
+
         const relativeSunStrength = (getSunAngle(date) + 0.9) / 1.8;
-        console.log(relativeSunStrength);
         const sunPos = getSunPositionY(date);
         const sunGradientSize = (300 - sunPos) / 2;
 
-        let cloudCover = 0;
-
-        if (weatherData) {
-            const d = new Date();
-            const string = `${d.getFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${d.getHours()}:00+02:00`;
-
-            console.log(string);
-            const cover = weatherData.cloudCover[string];
-            console.log(cover);
-            cloudCover = cover || 0;
-        }
-
-        cloudCover = debugCloud;
-
         ctx.fillStyle = hslToHex(
             210,
-            relativeSunStrength * 100 * (1 - cloudCover / 100),
-            Math.max(0, (relativeSunStrength - 0.2) * 100)
+            relativeSunStrength * 100 * (1 - renderEnvironment.cloudCover / 100),
+            Math.min(255, Math.max(0, (relativeSunStrength - 0.2) * 100))
         );
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
 
-        const sunColor = hslToHex(20 * (sunPos / 250) + 25, 100 - cloudCover / 2, 60);
+        const sunColor = hslToHex(
+            20 * (sunPos / 250) + 25,
+            100 - renderEnvironment.cloudCover / 2,
+            60
+        );
         ctx.fillStyle = sunColor;
 
         ctx.arc(150, 300 - sunPos, 50, 0, 2 * Math.PI, false);
@@ -211,14 +242,13 @@
         ctx.fillStyle = sunGradient;
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
 
-        if (weatherData) {
-            let visibility = debugVisibilityMeters;
-
-            ctx.fillStyle =
-                "#848484" + Math.max(20, 150 - Math.round(250 * (visibility / 20000))).toString(16);
-
-            ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-        }
+        ctx.fillStyle =
+            "#848484" +
+            Math.max(
+                20,
+                150 - Math.round(250 * (renderEnvironment.visibilityMeters / 20000))
+            ).toString(16);
+        ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
 
         for (let flake of renderObjects.flakes) {
             const normalizedOffset = flake.offset / 300;
@@ -245,6 +275,36 @@
                 0,
                 2 * Math.PI,
                 false
+            );
+            ctx.fill();
+        }
+
+        for (let droplet of renderObjects.rain) {
+            const normalizedOffset = droplet.offset / 300;
+            const fillColor =
+                "#ffffff" + Math.round(Math.min(100, normalizedOffset * 100 + 30) / 2).toString(16);
+            ctx.fillStyle = fillColor;
+            ctx.beginPath();
+
+            droplet.position.x += renderEnvironment.windSpeed / 2;
+            if (droplet.position.x > 300) {
+                droplet.position.x = -normalizedOffset * 4;
+            }
+
+            droplet.position.y += renderEnvironment.waterSpeed + normalizedOffset * 2;
+
+            if (droplet.position.y > 300) {
+                droplet.position.y = -Math.random() * 200;
+            }
+
+            ctx.ellipse(
+                droplet.position.x,
+                droplet.position.y,
+                1.0,
+                2.0 + normalizedOffset * 2 + renderEnvironment.waterSpeed,
+                -(45 - renderEnvironment.windSpeed),
+                0,
+                2 * Math.PI
             );
             ctx.fill();
         }
@@ -428,56 +488,89 @@
                         <h2>weather box</h2>
                         <p>Simulation of what it currently looks like outside</p>
 
-                        <canvas width="300px" height="300px" bind:this={weatherCanvas}></canvas>
+                        <canvas
+                            onclick={_ => (debugWeather = !debugWeather)}
+                            width="300px"
+                            height="300px"
+                            bind:this={weatherCanvas}
+                        ></canvas>
 
-                        <Input
-                            label="snow speed"
-                            bind:value={renderEnvironment.snowFallSpeed}
-                            type="range"
-                            min="0.01"
-                            max="50"
-                            step="0.01"
-                        />
-                        <Input
-                            label="snow amount"
-                            bind:value={renderEnvironment.snowAmount}
-                            type="range"
-                            min="50"
-                            max="5000"
-                            step="10"
-                        />
-                        <Input
-                            label="hour"
-                            bind:value={debugHour}
-                            type="range"
-                            min="0"
-                            max="23"
-                            step="1"
-                        />
-                        <Input
-                            label="month"
-                            bind:value={debugMonth}
-                            type="range"
-                            min="1"
-                            max="12"
-                            step="1"
-                        />
-                        <Input
-                            label="cloud cover (%)"
-                            bind:value={debugCloud}
-                            type="range"
-                            min="1"
-                            max="100"
-                            step="1"
-                        />
-                        <Input
-                            label="visibility (m)"
-                            bind:value={debugVisibilityMeters}
-                            type="range"
-                            min="1"
-                            max="30000"
-                            step="500"
-                        />
+                        {#if debugWeather}
+                            <p>debug controls (hide by pressing the canvas)</p>
+                            <Input
+                                label="snow speed"
+                                bind:value={renderEnvironment.snowFallSpeed}
+                                type="range"
+                                min="0.01"
+                                max="50"
+                                step="0.01"
+                            />
+                            <Input
+                                label="snow amount"
+                                bind:value={renderEnvironment.snowAmount}
+                                type="range"
+                                min="0"
+                                max="5000"
+                                step="10"
+                            />
+
+                            <Input
+                                label="water speed"
+                                bind:value={renderEnvironment.waterSpeed}
+                                type="range"
+                                min="0.01"
+                                max="50"
+                                step="0.01"
+                            />
+                            <Input
+                                label="water amount"
+                                bind:value={renderEnvironment.waterAmount}
+                                type="range"
+                                min="0"
+                                max="5000"
+                                step="10"
+                            />
+                            <Input
+                                label="wind speed (kmh)"
+                                bind:value={renderEnvironment.windSpeed}
+                                type="range"
+                                min="0"
+                                max="100"
+                                step="1"
+                            />
+                            <Input
+                                label="hour"
+                                bind:value={debugHour}
+                                type="range"
+                                min="0"
+                                max="23"
+                                step="1"
+                            />
+                            <Input
+                                label="month"
+                                bind:value={debugMonth}
+                                type="range"
+                                min="1"
+                                max="12"
+                                step="1"
+                            />
+                            <Input
+                                label="cloud cover (%)"
+                                bind:value={renderEnvironment.cloudCover}
+                                type="range"
+                                min="1"
+                                max="100"
+                                step="1"
+                            />
+                            <Input
+                                label="visibility (m)"
+                                bind:value={renderEnvironment.visibilityMeters}
+                                type="range"
+                                min="1"
+                                max="30000"
+                                step="500"
+                            />
+                        {/if}
                     </div>
                 </div>
 

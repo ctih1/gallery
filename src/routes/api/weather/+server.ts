@@ -25,7 +25,7 @@ export async function GET({ request, fetch }) {
             longitude: LONGITUDE as string,
             current: "temperature_2m,visibility,wind_speed_10m",
             daily: "sunrise,sunset,sunshine_duration",
-            hourly: "temperature_2m,cloud_cover,snowfall",
+            hourly: "temperature_2m,cloud_cover,snowfall,rain",
             // even though the code normalizes this into GMT+0, we can get the current offset in Helsinki and use it for other stuff
             timezone: "Europe/Helsinki",
             forecast_days: "1"
@@ -50,6 +50,7 @@ export async function GET({ request, fetch }) {
     const snowMap: MeasurementMap = new Map();
     const cloudMap: MeasurementMap = new Map();
     const temperatureMap: MeasurementMap = new Map();
+    let rainMap: MeasurementMap = new Map();
 
     for (let i = 0; i < json.hourly.time.length; i++) {
         const time = json.hourly.time[i] + timezoneOffset;
@@ -57,6 +58,7 @@ export async function GET({ request, fetch }) {
         snowMap.set(time, json.hourly.snowfall[i]);
         cloudMap.set(time, json.hourly.cloud_cover[i]);
         temperatureMap.set(time, json.hourly.temperature_2m[i]);
+        rainMap.set(time, json.hourly.rain[i]);
     }
 
     console.log(temperatureMap);
@@ -69,6 +71,7 @@ export async function GET({ request, fetch }) {
         sunset: new Date(json.daily.sunset[0] + timezoneOffset),
         timezoneOffsetHours: Number(stringOffset),
         snowfall: Object.fromEntries(snowMap),
+        rain: Object.fromEntries(rainMap),
         cloudCover: Object.fromEntries(cloudMap),
         temperature: Object.fromEntries(temperatureMap)
     };

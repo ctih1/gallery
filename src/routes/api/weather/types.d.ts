@@ -32,6 +32,7 @@ export interface Hourly {
     temperature_2m: number[];
     cloud_cover: number[];
     snowfall: number[];
+    rain: number[];
 }
 
 export interface DailyUnits {
@@ -56,6 +57,7 @@ export interface ServerResponse {
     visibilityNow: number;
     timezoneOffsetHours: number;
     temperature: MapData;
+    rain: MapData;
     cloudCover: MapData;
     snowfall: MapData;
     sunrise: Date;
