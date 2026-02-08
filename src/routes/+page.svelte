@@ -48,6 +48,7 @@
     let renderObjects: {
         flakes: RainlikeParticle[];
         rain: RainlikeParticle[];
+        clouds: Cloud[];
         sun: {
             x: number;
             y: number;
@@ -55,6 +56,7 @@
     } = {
         flakes: createParticles(renderEnvironment.snowAmount),
         rain: createParticles(500),
+        clouds: [],
         sun: { x: 0, y: 0 }
     };
 
@@ -70,6 +72,16 @@
             x: number;
             y: number;
         };
+    }
+
+    interface Cloud {
+        position: {
+            x: number;
+            y: number;
+        };
+        rotation: number;
+        scaleX: number;
+        scaleY: number;
     }
 
     async function getOccupations() {
@@ -126,6 +138,8 @@
                         windSpeed: weatherData.windNow
                     };
 
+                    renderObjects.clouds = createClouds(5, 8);
+
                     console.log("Rendering environment");
                     console.log(renderEnvironment);
                 }
@@ -167,6 +181,29 @@
         renderEnvironment.waterAmount;
         renderObjects.rain = createParticles(renderEnvironment.waterAmount);
     });
+
+    function createClouds(cloudsNum: number, clumpSize: number): Cloud[] {
+        let clouds: Cloud[] = [];
+        const cloudSpacing = 300 / cloudsNum;
+
+        for (let i = 0; i < cloudsNum; i++) {
+            const baseX = i * cloudSpacing;
+            const baseY = Math.random() * 50 - 40;
+
+            for (let j = 0; j < clumpSize; j++) {
+                clouds.push({
+                    position: {
+                        x: baseX + Math.random() * 10 - 5,
+                        y: baseY + Math.random() * 10 - 10
+                    },
+                    rotation: Math.random() * 20,
+                    scaleX: 50 + Math.random() * 50,
+                    scaleY: 20 + Math.random() * 40
+                });
+            }
+        }
+        return clouds;
+    }
 
     function dayOfYear(date: Date): number {
         return (
@@ -211,6 +248,8 @@
         if (!weatherCtx || !weatherCanvas) return;
         const ctx = weatherCtx;
 
+        ctx.clearRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+
         let date = new Date();
         if (debugMonth !== -1 && debugHour !== -1) {
             date = new Date(
@@ -248,7 +287,7 @@
             60
         );
         ctx.fillStyle = sunColor;
-
+        ctx.beginPath();
         ctx.arc(150, 300 - sunPos, 50, 0, 2 * Math.PI, false);
         ctx.fill();
 
@@ -313,7 +352,7 @@
 
             droplet.position.x += renderEnvironment.windSpeed / 2;
             if (droplet.position.x > 300) {
-                droplet.position.x = -normalizedOffset * 4;
+                droplet.position.x = -normalizedOffset * 4 - Math.random() * 300;
             }
 
             droplet.position.y += renderEnvironment.waterSpeed + normalizedOffset * 2;
@@ -327,7 +366,27 @@
                 droplet.position.y,
                 1.0,
                 2.0 + normalizedOffset * 2 + renderEnvironment.waterSpeed,
-                -(45 - renderEnvironment.windSpeed),
+                -(renderEnvironment.windSpeed / 100),
+                0,
+                2 * Math.PI
+            );
+            ctx.fill();
+        }
+
+        ctx.fillStyle =
+            "#dddddd" +
+            Math.round((renderEnvironment.cloudCover / 100) * 50 * relativeSunStrength)
+                .toString(16)
+                .padStart(2, "0");
+
+        for (let cloud of renderObjects.clouds) {
+            ctx.beginPath();
+            ctx.ellipse(
+                cloud.position.x,
+                cloud.position.y,
+                cloud.scaleX,
+                cloud.scaleY,
+                cloud.rotation,
                 0,
                 2 * Math.PI
             );
