@@ -249,8 +249,9 @@
         const ctx = weatherCtx;
 
         ctx.clearRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+        const offset = new Date().getTimezoneOffset() * 60000;
+        let date = new Date(new Date().getTime() - offset + 2 * 60 * 60 * 1000);
 
-        let date = new Date();
         if (debugMonth !== -1 && debugHour !== -1) {
             date = new Date(
                 `2026-${debugMonth.toString().padStart(2, "0")}-21T${debugHour.toString().padStart(2, "0")}:12:00`
@@ -474,7 +475,7 @@
                                     {#if data}
                                         <p class="opacity-60"><i>{data?.isp}</i></p>
                                         <p class="opacity-40">
-                                            Claimed {new Date(data?.occupied).toLocaleTimeString()}
+                                            Claimed {new Date(data?.occupied).toLocaleDateString()}
                                         </p>
                                     {/if}
                                 </div>
