@@ -3,8 +3,11 @@
     import Badge from "$lib/components/Badge.svelte";
     import ClearBase from "$lib/components/ClearBase.svelte";
     import ConvertableFormat from "$lib/components/ConvertableFormat.svelte";
+    import Input from "$lib/components/Input.svelte";
     import PageConfig from "$lib/components/PageConfig.svelte";
     import StravaCard from "$lib/components/StravaCard.svelte";
+    import Thermometer from "$lib/components/Thermometer.svelte";
+    import { hslToHex } from "$lib/helpers";
     import { usingImperial } from "$lib/store";
     import { onMount } from "svelte";
     import type { OccupationColumn } from "./api/occupation/types";
@@ -18,8 +21,40 @@
     let squaresDisabled: boolean = $state(false);
     let squaresAvailableIn: Date = $state(new Date());
     let currentTime: Date = $state(new Date());
+
     let nextOccupationRefresh: Date = $state(new Date());
     nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
+
+    let weatherCanvas: HTMLCanvasElement | undefined = $state();
+    let weatherCtx: CanvasRenderingContext2D | null | undefined = $derived(
+        weatherCanvas?.getContext("2d")
+    );
+    let renderEnvironment = $state({
+        snowFallSpeed: 0.5,
+        snowAmount: 1500
+    });
+    let renderObjects: {
+        flakes: SnowFlake[];
+        sun: {
+            x: number;
+            y: number;
+        };
+    } = { flakes: createFlakes(), sun: { x: 0, y: 0 } };
+
+    let debugMonth = $state(11);
+    let debugHour = $state(10);
+    let debugCloud = $state(50);
+    let debugVisibilityMeters = $state(30_000);
+
+    let renderTick = 0;
+
+    interface SnowFlake {
+        offset: number;
+        position: {
+            x: number;
+            y: number;
+        };
+    }
 
     async function getOccupations() {
         if (!browser) return;
@@ -54,9 +89,172 @@
             });
 
         await getOccupations();
+
+        setInterval(canvasUpdate, 1000 / 60);
     });
 
     let checked = $state(false);
+
+    $effect(() => {
+        console.log("Setting usingImperial");
+        usingImperial.set(checked);
+    });
+
+    function createFlakes(): SnowFlake[] {
+        let flakes: SnowFlake[] = [];
+        for (let i = 0; i < renderEnvironment.snowAmount; i++) {
+            const offset = Math.random() * 300;
+            flakes.push({
+                offset: offset,
+                position: {
+                    x: Math.random() * 300,
+                    y: Math.random() * 500 - 300
+                }
+            });
+        }
+        return flakes;
+    }
+    $effect(() => {
+        renderEnvironment.snowAmount;
+        renderObjects.flakes = createFlakes();
+    });
+
+    function dayOfYear(date: Date): number {
+        return (
+            (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
+                Date.UTC(date.getFullYear(), 0, 0)) /
+            24 /
+            60 /
+            60 /
+            1000
+        );
+    }
+
+    function getSunDeclanationDegrees(date: Date): number {
+        const day = dayOfYear(date);
+        const rads = ((360 / 365.25) * (day - 81) * Math.PI) / 180;
+        return 23.445 * Math.sin(rads);
+    }
+
+    function degToRad(deg: number) {
+        return (deg * Math.PI) / 180;
+    }
+
+    function getSunAngle(date: Date) {
+        const declanationRad = degToRad(getSunDeclanationDegrees(date));
+        const hour = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
+
+        return Math.asin(
+            Math.sin(declanationRad) * Math.sin(degToRad(62)) +
+                Math.cos(declanationRad) *
+                    Math.cos(degToRad(62)) *
+                    Math.cos(degToRad(15 * (hour - 12)))
+        );
+    }
+
+    function getSunPositionY(date: Date): number {
+        const y = 350 * Math.tan(getSunAngle(date));
+
+        return y;
+    }
+
+    function canvasUpdate() {
+        if (!weatherCtx || !weatherCanvas) return;
+        const ctx = weatherCtx;
+
+        const date = new Date(
+            `2026-${debugMonth.toString().padStart(2, "0")}-21T${debugHour.toString().padStart(2, "0")}:12:00`
+        );
+        const relativeSunStrength = (getSunAngle(date) + 0.9) / 1.8;
+        console.log(relativeSunStrength);
+        const sunPos = getSunPositionY(date);
+        const sunGradientSize = (300 - sunPos) / 2;
+
+        let cloudCover = 0;
+
+        if (weatherData) {
+            const d = new Date();
+            const string = `${d.getFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${d.getHours()}:00+02:00`;
+
+            console.log(string);
+            const cover = weatherData.cloudCover[string];
+            console.log(cover);
+            cloudCover = cover || 0;
+        }
+
+        cloudCover = debugCloud;
+
+        ctx.fillStyle = hslToHex(
+            210,
+            relativeSunStrength * 100 * (1 - cloudCover / 100),
+            Math.max(0, (relativeSunStrength - 0.2) * 100)
+        );
+        ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+
+        const sunColor = hslToHex(20 * (sunPos / 250) + 25, 100 - cloudCover / 2, 60);
+        ctx.fillStyle = sunColor;
+
+        ctx.arc(150, 300 - sunPos, 50, 0, 2 * Math.PI, false);
+        ctx.fill();
+
+        const sunGradient = ctx.createRadialGradient(
+            150,
+            300 - sunPos,
+            50,
+            150,
+            300 - sunPos,
+            Math.max(50, sunGradientSize)
+        );
+        sunGradient.addColorStop(0, sunColor);
+        sunGradient.addColorStop(1, "transparent");
+
+        ctx.fillStyle = sunGradient;
+        ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+
+        if (weatherData) {
+            let visibility = debugVisibilityMeters;
+
+            ctx.fillStyle =
+                "#848484" + Math.max(20, 150 - Math.round(250 * (visibility / 20000))).toString(16);
+
+            ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+        }
+
+        for (let flake of renderObjects.flakes) {
+            const normalizedOffset = flake.offset / 300;
+            const fillColor =
+                "#ffffff" + Math.round(Math.min(255, normalizedOffset * 255 + 30) / 2).toString(16);
+            ctx.fillStyle = fillColor;
+            ctx.beginPath();
+
+            flake.position.x += Math.sin(Math.random() / 10) * Math.random() * normalizedOffset * 8;
+            if (flake.position.x > 300) {
+                flake.position.x = 0;
+            }
+
+            flake.position.y += renderEnvironment.snowFallSpeed + normalizedOffset;
+
+            if (flake.position.y > 300) {
+                flake.position.y = -Math.random() * 200;
+            }
+
+            ctx.arc(
+                flake.position.x,
+                flake.position.y,
+                0.5 + normalizedOffset * 2,
+                0,
+                2 * Math.PI,
+                false
+            );
+            ctx.fill();
+        }
+
+        renderTick++;
+
+        if (renderTick > 300) {
+            renderTick = 0;
+        }
+    }
 
     async function claimSpace(index: number) {
         if (!browser) return;
@@ -81,11 +279,6 @@
             squaresDisabled = false;
         }, 30000);
     }
-
-    $effect(() => {
-        console.log("Setting usingImperial");
-        usingImperial.set(checked);
-    });
 </script>
 
 <h1>yellooo</h1>
@@ -137,7 +330,7 @@
                                     {#if data}
                                         <p class="opacity-60"><i>{data?.isp}</i></p>
                                         <p class="opacity-40">
-                                            Claimed {new Date(data?.occupied).toLocaleDateString()}
+                                            Claimed {new Date(data?.occupied).toLocaleTimeString()}
                                         </p>
                                     {/if}
                                 </div>
@@ -174,53 +367,125 @@
 
 <div class="mt-16">
     <h1>weather</h1>
-    <ClearBase className="p-2 max-w-80 min-h-40 mb-8 squircle-md">
+    <p>The current weather where the server is located</p>
+    <ClearBase className="p-2 max-w-xl min-h-40 mb-8 squircle-md">
         {#if weatherData}
-            <p>
-                <b>Sunrise</b>: {new Date(weatherData.sunrise ?? 0).toLocaleTimeString("en-US", {
-                    timeZone: "Europe/Helsinki"
-                })}
-            </p>
-            <p>
-                <b>Sunset</b>: {new Date(weatherData.sunset ?? 0).toLocaleTimeString("en-US", {
-                    timeZone: "Europe/Helsinki"
-                })}
-            </p>
-            <p>
-                <b>Coldest</b>: <ConvertableFormat
-                    imperialUnit="°F"
-                    metricUnit="°C"
-                    type="c"
-                    metricValue={Math.min(
-                        ...Object.entries(weatherData.temperature)
-                            .values()
-                            .map(e => e[1])
-                    )}
-                />
-            </p>
-            <p>
-                <b>Warmest</b>: <ConvertableFormat
-                    imperialUnit="°F"
-                    metricUnit="°C"
-                    type="c"
-                    metricValue={Math.max(
-                        ...Object.entries(weatherData.temperature)
-                            .values()
-                            .map(e => e[1])
-                    )}
-                />
-            </p>
-            <p>
-                <b>Snowfall in 24h</b>: <ConvertableFormat
-                    imperialUnit="inches"
-                    metricUnit="cm"
-                    metricValue={Math.round(
-                        Object.entries(weatherData.snowfall)
-                            .map(e => e[1])
-                            .reduce((partialSum, a) => partialSum + a, 0) * 1000
-                    ) / 1000}
-                />
-            </p>
+            <div class="justify-between sm:flex">
+                <div>
+                    <h2>Today</h2>
+                    <p>
+                        <b>Sunrise</b>: {new Date(weatherData.sunrise ?? 0).toLocaleTimeString(
+                            "en-US",
+                            {
+                                timeZone: "Europe/Helsinki"
+                            }
+                        )}
+                    </p>
+                    <p>
+                        <b>Sunset</b>: {new Date(weatherData.sunset ?? 0).toLocaleTimeString(
+                            "en-US",
+                            {
+                                timeZone: "Europe/Helsinki"
+                            }
+                        )}
+                    </p>
+                    <p>
+                        <b>Coldest</b>: <ConvertableFormat
+                            imperialUnit="°F"
+                            metricUnit="°C"
+                            type="c"
+                            metricValue={Math.min(
+                                ...Object.entries(weatherData.temperature)
+                                    .values()
+                                    .map(e => e[1])
+                            )}
+                        />
+                    </p>
+                    <p>
+                        <b>Warmest</b>: <ConvertableFormat
+                            imperialUnit="°F"
+                            metricUnit="°C"
+                            type="c"
+                            metricValue={Math.max(
+                                ...Object.entries(weatherData.temperature)
+                                    .values()
+                                    .map(e => e[1])
+                            )}
+                        />
+                    </p>
+                    <p>
+                        <b>Snowfall in 24h</b>: <ConvertableFormat
+                            imperialUnit="inches"
+                            metricUnit="cm"
+                            metricValue={Math.round(
+                                Object.entries(weatherData.snowfall)
+                                    .map(e => e[1])
+                                    .reduce((partialSum, a) => partialSum + a, 0) * 1000
+                            ) / 1000}
+                        />
+                    </p>
+                    <div>
+                        <h2>weather box</h2>
+                        <p>Simulation of what it currently looks like outside</p>
+
+                        <canvas width="300px" height="300px" bind:this={weatherCanvas}></canvas>
+
+                        <Input
+                            label="snow speed"
+                            bind:value={renderEnvironment.snowFallSpeed}
+                            type="range"
+                            min="0.01"
+                            max="50"
+                            step="0.01"
+                        />
+                        <Input
+                            label="snow amount"
+                            bind:value={renderEnvironment.snowAmount}
+                            type="range"
+                            min="50"
+                            max="5000"
+                            step="10"
+                        />
+                        <Input
+                            label="hour"
+                            bind:value={debugHour}
+                            type="range"
+                            min="0"
+                            max="23"
+                            step="1"
+                        />
+                        <Input
+                            label="month"
+                            bind:value={debugMonth}
+                            type="range"
+                            min="1"
+                            max="12"
+                            step="1"
+                        />
+                        <Input
+                            label="cloud cover (%)"
+                            bind:value={debugCloud}
+                            type="range"
+                            min="1"
+                            max="100"
+                            step="1"
+                        />
+                        <Input
+                            label="visibility (m)"
+                            bind:value={debugVisibilityMeters}
+                            type="range"
+                            min="1"
+                            max="30000"
+                            step="500"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <h2>Right now</h2>
+                    <Thermometer temperature={weatherData.tempNow} />
+                </div>
+            </div>
         {/if}
     </ClearBase>
 </div>

@@ -23,6 +23,7 @@ export async function GET({ request, fetch }) {
         url.search = new URLSearchParams({
             latitude: LATITUDE as string,
             longitude: LONGITUDE as string,
+            current: "temperature_2m,visibility,wind_speed_10m",
             daily: "sunrise,sunset,sunshine_duration",
             hourly: "temperature_2m,cloud_cover,snowfall",
             // even though the code normalizes this into GMT+0, we can get the current offset in Helsinki and use it for other stuff
@@ -61,6 +62,9 @@ export async function GET({ request, fetch }) {
     console.log(temperatureMap);
 
     const response: ServerResponse = {
+        tempNow: json.current.temperature_2m,
+        windNow: json.current.wind_speed_10m,
+        visibilityNow: json.current.visibility,
         sunrise: new Date(json.daily.sunrise[0] + timezoneOffset),
         sunset: new Date(json.daily.sunset[0] + timezoneOffset),
         timezoneOffsetHours: Number(stringOffset),

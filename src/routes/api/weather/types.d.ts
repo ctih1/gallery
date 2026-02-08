@@ -7,10 +7,17 @@ export interface MeteoResponse {
     timezone_abbreviation: string;
     elevation: number;
     hourly_units: HourlyUnits;
+    current: Current;
     hourly: Hourly;
     daily_units: DailyUnits;
     daily: Daily;
     error?: boolean;
+}
+
+export interface Current {
+    temperature_2m: number;
+    visibility: number;
+    wind_speed_10m: number;
 }
 
 export interface HourlyUnits {
@@ -44,6 +51,9 @@ export interface Daily {
 export type MapData = { [k: string]: number };
 
 export interface ServerResponse {
+    tempNow: number;
+    windNow: number;
+    visibilityNow: number;
     timezoneOffsetHours: number;
     temperature: MapData;
     cloudCover: MapData;
