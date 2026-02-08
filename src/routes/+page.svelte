@@ -22,6 +22,9 @@
     let squaresAvailableIn: Date = $state(new Date());
     let currentTime: Date = $state(new Date());
 
+    let gradientTestY = $state(0);
+    let gradientTestY2 = $state(300);
+
     let nextOccupationRefresh: Date = $state(new Date());
     nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
 
@@ -108,15 +111,23 @@
                     const rainNow = weatherData.rain[searchString] || 0;
                     const snowNow = weatherData.snowfall[searchString] || 0;
 
+                    console.log("Current weather data: ");
+                    console.log(`Rain in 1h: ${rainNow}mm`);
+                    console.log(`Cloud cover: ${rainNow}%`);
+                    console.log(`Snow in 1h: ${snowNow}cm`);
+
                     renderEnvironment = {
                         cloudCover: coverNow,
                         snowFallSpeed: weatherData.windNow / 4,
                         waterAmount: rainNow * 100,
                         waterSpeed: 6 + weatherData.windNow * 3,
                         snowAmount: snowNow * 50,
-                        visibilityMeters: weatherData.visibilityNow,
+                        visibilityMeters: 59000,
                         windSpeed: weatherData.windNow
                     };
+
+                    console.log("Rendering environment");
+                    console.log(renderEnvironment);
                 }
             });
 
@@ -209,17 +220,30 @@
 
         const relativeSunStrength = (getSunAngle(date) + 0.9) / 1.8;
         const sunPos = getSunPositionY(date);
-        const sunGradientSize = (300 - sunPos) / 2;
-
-        ctx.fillStyle = hslToHex(
-            210,
-            relativeSunStrength * 100 * (1 - renderEnvironment.cloudCover / 100),
-            Math.min(255, Math.max(0, (relativeSunStrength - 0.2) * 100))
+        console.log(relativeSunStrength);
+        const skyGradient = ctx.createLinearGradient(
+            0,
+            3180 * Math.max(0, Math.min(relativeSunStrength + 0.3, 1.1)) - 3000,
+            0,
+            700
         );
+
+        const lightMultiplier = Math.min(
+            1,
+            Math.max(0, 1 / (1 + Math.exp(-20 * (relativeSunStrength - 0.5))))
+        );
+
+        skyGradient.addColorStop(0, hslToHex(215, 100, 50 * lightMultiplier));
+        skyGradient.addColorStop(0.44, hslToHex(198, 100, 85 * lightMultiplier));
+        skyGradient.addColorStop(0.57, hslToHex(191, 100 * lightMultiplier, 84 * lightMultiplier));
+        skyGradient.addColorStop(0.73, hslToHex(57, 50 * lightMultiplier, 60 * lightMultiplier));
+        skyGradient.addColorStop(1.0, hslToHex(30, 100, 50 * lightMultiplier));
+
+        ctx.fillStyle = skyGradient;
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
 
         const sunColor = hslToHex(
-            20 * (sunPos / 250) + 25,
+            10 * (relativeSunStrength * 2) + 25,
             100 - renderEnvironment.cloudCover / 2,
             60
         );
@@ -228,6 +252,7 @@
         ctx.arc(150, 300 - sunPos, 50, 0, 2 * Math.PI, false);
         ctx.fill();
 
+        const sunGradientSize = (300 - sunPos) / 2;
         const sunGradient = ctx.createRadialGradient(
             150,
             300 - sunPos,
@@ -497,6 +522,22 @@
 
                         {#if debugWeather}
                             <p>debug controls (hide by pressing the canvas)</p>
+                            <Input
+                                label="sky 1"
+                                bind:value={gradientTestY}
+                                type="range"
+                                min="-3000"
+                                max="1000"
+                                step="10"
+                            />
+                            <Input
+                                label="sky 2"
+                                bind:value={gradientTestY2}
+                                type="range"
+                                min="-1000"
+                                max="1000"
+                                step="10"
+                            />
                             <Input
                                 label="snow speed"
                                 bind:value={renderEnvironment.snowFallSpeed}
