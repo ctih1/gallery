@@ -315,6 +315,50 @@
             ).toString(16);
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
 
+        ctx.fillStyle = hslToHex(41, 100, 36.2 * Math.max(0.3, relativeSunStrength));
+        ctx.beginPath();
+        ctx.fillRect(250, 300 - 170, 20, 170);
+        ctx.fill();
+
+        // This was moved before the other stuff to allow me to push it into the light, making the triangles tip a bit less sharp
+        // I couldnt get the frigging 4 sided shape thing work for some reason so I'm doing this instead
+        const lightX = 250 - 40 + 20 - 10 + 10;
+        const lightY = 300 - 170;
+        const streetlightGradiant = ctx.createRadialGradient(
+            lightX,
+            lightY,
+            4,
+            lightX,
+            lightY,
+            150
+        );
+
+        streetlightGradiant.addColorStop(
+            0,
+            hslToHex(39, 100, 50) +
+                Math.round(Math.max(0, Math.min(1, 1 - (relativeSunStrength + 0.4)) * 255))
+                    .toString(16)
+                    .padStart(2, "0")
+        );
+        streetlightGradiant.addColorStop(1, "transparent");
+        ctx.fillStyle = streetlightGradiant;
+        ctx.beginPath();
+        ctx.moveTo(lightX, lightY - 10);
+        ctx.lineTo(lightX - 80, lightY + (300 - lightY));
+        ctx.lineTo(lightX + 80, lightY + (300 - lightY));
+        ctx.lineTo(lightX, lightY - 10);
+        ctx.fill();
+
+        ctx.fillStyle = hslToHex(0, 0, 50);
+        ctx.beginPath();
+        // Sorry I was supposed to give these variables but I forgot what they were. Just figure it out
+        ctx.fillRect(250 - 50 + 20 + 5, 300 - 170 - 15, 50, 15);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(250 - 40 + 20 - 10 + 5, 300 - 170 - 15 / 2, 15 / 2, 0, 2 * Math.PI);
+        ctx.fill();
+
         for (let flake of renderObjects.flakes) {
             const normalizedOffset = flake.offset / 300;
             const fillColor =
