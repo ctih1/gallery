@@ -12,7 +12,7 @@
     import { onMount } from "svelte";
     import type { OccupationColumn } from "./api/occupation/types";
     import type { ProcessedActivity } from "./api/strava/types";
-    import type { ServerResponse } from "./api/weather/types";
+    import type { MapData, ServerResponse } from "./api/weather/types";
 
     let stravaData: ProcessedActivity[] | undefined = $state([]);
     let weatherData: ServerResponse | undefined = $state();
@@ -103,6 +103,27 @@
         nextOccupationRefresh = nextOccupationRefresh;
     }, 5000);
 
+    function getNearestValue(map: MapData): any {
+        let nearestDate = new Date(0);
+        let nearestValue: any = undefined;
+
+        const now = new Date();
+        for (let pair of Object.entries(map)) {
+            const date = new Date(pair[0]);
+            const val = pair[1];
+
+            if (
+                Math.abs(now.getTime() - date.getTime()) <
+                Math.abs(now.getTime() - nearestDate.getTime())
+            ) {
+                nearestValue = val;
+                nearestDate = date;
+            }
+        }
+
+        return nearestValue;
+    }
+
     onMount(async () => {
         fetch("/api/strava")
             .then(data => data.json())
@@ -118,10 +139,11 @@
                 if (weatherData) {
                     const d = new Date();
                     const searchString = `${d.getFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${d.getHours()}:00+02:00`;
-
-                    const coverNow = weatherData.cloudCover[searchString] || 0;
-                    const rainNow = weatherData.rain[searchString] || 0;
-                    const snowNow = weatherData.snowfall[searchString] || 0;
+                    console.log(weatherData.cloudCover);
+                    console.log(searchString);
+                    const coverNow = getNearestValue(weatherData.cloudCover) || 0;
+                    const rainNow = getNearestValue(weatherData.rain) || 0;
+                    const snowNow = getNearestValue(weatherData.snowfall) || 0;
 
                     console.log("Current weather data: ");
                     console.log(`Rain in 1h: ${rainNow}mm`);
@@ -257,10 +279,10 @@
                 `2026-${debugMonth.toString().padStart(2, "0")}-21T${debugHour.toString().padStart(2, "0")}:12:00`
             );
         }
+        const saturationMultiplier = renderEnvironment.cloudCover > 90 ? 0 : 1;
 
         const relativeSunStrength = (getSunAngle(date) + 0.9) / 1.8;
         const sunPos = getSunPositionY(date);
-        console.log(relativeSunStrength);
         const skyGradient = ctx.createLinearGradient(
             0,
             3180 * Math.max(0, Math.min(relativeSunStrength + 0.3, 1.1)) - 3000,
@@ -273,11 +295,26 @@
             Math.max(0, 1 / (1 + Math.exp(-20 * (relativeSunStrength - 0.5))))
         );
 
-        skyGradient.addColorStop(0, hslToHex(215, 100, 50 * lightMultiplier));
-        skyGradient.addColorStop(0.44, hslToHex(198, 100, 85 * lightMultiplier));
-        skyGradient.addColorStop(0.57, hslToHex(191, 100 * lightMultiplier, 84 * lightMultiplier));
-        skyGradient.addColorStop(0.73, hslToHex(57, 50 * lightMultiplier, 60 * lightMultiplier));
-        skyGradient.addColorStop(1.0, hslToHex(30, 100, 50 * lightMultiplier));
+        skyGradient.addColorStop(
+            0,
+            hslToHex(215, 100 * saturationMultiplier, 50 * lightMultiplier)
+        );
+        skyGradient.addColorStop(
+            0.44,
+            hslToHex(198, 100 * saturationMultiplier, 85 * lightMultiplier)
+        );
+        skyGradient.addColorStop(
+            0.57,
+            hslToHex(191, 100 * saturationMultiplier * lightMultiplier, 84 * lightMultiplier)
+        );
+        skyGradient.addColorStop(
+            0.73,
+            hslToHex(57, 50 * lightMultiplier * saturationMultiplier, 60 * lightMultiplier)
+        );
+        skyGradient.addColorStop(
+            1.0,
+            hslToHex(30, 100 * saturationMultiplier, 50 * lightMultiplier)
+        );
 
         ctx.fillStyle = skyGradient;
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);

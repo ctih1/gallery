@@ -61,7 +61,7 @@ export async function GET({ request, fetch }) {
         rainMap.set(time, json.hourly.rain[i]);
     }
 
-    console.log(temperatureMap);
+    console.log(cloudMap);
 
     const response: ServerResponse = {
         tempNow: json.current.temperature_2m,
