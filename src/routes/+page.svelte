@@ -271,8 +271,7 @@
         const ctx = weatherCtx;
 
         ctx.clearRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-        const offset = new Date().getTimezoneOffset() * 60000;
-        let date = new Date(new Date().getTime() - offset + 2 * 60 * 60 * 1000);
+        let date = new Date();
 
         if (debugMonth !== -1 && debugHour !== -1) {
             date = new Date(
