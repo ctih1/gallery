@@ -26,6 +26,8 @@
 
     if (rest.type === "range") {
         className = "min-w-12 min-h-4 accent-sky-600";
+    } else if (rest.type === "checkbox") {
+        className = "aspect-square w-4 rounded-xl!";
     } else {
         className =
             "min-w-12 transition-[outline] p-1 bg-white/10 outline-gray-700 outline-1 focus:outline-2 focus:outline-sky-600 active:outline-4 rounded-lg";
@@ -66,16 +68,27 @@
             {/key}
         </div>
     {/if}
-    <input
-        ontouchstart={_ => (hintShown = true)}
-        onmousedown={_ => (hintShown = true)}
-        ontouchend={_ => setTimeout(_ => (hintShown = false), 500)}
-        onmouseup={_ => setTimeout(_ => (hintShown = false), 500)}
-        onpaste={e => (disablePasting ? e.preventDefault() : "")}
-        bind:this={element}
-        bind:value
-        id={label + "-input"}
-        {...rest}
-        class={twMerge(className, rest.class?.toString() ?? "")}
-    />
+    {#if rest.type === "checkbox"}
+        <input
+            type="checkbox"
+            bind:this={element}
+            bind:checked={value}
+            id={label + "-input"}
+            {...rest}
+            class={twMerge(className, rest.class?.toString() ?? "")}
+        />
+    {:else}
+        <input
+            ontouchstart={_ => (hintShown = true)}
+            onmousedown={_ => (hintShown = true)}
+            ontouchend={_ => setTimeout(_ => (hintShown = false), 500)}
+            onmouseup={_ => setTimeout(_ => (hintShown = false), 500)}
+            onpaste={e => (disablePasting ? e.preventDefault() : "")}
+            bind:this={element}
+            bind:value
+            id={label + "-input"}
+            {...rest}
+            class={twMerge(className, rest.class?.toString() ?? "")}
+        />
+    {/if}
 </div>
