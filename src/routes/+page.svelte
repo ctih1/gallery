@@ -286,7 +286,7 @@
             0,
             3180 * Math.max(0, Math.min(relativeSunStrength + 0.3, 1.1)) - 3000,
             0,
-            700
+            600
         );
 
         const lightMultiplier = Math.min(
@@ -304,11 +304,19 @@
         );
         skyGradient.addColorStop(
             0.57,
-            hslToHex(191, 100 * saturationMultiplier * lightMultiplier, 84 * lightMultiplier)
+            hslToHex(
+                191,
+                100 * saturationMultiplier * lightMultiplier,
+                80 * Math.min(1, lightMultiplier * 2)
+            )
         );
         skyGradient.addColorStop(
             0.73,
-            hslToHex(57, 50 * lightMultiplier * saturationMultiplier, 60 * lightMultiplier)
+            hslToHex(
+                57,
+                50 * lightMultiplier * saturationMultiplier,
+                60 * Math.min(1, lightMultiplier * 2)
+            )
         );
         skyGradient.addColorStop(
             1.0,
@@ -372,7 +380,15 @@
         streetlightGradiant.addColorStop(
             0,
             hslToHex(39, 100, 50) +
-                Math.round(Math.max(0, Math.min(1, 1 - (relativeSunStrength + 0.4)) * 255))
+                Math.round(
+                    Math.max(
+                        0,
+                        Math.min(
+                            1,
+                            (1 - (relativeSunStrength + 0.4)) * (relativeSunStrength > 0.4 ? 0 : 1)
+                        ) * 255
+                    )
+                )
                     .toString(16)
                     .padStart(2, "0")
         );
