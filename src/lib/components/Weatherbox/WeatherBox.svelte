@@ -218,7 +218,7 @@
 
         start = performance.now();
         for (let star of renderObjects.stars) {
-            drawStar(ctx, star, renderEnvironment, delta);
+            drawStar(ctx, star, renderEnvironment, relativeSunStrength, delta);
         }
         const starsDrawTime = performance.now() - start;
 

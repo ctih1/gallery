@@ -177,10 +177,10 @@ export const drawStar = (
     ctx: CanvasRenderingContext2D,
     star: Star,
     renderEnvironment: RenderEnvironment,
+    relativeSunStrength: number,
     delta: number
 ) => {
     ctx.beginPath();
-
     if (star.blinkReversing) {
         star.currentBlink -= star.blinkSpeed * delta;
     } else {
@@ -194,11 +194,14 @@ export const drawStar = (
         star.blinkReversing = false;
     }
 
+    const starOpacity = Math.max(0, 1 - relativeSunStrength - 0.6) * 3;
+
     ctx.fillStyle =
         "#ffffff" +
         Math.round(
             Math.min(255, (star.currentBlink + 0.3) * 255) *
-                Math.max(0, 1 - renderEnvironment.cloudCover / 100 - 0.4)
+                Math.max(0, 1 - renderEnvironment.cloudCover / 100 - 0.4) *
+                starOpacity
         )
             .toString(16)
             .padStart(2, "0");
