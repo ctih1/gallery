@@ -17,6 +17,14 @@ export interface Cloud {
     scaleY: number;
 }
 
+export interface Star {
+    position: Position;
+    magnitude: number;
+    blinkSpeed: number;
+    blinkReversing: boolean;
+    currentBlink: number; // float from 0 to 1, goes back to 0 once done
+}
+
 export interface Position {
     x: number;
     y: number;
@@ -26,6 +34,7 @@ export interface RenderObjects {
     flakes: RainlikeParticle[];
     rain: RainlikeParticle[];
     clouds: Cloud[];
+    stars: Star[];
     sun: Position;
 }
 

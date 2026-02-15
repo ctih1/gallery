@@ -7,6 +7,7 @@
         drawCloud,
         drawFlake,
         drawRaindrop,
+        drawStar,
         drawStreetlight,
         drawSun,
         drawSunGlow
@@ -18,7 +19,8 @@
         Props,
         RainlikeParticle,
         RenderEnvironment,
-        RenderObjects
+        RenderObjects,
+        Star
     } from "./types";
 
     let { weatherData }: Props = $props();
@@ -45,6 +47,7 @@
         flakes: [],
         rain: [],
         clouds: [],
+        stars: createStars(80, 1.0),
         sun: { x: 0, y: 0 }
     };
 
@@ -52,7 +55,10 @@
         turnedOn: false,
         month: -1,
         hour: -1,
-        overlay: false
+        overlay: false,
+        renderTimes: false,
+        background: false,
+        forceFrametime: -1
     });
 
     let renderTick = 0;
@@ -136,8 +142,30 @@
         return clouds;
     }
 
+    function createStars(amount: number, variance: number): Star[] {
+        let stars: Star[] = [];
+
+        for (let i = 0; i < amount; i++) {
+            const magnitude = Math.random();
+
+            stars.push({
+                blinkSpeed: magnitude,
+                magnitude: 0.1 + magnitude * variance,
+                currentBlink: Math.random(),
+                blinkReversing: false,
+                position: {
+                    x: Math.random() * 300,
+                    y: Math.random() * 150
+                }
+            });
+        }
+
+        return stars;
+    }
+
     // TODO: Move everything into a separate component (but I know I'll never do that.) 08/02/2026 (dd/mm/yyyy)
     function canvasUpdate(timestampMs: number) {
+        const frameStart = performance.now();
         if (lastRenderTimestamp == 0) {
             lastRenderTimestamp = timestampMs;
         }
@@ -173,7 +201,11 @@
         ctx.fillStyle = skyGradient;
         ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
 
+        let start = performance.now();
         drawSun(ctx, sunPos, sunColor, relativeSunStrength, renderEnvironment.cloudCover);
+        const sunDrawTime = performance.now() - start;
+
+        start = performance.now();
         drawSunGlow(
             ctx,
             sunPos,
@@ -182,17 +214,31 @@
             weatherCanvas,
             renderEnvironment.visibilityMeters
         );
+        const sunGlowDrawTime = performance.now() - start;
 
+        start = performance.now();
+        for (let star of renderObjects.stars) {
+            drawStar(ctx, star, renderEnvironment, delta);
+        }
+        const starsDrawTime = performance.now() - start;
+
+        start = performance.now();
         drawStreetlight(ctx, relativeSunStrength);
+        const streetlightDrawTime = performance.now() - start;
 
+        start = performance.now();
         for (let flake of renderObjects.flakes) {
             drawFlake(ctx, flake, renderEnvironment, delta);
         }
+        const flakeDrawTime = performance.now() - start;
 
+        start = performance.now();
         for (let droplet of renderObjects.rain) {
             drawRaindrop(ctx, droplet, renderEnvironment, delta);
         }
+        const rainDrawTime = performance.now() - start;
 
+        start = performance.now();
         ctx.fillStyle =
             "#dddddd" +
             Math.round((renderEnvironment.cloudCover / 100) * 50 * relativeSunStrength)
@@ -203,7 +249,13 @@
             drawCloud(ctx, cloud);
         }
 
+        const cloudDrawTime = performance.now() - start;
+
         if (debugVariables.turnedOn && debugVariables.overlay) {
+            if (debugVariables.background) {
+                ctx.fillStyle = "#000000";
+                ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+            }
             const fontSize = 18;
             ctx.fillStyle = "#ff0000";
             ctx.font = `${fontSize}px monospace`;
@@ -220,6 +272,9 @@
                 300
             );
             ctx.fillText(`sun strength: ${relativeSunStrength.toFixed(2)}`, 0, fontSize * 3, 300);
+
+            ctx.fillStyle = "#00ffff";
+
             ctx.fillText(
                 `cloud: ${renderEnvironment.cloudCover}%, visibility: ${renderEnvironment.visibilityMeters}m`,
                 0,
@@ -228,7 +283,7 @@
             );
 
             ctx.fillText(
-                `snow amount: ${renderEnvironment.snowAmount}, speed ${renderEnvironment.snowFallSpeed}`,
+                `snow amount: ${renderEnvironment.snowAmount.toFixed(2)}, speed ${renderEnvironment.snowFallSpeed}`,
                 0,
                 fontSize * 6,
                 300
@@ -243,10 +298,38 @@
 
             ctx.fillText(`wind: ${renderEnvironment.windSpeed}kmh`, 0, fontSize * 8, 300);
 
+            if (debugVariables.renderTimes) {
+                ctx.fillStyle = "#44ff44";
+                ctx.fillText("render times (ms):", 0, fontSize * 10, 300);
+                ctx.fillText(
+                    `sun: ${sunDrawTime.toFixed(4)} glow: ${sunGlowDrawTime.toFixed(4)}`,
+                    0,
+                    fontSize * 11,
+                    300
+                );
+
+                ctx.fillText(
+                    `stars: ${starsDrawTime.toFixed(4)} streetlight: ${streetlightDrawTime.toFixed(4)}`,
+                    0,
+                    fontSize * 12,
+                    300
+                );
+
+                ctx.fillText(
+                    `rain: ${rainDrawTime.toFixed(4)} snow: ${flakeDrawTime.toFixed(4)}`,
+                    0,
+                    fontSize * 13,
+                    300
+                );
+
+                ctx.fillText(`clouds: ${cloudDrawTime.toFixed(4)}`, 0, fontSize * 14, 300);
+            }
+
+            ctx.fillStyle = "#ffffff";
             ctx.fillText(
-                `${renderObjects.clouds.length + renderObjects.flakes.length + renderObjects.rain.length} objects rendered`,
+                `${renderObjects.clouds.length + renderObjects.flakes.length + renderObjects.rain.length + renderObjects.stars.length} objects rendered`,
                 0,
-                fontSize * 10,
+                fontSize * 16,
                 300
             );
         }
@@ -258,6 +341,15 @@
         }
 
         lastRenderTimestamp = timestampMs;
+
+        const thisFrametime = performance.now() - frameStart;
+        if (debugVariables.forceFrametime !== -1 && thisFrametime < debugVariables.forceFrametime) {
+            setTimeout(
+                () => canvasUpdate(performance.now()),
+                debugVariables.forceFrametime - thisFrametime
+            );
+            return;
+        }
         requestAnimationFrame(canvasUpdate);
     }
 </script>
@@ -273,6 +365,21 @@
     <p>debug controls (hide by pressing the canvas)</p>
 
     <Input bind:value={debugVariables.overlay} label="debug overlay" type="checkbox" />
+    <Input bind:value={debugVariables.renderTimes} label="render times" type="checkbox" />
+    <Input
+        bind:value={debugVariables.background}
+        label="debug overlay background"
+        type="checkbox"
+    />
+
+    <Input
+        label="force frametime (ms)"
+        bind:value={debugVariables.forceFrametime}
+        type="range"
+        min="-1"
+        max="400"
+        step="1"
+    />
     <Input
         label="snow speed"
         bind:value={renderEnvironment.snowFallSpeed}

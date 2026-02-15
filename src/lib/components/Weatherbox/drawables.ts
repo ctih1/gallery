@@ -2,7 +2,7 @@
 // using anonymous functions to sseparate them from REAL functions
 
 import { hslToHex } from "$lib/helpers";
-import type { Cloud, RainlikeParticle, RenderEnvironment } from "./types";
+import type { Cloud, RainlikeParticle, RenderEnvironment, Star } from "./types";
 
 export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStrength: number) => {
     const lightX = 250 - 40 + 20 - 10 + 10;
@@ -167,6 +167,48 @@ export const drawCloud = (ctx: CanvasRenderingContext2D, cloud: Cloud) => {
         cloud.scaleX,
         cloud.scaleY,
         cloud.rotation,
+        0,
+        2 * Math.PI
+    );
+    ctx.fill();
+};
+
+export const drawStar = (
+    ctx: CanvasRenderingContext2D,
+    star: Star,
+    renderEnvironment: RenderEnvironment,
+    delta: number
+) => {
+    ctx.beginPath();
+
+    if (star.blinkReversing) {
+        star.currentBlink -= star.blinkSpeed * delta;
+    } else {
+        star.currentBlink += star.blinkSpeed * delta;
+    }
+
+    if (star.currentBlink > 1) {
+        star.blinkReversing = true;
+    }
+    if (star.currentBlink < 0) {
+        star.blinkReversing = false;
+    }
+
+    ctx.fillStyle =
+        "#ffffff" +
+        Math.round(
+            Math.min(255, (star.currentBlink + 0.3) * 255) *
+                Math.max(0, 1 - renderEnvironment.cloudCover / 100 - 0.4)
+        )
+            .toString(16)
+            .padStart(2, "0");
+
+    ctx.ellipse(
+        star.position.x,
+        star.position.y,
+        star.magnitude,
+        star.magnitude,
+        0,
         0,
         2 * Math.PI
     );
