@@ -7,3 +7,4 @@
 ## * [Phone charging simulator](/games/phone-charging-sim)
 ## * [Account creation simulator](/games/account-creation)
 ## * [Local docs](/tools/local-docs)
+## * [mywordle.strivemath cracker](/tools/custom-wordle-descrambler)
