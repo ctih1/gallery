@@ -1,10 +1,21 @@
 # Some useful tools
 
-## * [Camera sensor size comparison](/sensors)
-## * [Traceroute](/route)
-## * [Speedtest](/speedtest)
-## * [Lightpollution visualization](/lightpollution)
-## * [Phone charging simulator](/games/phone-charging-sim)
-## * [Account creation simulator](/games/account-creation)
-## * [Local docs](/tools/local-docs)
-## * [mywordle.strivemath cracker](/tools/custom-wordle-descrambler)
+Here's a list of some of the tools I've made for this website. Most of these were made for fun, so don't expect the highest quality ever.
+
+<br>
+
+[Camera sensor size comparison](/sensors)
+
+[Traceroute](/route)
+
+[Speedtest](/speedtest)
+
+[Lightpollution visualization](/lightpollution)
+
+[Phone charging simulator](/games/phone-charging-sim)
+
+[Account creation simulator](/games/account-creation)
+
+[Local docs](/tools/local-docs)
+
+[mywordle.strivemath cracker](/tools/custom-wordle-descrambler)

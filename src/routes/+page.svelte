@@ -95,7 +95,14 @@
 </script>
 
 <h1>yellooo</h1>
-<p>This is a cool lil webpage I made for sharin stuff</p>
+<p>
+    This is my own very cool little website. It's hosted on <a href="/devices/orangepi3b"
+        >my Orange Pi 3B</a
+    >. Sorry if the site feels a bit slow, the server is located in Finland, and I have residential
+    internet plan, which upload speeds are about 60mbps.
+</p>
+<p>Feel free to explore this site in peace!</p>
+<br />
 
 <div class="strava-activity">
     <h1>Strava activities</h1>

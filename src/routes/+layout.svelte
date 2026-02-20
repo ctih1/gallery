@@ -100,14 +100,19 @@
         src="https://analytics.koti.frii.site/script.js"
         data-website-id="6cb4b927-0ef8-418b-8463-3818804b2c90"
     ></script>
+    <meta
+        name="description"
+        content="An objectively super cool website made for showcasing little stuff I (aka ctih1) have done. Also includes some useful tools, atleast for some people."
+    />
 </svelte:head>
 
 <Navbar>
-    <a href="/">Home</a>
-    <a href="/photos">Photos</a>
-    <a href="/links">Links</a>
-    <a href="/tools">Tools</a>
-    <a href="/devices">Devices</a>
+    <a class="text-4xl" href="/">Home</a>
+    <a class="text-4xl" href="/photos">Photos</a>
+    <a class="text-4xl" href="/links">Links</a>
+    <a class="text-4xl" href="/tools">Tools</a>
+    <a class="text-4xl" href="/devices">Devices</a>
+    <a class="text-4xl" href="/fun">Fun stuff</a>
 </Navbar>
 
 {#if !page.url.pathname.includes("/photos/") && !page.url.pathname.includes("local-docs")}

@@ -42,6 +42,7 @@
 
         let currentIndex = 0;
         for (let char of val.split("")) {
+            // @ts-expect-error
             newString += WORD_MAP[char][currentIndex];
 
             let newValue = currentIndex + 1;
@@ -98,6 +99,6 @@
 
 {#if outputDone}
     <h2 class="mt-4">The word is "{outputWord}"</h2>
-    <p>({outputWord})</p>
+    <p class="text-wrap">({outputWord})</p>
     <p>Calculated in {outputFinishedIn}s</p>
 {/if}
