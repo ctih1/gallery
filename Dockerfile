@@ -26,6 +26,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
 COPY --from=builder /app/build ./build
+COPY --from=builder /app/static ./static
 
 RUN apk add --no-cache traceroute
 

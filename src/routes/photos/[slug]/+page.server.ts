@@ -1,23 +1,21 @@
-import type { PageLoad } from "./$types";
+import { readFileSync } from "fs";
+import type { PageServerLoad } from "./$types";
 
-export const load: PageLoad = async ({ params, fetch }) => {
-    const basePath: string = "/images/" + params.slug;
-    const metadataPath: string = basePath + "/metadata.json";
-
-    const response = await fetch(metadataPath);
-    const responseJson = await response.json();
+export const load: PageServerLoad = async ({ params, fetch, url }) => {
+    const metadata = readFileSync(`static/images/${params.slug}/metadata.json`);
+    const dataJson = JSON.parse(metadata.toString());
 
     return {
         image: {
-            description: responseJson["description"],
-            model: responseJson["model"],
-            make: responseJson["make"],
-            time: responseJson["time"],
-            iso: responseJson["iso"],
-            rawImage: responseJson["unedited"],
-            exposure: responseJson["exposure"],
-            focalLength: responseJson["focal-length"],
-            aperature: responseJson["aperature"]
+            description: dataJson["description"],
+            model: dataJson["model"],
+            make: dataJson["make"],
+            time: dataJson["time"],
+            iso: dataJson["iso"],
+            rawImage: dataJson["unedited"],
+            exposure: dataJson["exposure"],
+            focalLength: dataJson["focal-length"],
+            aperature: dataJson["aperature"]
         }
     };
 };
