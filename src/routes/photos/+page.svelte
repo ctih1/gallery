@@ -3,6 +3,10 @@
     import images from "$lib/images.json";
 </script>
 
+<svelte:head>
+    <meta name="description" content="A collection of some of the photos I've taken" />
+</svelte:head>
+
 <PageConfig title="Photo gallery" />
 <h1>Images</h1>
 <p>

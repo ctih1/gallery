@@ -7,24 +7,22 @@
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 
+    let { data } = $props();
+
     let filename = $page.params.slug;
     let basePath: string = "/images/" + $page.params.slug;
-    let metadataPath: string = $derived(basePath + "/metadata.json");
     let imageType = $derived($page.params.slug?.split(".").pop());
 
     let imagePath: string = $derived(basePath + `/primary.${imageType}`);
     let thumbnailPath: string = $derived(basePath + "/thumbnail.webp");
 
-    let description = $state("");
-    let model = $state("");
-    let make = $state("");
-    let time = $state("");
-    let iso = $state(0);
-    let focalLength = $state(0);
-    let aperature = $state(0);
-
-    let exposureText = $state("");
-    let rawImage: string | undefined = $state();
+    let focalLength = $derived(data.image.focalLength[0] / data.image.focalLength[1]);
+    let aperature = $derived(data.image.aperature[0] / data.image.aperature[1]);
+    let exposureText = $derived(
+        data.image.exposure[0] === 1
+            ? `1/${data.image.exposure[1]}s`
+            : `${data.image.exposure[0] / data.image.exposure[1]}"`
+    );
 
     let imageLoaded = $state(false);
 
@@ -37,31 +35,6 @@
         img.onload = _ => {
             imageLoaded = true;
         };
-
-        fetch(metadataPath)
-            .then(resposne => resposne.json())
-            .then(data => {
-                description = data["description"];
-                model = data["model"];
-                make = data["make"];
-                time = data["time"];
-                iso = data["iso"];
-
-                rawImage = data["unedited"];
-
-                const exposureParts = data["exposure"];
-                if (exposureParts[0] === 1) {
-                    exposureText = `1/${exposureParts[1]}s`;
-                } else {
-                    exposureText = `${exposureParts[0] / exposureParts[1]}"`;
-                }
-
-                const focalLengthParts = data["focal-length"];
-                focalLength = focalLengthParts[0] / focalLengthParts[1];
-
-                const aperatureParts = data["aperature"];
-                aperature = aperatureParts[0] / aperatureParts[1];
-            });
     });
 
     $effect(() => {
@@ -85,25 +58,25 @@
     <link rel="preload" as="image" href={thumbnailPath} type="image/webp" />
 
     <title>{filename?.toUpperCase()} | ctih1.frii.site</title>
-    <meta name="description" content="A gallery for some photos I've taken" />
+    <meta name="description" content={`${filename} - ${data.image.description}`} />
 
     <meta property="og:url" content={`https://ctih1.frii.site/photos/${filename}`} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={filename} />
-    <meta property="og:description" content={`${description}`} />
+    <meta property="og:description" content={`${data.image.description}`} />
     <meta property="og:image" content={`https://ctih1.frii.site/images/${filename}.webp`} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="twitter:domain" content="ctih1.frii.site" />
     <meta property="twitter:url" content="https://ctih1.frii.site" />
     <meta name="twitter:title" content="ctih1's gallery" />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={data.image.description} />
     <meta name="twitter:image" content={`https://ctih1.frii.site/images/${filename}.webp`} />
 </svelte:head>
 
 <img
     class="pointer-events-none fixed top-0 right-0 bottom-0 left-0 -z-10 min-h-screen w-screen scale-150 object-cover blur-lg saturate-75"
-    alt={description}
+    alt={data.image.description}
     src={thumbnailPath}
 />
 
@@ -119,30 +92,30 @@
             <img
                 onclick={_ => (zoomed = true)}
                 class="w-full rounded-xl"
-                alt={description}
+                alt={data.image.description}
                 src={imagePath}
             />
         {:else}
             <img
                 onclick={_ => (zoomed = true)}
                 class="w-full rounded-xl"
-                alt={description + "(loading)"}
+                alt={data.image.description + "(loading)"}
                 src={thumbnailPath}
             />
         {/if}
     </div>
     <div>
-        <h2>{make} {model}</h2>
+        <h1 class="mt-2 text-2xl">{data.image.make} {data.image.model}</h1>
         <hr class="opacity-50" />
-        <p><i>{description}</i></p>
+        <p><i>{data.image.description}</i></p>
         <div class="bottom">
             <h3 class="mt-auto mb-0">
-                Captured on: {parseDate(time).toLocaleString()} <small>(local)</small>
+                Captured on: {parseDate(data.image.time).toLocaleString()} <small>(local)</small>
             </h3>
             <h3 class="mt-auto mb-0">Aperature: f/{aperature}</h3>
             <h3 class="mt-auto mb-0">Exposure: {exposureText}</h3>
             <h3 class="mt-auto mb-0">Focal length: {focalLength}mm</h3>
-            <h3 class="mt-auto mb-0">ISO: {iso}</h3>
+            <h3 class="mt-auto mb-0">ISO: {data.image.iso}</h3>
         </div>
     </div>
     <div class="mt-16 flex flex-col opacity-50">
@@ -169,11 +142,11 @@
                     <li>Re-license the images under a different license.</li>
                 </ul>
             </Accordion>
-            {#if rawImage}
-                {#if rawImage === "self"}
+            {#if data.image.rawImage}
+                {#if data.image.rawImage === "self"}
                     <p>This image has not been edited.</p>
                 {:else}
-                    <a href={basePath + "/" + rawImage}>View unedited version</a>
+                    <a href={basePath + "/" + data.image.rawImage}>View unedited version</a>
                 {/if}
             {/if}
         </div>
@@ -187,7 +160,7 @@
         <div class="mr-auto ml-auto">
             <img
                 class="mr-auto ml-auto max-h-screen max-w-screen"
-                alt={description}
+                alt={data.image.description}
                 src={imagePath}
             />
             <button
