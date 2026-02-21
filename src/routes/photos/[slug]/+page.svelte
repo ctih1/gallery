@@ -105,10 +105,10 @@
         {/if}
     </div>
     <div>
-        <h1 class="mt-2 text-2xl">{data.image.make} {data.image.model}</h1>
+        <h1 class="mt-2 text-4xl!">{data.image.make} {data.image.model}</h1>
         <hr class="opacity-50" />
         <p><i>{data.image.description}</i></p>
-        <div class="bottom">
+        <div class="bottom opacity-70">
             <h3 class="mt-auto mb-0">
                 Captured on: {parseDate(data.image.time).toLocaleString()} <small>(local)</small>
             </h3>

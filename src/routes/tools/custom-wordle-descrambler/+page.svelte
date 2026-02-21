@@ -98,7 +98,7 @@
 >
 
 {#if outputDone}
-    <h2 class="mt-4">The word is "{outputWord}"</h2>
+    <h2 class="mt-4 max-w-full wrap-break-word!">The word is "{outputWord}"</h2>
     <p class="text-wrap">({outputWord})</p>
     <p>Calculated in {outputFinishedIn}s</p>
 {/if}

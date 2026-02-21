@@ -1,7 +1,6 @@
 <script lang="ts">
     import { afterNavigate } from "$app/navigation";
     import { page } from "$app/state";
-    import favicon from "$lib/assets/favicon.svg";
     import ClearContainer from "$lib/components/ClearContainer.svelte";
     import Navbar from "$lib/components/Navbar.svelte";
     import { hslToHex } from "$lib/helpers";
@@ -80,7 +79,6 @@
 </script>
 
 <svelte:head>
-    <link rel="icon" href={favicon} />
     <link
         rel="preload"
         as="font"

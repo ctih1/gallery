@@ -77,10 +77,10 @@
 
             renderEnvironment = {
                 cloudCover: coverNow,
-                snowFallSpeed: weatherData.windNow / 4,
+                snowFallSpeed: weatherData.windNow / 2 + snowNowCm * 4,
+                snowAmount: snowNowCm * 3000,
                 waterAmount: rainNowMm * 100,
                 waterSpeed: 6 + weatherData.windNow * 3,
-                snowAmount: snowNowCm * 50,
                 visibilityMeters: 59000,
                 windSpeed: weatherData.windNow
             };
