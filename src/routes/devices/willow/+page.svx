@@ -1,0 +1,65 @@
+# Devices: Xiaomi Redmi Note 8T
+*A budget Android phone from like 2019 I think*
+
+<br>
+
+This was a really cool phone when I first got it. It was actually my dad's, but I switched my Honor 9X for it. I started using it in the start of 2020, and mained it on and off for the next 3 years
+It was kinda slow, but I personally like MIUI.
+
+<br>
+
+The camera was fine, [here's an image shot on it](/photos/img_20211208_135414.jpg)
+
+
+I decided to custom ROM it in the summer of 2022. I installed LineageOS 18 on it, which was quite nice. After that, I decided to install Pixel Experience, which was also nice,
+but a bit laggy.
+
+<br>
+
+I tried to flash it to stock firmware again, but managed to brick it by installing Redmi Note 8's firmware (instead of the 8T's). I couldn't find a way to fix it, so I switched
+back to my iPhone 6, and bought an iPhone XS on Christmas of 2022. 
+In May of 2023, I decided to try to get it working again. I followed an XDA-thread on how to fix it, but unfortunately that was for the Redmi Note 8, and didn't work for my variant.
+I did a bit of digging, and spent a few hours trying things, and I eventually got it to work
+
+
+<details>
+    <summary>TikTok made from old footage of me fixing it</summary>
+    <video controls src="https://homecdn.frii.site/v0f044gc0000cir34g3c77u27knteh60.MP4" />
+</details>
+
+<br>
+
+After fixing the phone, I mained it for a couple of weeks, before switching back to my iPhone XS. It worked fine I guess.
+I started making "techtok" tiktoks in the summer of 2023, and made a couple of videos about this phone.
+
+<details>
+    <summary>Some old TikToks of mine which showcased the phone</summary>
+    <video controls src="https://homecdn.frii.site/v0f044gc0000cj0ftqrc77ualmm0nrag.MP4" />
+
+    <br>
+
+    <video controls src="https://homecdn.frii.site/v0f044gc0000cipo963c77ub6hlm11u0.MP4" />
+    I think this was my first TikTok? (Note: the page has now been privated)
+
+    <br>
+
+    <video controls src="https://homecdn.frii.site/v0f044gc0000cjbtl83c77u1m4mu65ag.MP4" />
+    The battery exploded when I accidentally stabbed it with a screwdriver
+</details>
+
+<br>
+
+
+When I was putting the phone back together in August of 2023, I managed to stab the battery with my screwdriver. Of course the battery broke, and the phone was rendered useless.
+I decided to buy a new battery for it in September, and made it work again. 
+
+<br>
+
+I didn't really have a use for the phone until the summer of 2024, when I asked my parents if I could setup it as a server, and run Pi-hole on it. They agreed, and I set it up as a server.
+Since I didn't actually have root perms on the phone, I couldn't do much else with the phone. Unfortunately, my parents decided to force me to take the "server" down a few months after.
+
+<br>
+
+I absolutely shattered my iPhone 12 Pro in May of 2025, and had to use the Xiaomi while my real phone was being worked on. The only positive thing about the experience was Google's keyboard.
+
+![Image of the Redmi Note 8T](/devices/willow/toredown.JPG)

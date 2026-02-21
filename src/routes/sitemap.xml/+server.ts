@@ -67,7 +67,8 @@ export const GET: RequestHandler = ({}) => {
         location("/tools/custom-wordle-descrambler", 0.6, "weekly"),
         location("/", 1.0, "weekly"),
         location("/links", 0.4),
-        location("/fun", 0.6)
+        location("/fun", 0.6),
+        location("/devices/willow")
     ];
 
     images.forEach(image => {
