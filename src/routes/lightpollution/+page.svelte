@@ -72,7 +72,7 @@
 <p>Bortle class {bordle}</p>
 <div class="h-96">
     <img
-        style={`filter: blur(${relative}px) contrast(${1 - relative}) saturate(${1 - relative * 0.5})`}
+        style={`filter: blur(${relative * 8}px) contrast(${1 - relative}) saturate(${1 - relative})`}
         class="absolute aspect-square w-96 object-cover"
         alt="sky at night"
         src="https://images.pexels.com/photos/13041555/pexels-photo-13041555.jpeg"
@@ -85,3 +85,12 @@
 <a href="https://www.pexels.com/photo/low-angle-shot-of-stars-in-the-night-sky-13041555/"
     >Image: Philipp Deus's "Low Angle Shot of Stars in the Night Sky"</a
 >
+
+<h2 class="mt-8!">what is light pollution?</h2>
+<p>
+    light pollution is artificial light being cast into the sky, and it's basically everywhere,
+    including in your neighbourhood. Luckily, light pollution's effects for humans arent that
+    massive compared to other forms of pollution. Of course, light pollution affects different
+    species differently, but overall, we definitely have bigger worries. Low light pollution is more
+    of a nice-to-have rather than a must-have
+</p>

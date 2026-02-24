@@ -62,13 +62,14 @@ export const GET: RequestHandler = ({}) => {
         location("/lightpollution", 0.7),
         location("/sensors", 0.7),
         location("/photos", 0.9, "weekly"),
-        location("/speedtest", 0.2),
+        location("/speedtest", 0.3),
         location("/tools/local-docs", 0.6, "weekly"),
-        location("/tools/custom-wordle-descrambler", 0.6, "weekly"),
+        location("/tools/custom-wordle-descrambler", 0.6),
         location("/", 1.0, "weekly"),
         location("/links", 0.4),
         location("/fun", 0.6),
-        location("/devices/willow")
+        location("/devices/willow"),
+        location("/maps", 0.4)
     ];
 
     images.forEach(image => {

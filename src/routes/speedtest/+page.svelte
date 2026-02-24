@@ -54,7 +54,17 @@
 </p>
 <p>
     My internet caps out at around ~40mbps upload speed (which this test is measuring). You can also
-    try running <code>traceroute</code> to this server
+    try running <code>traceroute</code> to this server <a href="/route">from here</a>
+</p>
+<br />
+<p>
+    So how does this test work? Quite simple. It downloads a 100MB file from the server, and
+    measures how long that takes. The file consists of random zeroes and ones. It can be generated
+    quite easily by doing
+    <code>dd if=/dev/urandom of=speedtest.bin bs=100M count=1</code>. So why have this test? I just
+    wanted to see what kinds of upload speeds my server could supply to clients around the world.
+    Note: your result isn't collected or anything, I just ask people to send me their results over
+    on discord or something
 </p>
 
 <p class="mt-4"><b>NOTE</b>: this test will use approximately 100MB of bandwidth each run</p>

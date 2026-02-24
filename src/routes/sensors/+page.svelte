@@ -144,3 +144,11 @@
 
 <div style={`width: ${2 * offset}cm`} class="aspect-square bg-white"></div>
 <p>This square should be 2cm by 2cm</p>
+<br />
+<p>
+    Sensor size is kinda important, and that's why I made this page. Well actually I made this page
+    since I couldn't find any working versions on Google, and I wanted to compare my camera's and
+    phone's sensor sizes visually. But anyways, sensor size is one of the most important metrics
+    that can be attached to a camera. Unlike megapixels, you can't really fake a higher sensor size
+    <nobr>(unless you lie of course)</nobr>
+</p>
