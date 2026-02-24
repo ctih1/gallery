@@ -1,23 +1,7 @@
 <script lang="ts">
-    import PageConfig from "$lib/components/PageConfig.svelte";
+    import ZoomableImage from "$lib/components/ZoomableImage.svelte";
 
     type Focus = "Europe" | "World";
-
-    let expandedMaps: { [key: string]: boolean } = $state({});
-    let previousScroll: number = 0;
-
-    function toggleMap(url: string) {
-        let val = expandedMaps[url];
-
-        if (val) {
-            window.scrollTo(0, previousScroll);
-        } else {
-            previousScroll = window.scrollY;
-            window.scrollTo(0, 0);
-        }
-
-        expandedMaps[url] = !val;
-    }
 </script>
 
 {#snippet Map(
@@ -27,36 +11,16 @@
     location: Focus = "Europe"
 )}
     <div class="w-full">
-        <button onclick={_ => toggleMap(url)}>
-            <img
-                alt={title || location}
-                src={url}
-                class="max-h-[400px] cursor-pointer rounded-xl"
-            />
-        </button>
+        <ZoomableImage
+            alt={title || location}
+            src={url}
+            class="max-h-[400px] cursor-pointer rounded-xl"
+        />
         <h3 class:opacity-80={!title} class="mb-0 w-full break-after-avoid">
             {title || url.split("/maps/")[1]}
         </h3>
         <p class="whitespace-pre-line">{description}</p>
     </div>
-
-    {#if expandedMaps[url]}
-        <div class="absolute top-0 left-0 flex min-h-screen w-screen items-center bg-[#000000dd]">
-            <div class="mr-auto ml-auto">
-                <img
-                    class="mr-auto ml-auto max-h-screen max-w-screen"
-                    alt={description}
-                    src={url}
-                />
-                <button
-                    class="absolute top-10 right-10 flex aspect-square w-8 items-center justify-center rounded-full text-4xl outline-1 outline-white drop-shadow-2xl hover:cursor-pointer"
-                    onclick={_ => (expandedMaps[url] = false)}
-                    ><span class="pb-1 leading-6">x</span></button
-                >
-            </div>
-        </div>
-        <PageConfig className="overflow-y-hidden" />
-    {/if}
 {/snippet}
 
 <h1>Maps</h1>

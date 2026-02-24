@@ -3,7 +3,7 @@
     import Accordion from "$lib/components/Accordion.svelte";
     import ClearContainer from "$lib/components/ClearContainer.svelte";
     import Loader from "$lib/components/Loader.svelte";
-    import PageConfig from "$lib/components/PageConfig.svelte";
+    import ZoomableImage from "$lib/components/ZoomableImage.svelte";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -26,24 +26,12 @@
 
     let imageLoaded = $state(false);
 
-    let zoomed = $state(false);
-    let previousScroll = 0;
-
     onMount(() => {
         const img = new Image();
         img.src = imagePath!;
         img.onload = _ => {
             imageLoaded = true;
         };
-    });
-
-    $effect(() => {
-        if (zoomed) {
-            previousScroll = window.scrollY;
-            window.scrollTo(0, 0);
-        } else {
-            window.scrollTo(0, previousScroll);
-        }
     });
 
     // https://stackoverflow.com/a/43084928
@@ -89,15 +77,9 @@
     {/if}
     <div class="img-container w-full max-w-4xl min-w-32 cursor-pointer md:mb-0">
         {#if imageLoaded}
-            <img
-                onclick={_ => (zoomed = true)}
-                class="w-full rounded-xl"
-                alt={data.image.description}
-                src={imagePath}
-            />
+            <ZoomableImage class="w-full rounded-xl" alt={data.image.description} src={imagePath} />
         {:else}
-            <img
-                onclick={_ => (zoomed = true)}
+            <ZoomableImage
                 class="w-full rounded-xl"
                 alt={data.image.description + "(loading)"}
                 src={thumbnailPath}
@@ -154,20 +136,3 @@
         <p>/photos/{$page.params.slug}</p>
     </div>
 </ClearContainer>
-
-{#if zoomed}
-    <div class="absolute top-0 left-0 flex min-h-screen w-screen items-center bg-[#000000dd]">
-        <div class="mr-auto ml-auto">
-            <img
-                class="mr-auto ml-auto max-h-screen max-w-screen"
-                alt={data.image.description}
-                src={imagePath}
-            />
-            <button
-                class="absolute top-10 right-10 flex aspect-square w-8 items-center justify-center rounded-full text-4xl outline-1 outline-white hover:cursor-pointer"
-                onclick={_ => (zoomed = false)}><span class="pb-1 leading-6">x</span></button
-            >
-        </div>
-    </div>
-    <PageConfig className="overflow-y-hidden" />
-{/if}

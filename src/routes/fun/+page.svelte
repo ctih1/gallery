@@ -42,3 +42,4 @@
 <audio src="/misc/MU1_own_song.mp3" controls></audio>
 
 <p>planned background image: <img src="/bg-tile.png" alt="squiggly lines thing" /></p>
+<p>old background image: <img src="/background.webp" alt="Tree" class="max-h-[400px]" /></p>
