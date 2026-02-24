@@ -1,0 +1,36 @@
+const HTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        html,
+        body,
+        canvas {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            background: black;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="glcanvas" tabindex='1'></canvas>
+    <script src="/game/mq_js_bundle.js"></script>
+    <script>load("/game/bouncyball.wasm");</script> <!-- Your compiled WASM binary -->
+</body>
+</html>
+`;
+
+export async function GET({ request, fetch }) {
+    return new Response(HTML, {
+        headers: {
+            "Content-Type": "text/html"
+        }
+    });
+}
