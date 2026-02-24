@@ -15,6 +15,7 @@
 <p>Some of the little games I've made.</p>
 <ul>
     <li>Account creation sim: {@render Link("/games/account-creation")}</li>
+    <li>Bouncy ball: {@render Link("/games/bouncy-ball")}</li>
     <li>Phone charging sim: {@render Link("/games/phone-charging-sim")}</li>
     <li>Numeropeli: {@render Link("https://ctih1.github.io/aleksiope-numeropeli/")}</li>
     <li>Ufopeli: {@render Link("https://github.com/ctih1/Ufopeli")}</li>
@@ -36,7 +37,7 @@
 
 <h2>misc stuff</h2>
 <p>Desktop thing: {@render Link("https://desktop.arr.ovh")}</p>
-
+<p>some random maps {@render Link("/maps")}</p>
 <p>insane song:</p>
 <audio src="/misc/MU1_own_song.mp3" controls></audio>
 
