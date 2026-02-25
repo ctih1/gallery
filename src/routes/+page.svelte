@@ -276,6 +276,7 @@
     <Badge redirect="https://www.frii.site" imageUrl="/badges/friisite.png" />
     <Badge redirect="https://www.powerpcfan.xyz" imageUrl="/badges/powerpcfan.png" />
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
+    <Badge redirect="https://whatdidyouexpect.eu" imageUrl="/badges/expect.png" />
 </div>
 
 <a href="/links">Here are some links!</a>
