@@ -85,6 +85,7 @@
         <div class={`grid h-8 ${rest.class ?? "w-64"}`}>
             <div class={`absolute col-1 row-1 h-8 ${rest.class ?? "w-64"}`}>
                 <ClearBase
+                    styleOverride={`width: ${getInputWidth()}px`}
                     className={`absolute mt-auto mb-auto h-6 bg-white/20 ${rest.class ?? "w-64"}`}
                     ><span></span></ClearBase
                 >
