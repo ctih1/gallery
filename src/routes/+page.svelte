@@ -261,7 +261,7 @@
     </ClearBase>
 </div>
 
-<div class="badges mr-auto ml-auto grid w-fit grid-flow-col grid-rows-3 gap-0.5">
+<div class="badges grid-row-col mr-auto ml-auto grid w-fit grid-cols-3 gap-0.5">
     <Badge redirect="/" imageUrl="/badges/ctih1.png" />
     <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png" />
     <Badge redirect="" imageUrl="/badges/human.png" />
@@ -277,6 +277,10 @@
     <Badge redirect="https://www.powerpcfan.xyz" imageUrl="/badges/powerpcfan.png" />
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
     <Badge redirect="https://whatdidyouexpect.eu" imageUrl="/badges/expect.png" />
+    <Badge
+        redirect="https://wakatime.com/@ctih1/projects/jbxjzaudtx?start=2026-02-18&end=2026-02-24"
+        imageUrl="/badges/wakatime.png"
+    />
 </div>
 <p class="text-center opacity-60">
     note: want your badge here? <a href="/contact">contact me!</a>
