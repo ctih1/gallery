@@ -23,6 +23,9 @@
     let hintShown: boolean = $state(false);
 
     let className = $state("");
+    let sliderPercentage = $derived(calculateSliderPercentage(value));
+    const sliderBallWidth = 24;
+    let ballOffset = $derived(sliderPercentage * sliderBallWidth);
 
     if (rest.type === "range") {
         className = "min-w-12 min-h-4 accent-sky-600";
@@ -43,6 +46,16 @@
 
         return `left: ${res}px; top: ${element.offsetTop - 25}px`;
     }
+
+    function getInputWidth(): number {
+        if (!element) return 192;
+
+        return element.getBoundingClientRect().width;
+    }
+
+    function calculateSliderPercentage(val: number): number {
+        return (val - Number(rest.min)) / (Number(rest.max) - Number(rest.min));
+    }
 </script>
 
 {#if rest.type === "range"}
@@ -56,19 +69,44 @@
     {:else}
         <label for={label + "-input"}>{label}</label>
     {/if}
-    {#if rest.type === "range" && element !== undefined && hintShown}
-        <div transition:fade={{ duration: 300 }}>
-            {#key value}
+    {#if rest.type === "range"}
+        {#if element !== undefined && hintShown}
+            <div transition:fade={{ duration: 300 }}>
+                {#key value}
+                    <ClearBase
+                        styleOverride={calculateHintStyling()}
+                        className="min-w-12 max-w-32 w-fit h-6 flex items-center justify-center absolute z-20 pointer-events-none -translate-x-1/2"
+                    >
+                        <p class="p-0">{value}</p>
+                    </ClearBase>
+                {/key}
+            </div>
+        {/if}
+        <div class={`grid h-8 ${rest.class ?? "w-64"}`}>
+            <div class={`absolute col-1 row-1 h-8 ${rest.class ?? "w-64"}`}>
                 <ClearBase
-                    styleOverride={calculateHintStyling()}
-                    className="min-w-12 max-w-32 w-fit h-6 flex items-center justify-center absolute z-20 pointer-events-none -translate-x-1/2"
+                    className={`absolute mt-auto mb-auto h-6 bg-white/20 ${rest.class ?? "w-64"}`}
+                    ><span></span></ClearBase
                 >
-                    <p class="p-0">{value}</p>
-                </ClearBase>
-            {/key}
+                <div
+                    class="slider-ball absolute mt-1 h-4 rounded-full bg-white"
+                    style={`left: ${Math.min(Math.max(sliderPercentage * getInputWidth() - sliderPercentage * ballOffset * 1.2 + ((sliderBallWidth / 2) * (sliderBallWidth - ballOffset)) / sliderBallWidth / 2, 0), getInputWidth() - sliderBallWidth)}px; width: ${sliderBallWidth}px`}
+                ></div>
+            </div>
+            <input
+                ontouchstart={_ => (hintShown = true)}
+                onmousedown={_ => (hintShown = true)}
+                ontouchend={_ => setTimeout(_ => (hintShown = false), 500)}
+                onmouseup={_ => setTimeout(_ => (hintShown = false), 500)}
+                onpaste={e => (disablePasting ? e.preventDefault() : "")}
+                bind:this={element}
+                bind:value
+                id={label + "-input"}
+                {...rest}
+                class={`col-1 row-1 opacity-0 ${rest.class ?? "w-64"}`}
+            />
         </div>
-    {/if}
-    {#if rest.type === "checkbox"}
+    {:else if rest.type === "checkbox"}
         <input
             type="checkbox"
             bind:this={element}

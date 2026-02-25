@@ -63,7 +63,7 @@
 </svelte:head>
 
 <img
-    class="pointer-events-none fixed top-0 right-0 bottom-0 left-0 -z-10 min-h-screen w-screen scale-150 object-cover blur-lg saturate-75"
+    class="pointer-events-none fixed top-0 right-0 bottom-0 left-0 -z-10 min-h-screen w-screen max-w-screen scale-150 object-cover blur-lg saturate-75"
     alt={data.image.description}
     src={thumbnailPath}
 />

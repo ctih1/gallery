@@ -20,7 +20,7 @@
         <a style="border-bottom: 0px; padding-bottom: 0px" href={`/photos/${link}`}>
             <img
                 alt={link}
-                class="aspect-square w-80 rounded-md bg-cover bg-center object-cover opacity-95 transition-opacity hover:opacity-100 lg:w-96"
+                class="aspect-square w-80 rounded-md bg-cover bg-center object-cover opacity-90 saturate-95 transition-opacity hover:opacity-100 hover:saturate-100 lg:w-96"
                 src={`/images/${link}/thumbnail.webp`}
             />
         </a>

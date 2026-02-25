@@ -28,6 +28,26 @@
         return result;
     }
 
+    // https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
+    function invertColor(hex: string) {
+        if (hex.indexOf("#") === 0) {
+            hex = hex.slice(1);
+        }
+        // convert 3-digit hex to 6-digits.
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        if (hex.length !== 6) {
+            throw new Error("Invalid HEX color.");
+        }
+        // invert color components
+        var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+            g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+            b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+        // pad each with zeros and return
+        return "#" + r.padStart(2, "0") + g.padStart(2, "0") + b.padStart(2, "0");
+    }
+
     function generateRandomGradient() {
         if (document.body.classList.contains("index-body")) return;
 
@@ -59,7 +79,7 @@
             ", " +
             linearGradient;
 
-        document.body.style.background = gradients;
+        document.body.style.background = gradients + `, ${invertColor(color2)}`;
 
         document.body.style.backdropFilter = "invert(1)";
 
@@ -105,12 +125,11 @@
 </svelte:head>
 
 <Navbar>
-    <a class="text-4xl" href="/">Home</a>
-    <a class="text-4xl" href="/photos">Photos</a>
-    <a class="text-4xl" href="/links">Links</a>
-    <a class="text-4xl" href="/tools">Tools</a>
-    <a class="text-4xl" href="/devices">Devices</a>
-    <a class="text-4xl" href="/fun">Fun stuff</a>
+    <a class="text-3xl" href="/">Home</a>
+    <a class="text-3xl" href="/photos">Photos</a>
+    <a class="text-3xl" href="/tools">Tools</a>
+    <a class="text-3xl" href="/devices">Devices</a>
+    <a class="text-3xl" href="/fun">Fun stuff</a>
 </Navbar>
 
 {#if !page.url.pathname.includes("/photos/") && !page.url.pathname.includes("local-docs")}

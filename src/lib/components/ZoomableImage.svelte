@@ -8,10 +8,24 @@
 
     function toggleZoom() {
         if (!maximized) {
+            window.document.body.style.overflowX = "unset";
             previousScroll = window.scrollY;
             window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+            if (document.scrollingElement) {
+                document.scrollingElement.scrollTop = 0;
+            }
+            window.document.body.style.overflowX = "hidden";
         } else {
+            window.document.body.style.overflowX = "unset";
             window.scrollTo(0, previousScroll);
+            document.body.scrollTop = previousScroll;
+
+            if (document.scrollingElement) {
+                document.scrollingElement.scrollTop = previousScroll;
+            }
+            // fuckass iOS requires overflow-x to not be hidden when scrolling
+            window.document.body.style.overflowX = "hidden";
         }
         maximized = !maximized;
     }
