@@ -278,6 +278,8 @@
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
 </div>
 
+<a href="/links">Here are some links!</a>
+
 <PageConfig className="index-body" />
 
 <style>
