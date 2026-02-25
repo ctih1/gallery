@@ -278,8 +278,15 @@
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
     <Badge redirect="https://whatdidyouexpect.eu" imageUrl="/badges/expect.png" />
 </div>
+<p class="text-center opacity-60">
+    note: want your badge here? <a href="/contact">contact me!</a>
+</p>
 
-<a href="/links">Here are some links!</a>
+<div class="mt-12 mr-auto ml-auto w-fit text-center">
+    <h2 class="w-fit text-4xl!">Made with love &lt;3</h2>
+    <p class="opacity-60">(aka <a href="https://svelte.dev/">Svelte</a>)</p>
+    <a href="https://github.com/ctih1/gallery">Source code for this website</a>
+</div>
 
 <PageConfig className="index-body" />
 
