@@ -299,6 +299,8 @@
         redirect={`https://wakatime.com/@ctih1/projects/jbxjzaudtx?${generateWakatimeArgs()}`}
         imageUrl="/badges/wakatime.png"
     />
+    <Badge redirect="https://svelte.dev" imageUrl="/badges/svelte.png" />
+    <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
 </div>
 <p class="text-center opacity-60">
     note: want your badge here? <a href="/contact">contact me!</a>
