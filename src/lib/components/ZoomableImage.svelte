@@ -39,7 +39,7 @@
 
 <svelte:window onkeyup={keypressEvent} />
 
-<button class="cursor-zoom-in" onclick={_ => toggleZoom()}>
+<button class={`cursor-zoom-in ${rest.class}`} onclick={_ => toggleZoom()}>
     <img {...rest} />
 </button>
 
