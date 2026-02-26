@@ -10,7 +10,7 @@
 
     function sendMessage() {
         sent = true;
-        fetch("http://koti.frii.site:8050", {
+        fetch("https://mail.koti.frii.site", {
             method: "POST",
             body: JSON.stringify({ msg: message, contact: contact }),
             mode: "no-cors"

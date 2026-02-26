@@ -13,10 +13,14 @@ export async function POST({ request, url }) {
         return error(422);
     }
 
+    if (square > 8 || square < 0) {
+        return error(422);
+    }
+
     const ip = request.headers.get("X-Real-IP");
 
     if (!ip || !net.isIP(ip)) {
-        return error(422);
+        return error(422, "Invalid IP");
     }
 
     if (ipMap.get(ip) && new Date().getTime() - ipMap.get(ip)!.getTime() < 30000) {

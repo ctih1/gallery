@@ -8,7 +8,7 @@
     import Thermometer from "$lib/components/Thermometer.svelte";
     import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
     import { usingImperial } from "$lib/store";
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import type { OccupationColumn } from "./api/occupation/types";
     import type { ProcessedActivity } from "./api/strava/types";
     import type { ServerResponse } from "./api/weather/types";
@@ -26,6 +26,7 @@
 
     let nextOccupationRefresh: Date = $state(new Date());
     nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
+    let occupationInterval = undefined;
 
     async function getOccupations() {
         if (!browser) return;
@@ -40,7 +41,7 @@
         currentTime = new Date();
     }, 1000);
 
-    setInterval(async () => {
+    occupationInterval = setInterval(async () => {
         await getOccupations();
         nextOccupationRefresh.setTime(new Date().getTime() + 5000);
         nextOccupationRefresh = nextOccupationRefresh;
@@ -100,13 +101,15 @@
 
         const endDate = new Date(nowMs - 1 * 24 * 60 * 60 * 1000);
         const startDate = new Date(endDate.getTime() - 6 * 24 * 60 * 60 * 1000);
-        console.log(endDate);
-        console.log(startDate);
 
         return `start=${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}&end=${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
     }
 
-    generateWakatimeArgs();
+    onDestroy(() => {
+        if (occupationInterval) {
+            clearInterval(occupationInterval);
+        }
+    });
 </script>
 
 <h1>yellooo</h1>
