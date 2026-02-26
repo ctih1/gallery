@@ -10,6 +10,7 @@
 
     function sendMessage() {
         sent = true;
+        loading = true;
         fetch("https://mail.koti.frii.site", {
             method: "POST",
             body: JSON.stringify({ msg: message, contact: contact }),
