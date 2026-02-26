@@ -7,6 +7,7 @@
     import StravaCard from "$lib/components/StravaCard.svelte";
     import Thermometer from "$lib/components/Thermometer.svelte";
     import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
+    import { logg } from "$lib/loggy";
     import { usingImperial } from "$lib/store";
     import { onDestroy, onMount } from "svelte";
     import type { OccupationColumn } from "./api/occupation/types";
@@ -28,6 +29,11 @@
     nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
     let occupationInterval = undefined;
 
+    logg("verbose", "hello");
+    logg("info", "hello");
+    logg("warn", "hello");
+    logg("error", "hello");
+
     async function getOccupations() {
         if (!browser) return;
         fetch("/api/occupation")
@@ -48,15 +54,19 @@
     }, 5000);
 
     onMount(async () => {
+        logg("fetch", "Fetching Strava data");
         fetch("/api/strava")
             .then(data => data.json())
             .then(json => {
+                logg("fetch", "Strava data received");
                 stravaData = json;
             });
 
+        logg("fetch", "Fetching weather data");
         fetch("/api/weather")
             .then(data => data.json())
             .then(json => {
+                logg("fetch", "Weather data data received");
                 weatherData = json;
             });
 
@@ -66,7 +76,7 @@
     let checked = $state(false);
 
     $effect(() => {
-        console.log("Setting usingImperial");
+        logg("info", "Setting usingImperial");
         usingImperial.set(checked);
     });
 
@@ -301,6 +311,7 @@
     />
     <Badge redirect="https://svelte.dev" imageUrl="/badges/svelte.png" />
     <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
+    <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
 </div>
 <p class="text-center opacity-60">
     note: want your badge here? <a href="/contact">contact me!</a>

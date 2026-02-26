@@ -15,10 +15,13 @@ function formatOffset(stamp: string) {
     return `${sign}${hours}:00`;
 }
 
-let cacheMap: [Date, unknown] = [new Date(-1), undefined];
+let cacheMap: [Date, MeteoResponse | undefined] = [new Date(-1), undefined];
 
 export async function GET({ request, fetch }) {
-    if (cacheMap[0].getTime() / 1000 + 10800 < new Date().getTime()) {
+    if (cacheMap[0].getTime() / 1000 + 10800 < new Date().getTime() || !cacheMap[1]) {
+        console.log("Fetching weather data because cache expired");
+        console.log(cacheMap[0]);
+
         const url = new URL("https://api.open-meteo.com/v1/forecast");
         url.search = new URLSearchParams({
             latitude: LATITUDE as string,
@@ -39,6 +42,7 @@ export async function GET({ request, fetch }) {
     // @ts-ignore
     const json: MeteoResponse = cacheMap[1];
     if (json.error) {
+        console.log(json.error);
         return new Response("failed to get weather", {
             status: 500
         });
@@ -60,8 +64,6 @@ export async function GET({ request, fetch }) {
         temperatureMap.set(time, json.hourly.temperature_2m[i]);
         rainMap.set(time, json.hourly.rain[i]);
     }
-
-    console.log(cloudMap);
 
     const response: ServerResponse = {
         tempNow: json.current.temperature_2m,

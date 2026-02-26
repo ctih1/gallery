@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getNearestMapValue, hslToHex } from "$lib/helpers";
+    import { logg } from "$lib/loggy";
     import { onMount } from "svelte";
     import Input from "../Input.svelte";
     import {
@@ -70,10 +71,10 @@
             const rainNowMm: number = getNearestMapValue(weatherData.rain) || 0;
             const snowNowCm: number = getNearestMapValue(weatherData.snowfall) || 0;
 
-            console.log("Current weather data: ");
-            console.log(`Rain in 1h: ${rainNowMm}mm`);
-            console.log(`Cloud cover: ${coverNow}%`);
-            console.log(`Snow in 1h: ${snowNowCm}cm`);
+            logg("info", "Current weather data: ");
+            logg("info", `Rain in 1h: ${rainNowMm}mm`);
+            logg("info", `Cloud cover: ${coverNow}%`);
+            logg("info", `Snow in 1h: ${snowNowCm}cm`);
 
             renderEnvironment = {
                 cloudCover: coverNow,
@@ -87,8 +88,8 @@
 
             renderObjects.clouds = createClouds(5, 8);
 
-            console.log("Rendering environment: ");
-            console.log(renderEnvironment);
+            logg("info", "Rendering environment: ");
+            logg("info", JSON.stringify(renderEnvironment));
         }
 
         requestAnimationFrame(canvasUpdate);

@@ -1,4 +1,3 @@
-import { error } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import type { ActivityType } from "./types.js";
 
@@ -24,7 +23,6 @@ async function refreshAccessToken(
         refresh_token: refreshToken
     }).toString();
 
-    console.log(`Fetching ${url}`);
     const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -86,7 +84,6 @@ export async function GET({ url, fetch }) {
         });
     }
     const activities = await getActivityHistory(fetch);
-    console.log(activities);
     const processedActivities = activities.map(activity => ({
         distance: activity.distance,
         type: activity.sport_type,
