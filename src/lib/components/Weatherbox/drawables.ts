@@ -52,7 +52,7 @@ export const drawFlake = (
 ) => {
     const normalizedOffset = flake.offset / 300;
     const fillColor =
-        "#ffffff" + Math.round(Math.min(255, normalizedOffset * 255 + 30) / 2).toString(16);
+        "#ffffff" + Math.round(Math.min(255, normalizedOffset * 255 + 30) / 3).toString(16);
     ctx.fillStyle = fillColor;
     ctx.beginPath();
 
@@ -73,7 +73,15 @@ export const drawFlake = (
         flake.position.x = Math.random() * 300;
     }
 
-    ctx.arc(flake.position.x, flake.position.y, 0.5 + normalizedOffset * 2, 0, 2 * Math.PI, false);
+    ctx.ellipse(
+        flake.position.x,
+        flake.position.y,
+        0.5 + normalizedOffset * 2,
+        0.5 + normalizedOffset + renderEnvironment.snowFallSpeed / 5,
+        -(renderEnvironment.windSpeed / 100),
+        0,
+        2 * Math.PI
+    );
     ctx.fill();
 };
 

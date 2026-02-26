@@ -92,6 +92,21 @@
             squaresDisabled = false;
         }, 30000);
     }
+
+    // stupid ass wakatime wont let you share your current stats, and since I'm not paying for it, I can only show the past 6 days.
+    // if we use a static link (eg. start=2026-02-18&end=2026-02-24) it'll stop working after a day, since "you can't view past stats without buying premium!"
+    function generateWakatimeArgs(): string {
+        const nowMs = new Date().getTime();
+
+        const endDate = new Date(nowMs - 1 * 24 * 60 * 60 * 1000);
+        const startDate = new Date(endDate.getTime() - 6 * 24 * 60 * 60 * 1000);
+        console.log(endDate);
+        console.log(startDate);
+
+        return `start=${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}&end=${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
+    }
+
+    generateWakatimeArgs();
 </script>
 
 <h1>yellooo</h1>
@@ -261,7 +276,7 @@
     </ClearBase>
 </div>
 
-<div class="badges grid-row-col mr-auto ml-auto grid w-fit grid-cols-3 gap-0.5">
+<div class="badges grid-row-col mr-auto ml-auto grid w-fit grid-cols-4 gap-1">
     <Badge redirect="/" imageUrl="/badges/ctih1.png" />
     <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png" />
     <Badge redirect="" imageUrl="/badges/human.png" />
@@ -278,7 +293,7 @@
     <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
     <Badge redirect="https://whatdidyouexpect.eu" imageUrl="/badges/expect.png" />
     <Badge
-        redirect="https://wakatime.com/@ctih1/projects/jbxjzaudtx?start=2026-02-18&end=2026-02-24"
+        redirect={`https://wakatime.com/@ctih1/projects/jbxjzaudtx?${generateWakatimeArgs()}`}
         imageUrl="/badges/wakatime.png"
     />
 </div>

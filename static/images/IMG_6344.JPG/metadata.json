@@ -1,0 +1,20 @@
+{
+    "model": "iPhone 13",
+    "make": "Apple",
+    "time": "2026:02:05 14:12:33",
+    "iso": 400,
+    "exposure": [
+        1,
+        13
+    ],
+    "focal-length": [
+        51,
+        10
+    ],
+    "aperature": [
+        8,
+        5
+    ],
+    "description": "Walking home in the winter",
+    "unedited": "self"
+}

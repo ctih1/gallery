@@ -23,14 +23,14 @@ export interface Current {
 export interface HourlyUnits {
     time: string;
     temperature_2m: string;
-    cloud_cover: string;
+    cloud_cover_low: string;
     snowfall: string;
 }
 
 export interface Hourly {
     time: string[];
     temperature_2m: number[];
-    cloud_cover: number[];
+    cloud_cover_low: number[];
     snowfall: number[];
     rain: number[];
 }
