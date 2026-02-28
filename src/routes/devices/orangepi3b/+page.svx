@@ -19,6 +19,7 @@ Media:
 * FlareSolverr
 * Transmission
 * Jackett
+* PhotoPrism (for sorting clips)
 
 Productivity:
 * Umami analytics
@@ -40,6 +41,15 @@ Misc:
 * "Goober" discord bot to interact with the AI-Wrapper
 * Room noise measurements (dB counter)
 * WireGuard VPN
+* Tor Relay
+* Grafana
+* Cadvisor
+* Cowrie (SSH honeypot)
+
+Note: the Cowrie instance is meant to ban people from my services.
+The ban page [looks like this](http://koti.frii.site/ban.html)
+
+<br>
 
 Upcoming / planned projects:
 * Immich server to replace Google Photos
