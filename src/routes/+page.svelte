@@ -297,7 +297,7 @@
     </ClearBase>
 </div>
 
-<div class="badges grid-row-col mr-auto ml-auto grid w-fit grid-cols-4 gap-1">
+<div class="badges grid-row-col mr-auto ml-auto grid w-fit grid-cols-3 gap-1 sm:grid-cols-4">
     <Badge redirect="/" imageUrl="/badges/ctih1.png" />
     <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png" />
     <Badge redirect="" imageUrl="/badges/human.png" />
