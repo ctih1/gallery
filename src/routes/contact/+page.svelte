@@ -25,7 +25,7 @@
 <h1>How to contact me</h1>
 
 <p>
-    You can either send me a message on Discord (@ctih), or use the form below! (I promise I'll try
+    You can either send me a message on Discord (@ctih), email me (contact@mail.ctih1.frii.site), or use the form below! (I promise I'll try
     to respond quickly)
 </p>
 

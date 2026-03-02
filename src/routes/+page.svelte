@@ -154,6 +154,14 @@
     </div>
 </div>
 
+<iframe
+    class="mt-8"
+    title="frii.site webring"
+    width="304px"
+    height="204px"
+    src="https://webring.frii.site/embed.html?website=https://ctih1.frii.site"
+></iframe>
+
 <div class="mt-16">
     <h1>Take over the area</h1>
     <p>Click a square to occupy it</p>
