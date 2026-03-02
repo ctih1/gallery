@@ -5,6 +5,11 @@ import { hslToHex } from "$lib/helpers";
 import type { Cloud, RainlikeParticle, RenderEnvironment, Star } from "./types";
 
 export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStrength: number) => {
+    ctx.fillStyle = hslToHex(41, 100, 36.2 * Math.max(0.3, relativeSunStrength));
+    ctx.beginPath();
+    ctx.fillRect(250, 300 - 170, 20, 170);
+    ctx.fill();
+
     const lightX = 250 - 40 + 20 - 10 + 10;
     const lightY = 300 - 170;
     const streetlightGradiant = ctx.createRadialGradient(lightX, lightY, 4, lightX, lightY, 150);
@@ -139,10 +144,9 @@ export const drawSunGlow = (
     sunPos: number,
     sunColor: string,
     relativeSunStrength: number,
-    weatherCanvas: HTMLCanvasElement,
-    visibilityMeters: number
+    weatherCanvas: HTMLCanvasElement
 ) => {
-    const sunGradientSize = (250 - sunPos) / 2;
+    const sunGradientSize = relativeSunStrength * 250;
     const sunGradient = ctx.createRadialGradient(
         150,
         300 - sunPos,
@@ -156,15 +160,16 @@ export const drawSunGlow = (
 
     ctx.fillStyle = sunGradient;
     ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+};
 
+export const drawFog = (
+    ctx: CanvasRenderingContext2D,
+    visibilityMeters: number,
+    weatherCanvas: HTMLCanvasElement
+) => {
     ctx.fillStyle =
         "#848484" + Math.max(20, 150 - Math.round(250 * (visibilityMeters / 20000))).toString(16);
     ctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-
-    ctx.fillStyle = hslToHex(41, 100, 36.2 * Math.max(0.3, relativeSunStrength));
-    ctx.beginPath();
-    ctx.fillRect(250, 300 - 170, 20, 170);
-    ctx.fill();
 };
 
 export const drawCloud = (ctx: CanvasRenderingContext2D, cloud: Cloud) => {

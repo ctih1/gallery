@@ -7,6 +7,7 @@
         createSunGradient,
         drawCloud,
         drawFlake,
+        drawFog,
         drawRaindrop,
         drawStar,
         drawStreetlight,
@@ -207,14 +208,8 @@
         const sunDrawTime = performance.now() - start;
 
         start = performance.now();
-        drawSunGlow(
-            ctx,
-            sunPos,
-            sunColor,
-            relativeSunStrength,
-            weatherCanvas,
-            renderEnvironment.visibilityMeters
-        );
+        drawSunGlow(ctx, sunPos, sunColor, relativeSunStrength, weatherCanvas);
+        drawFog(ctx, renderEnvironment.visibilityMeters, weatherCanvas);
         const sunGlowDrawTime = performance.now() - start;
 
         start = performance.now();
