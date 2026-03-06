@@ -70,7 +70,10 @@
 
 <ClearContainer clear={true}>
     {#if !imageLoaded}
-        <div class="flex items-center" transition:slide={{ delay: 200 }}>
+        <div
+            class="items-cente absolute mt-1 ml-1 flex rounded-lg bg-black/20 pt-1 pr-2 pb-1 pl-2"
+            transition:slide={{ delay: 200, axis: "y" }}
+        >
             <Loader />
             <p>Loading full resolution image...</p>
         </div>

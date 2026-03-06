@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Snippet } from "svelte";
-    import ClearBase from "./ClearBase.svelte";
     import { slide } from "svelte/transition";
+    import ClearBase from "./ClearBase.svelte";
     let open: boolean = $state(false);
 
     let { title, children }: { title: string; children: Snippet } = $props();

@@ -7,6 +7,7 @@
     .loader {
         display: inline-block;
         transform: translateZ(1px);
+        height: 24px;
     }
     .loader:after {
         content: "";

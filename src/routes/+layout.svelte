@@ -49,6 +49,7 @@
     }
 
     function generateRandomGradient() {
+        if (window.location.pathname.includes("/photos/")) return;
         if (document.body.classList.contains("index-body")) return;
 
         console.log("creating new gradient");
