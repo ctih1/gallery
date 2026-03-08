@@ -81,13 +81,13 @@
     <div class="img-container w-full max-w-4xl min-w-32 cursor-pointer md:mb-0">
         {#if imageLoaded}
             <ZoomableImage
-                class="mr-auto ml-auto max-h-[80vh] w-full rounded-xl object-cover"
+                class="mr-auto ml-auto max-h-[750px] w-full rounded-xl object-cover"
                 alt={data.image.description}
                 src={imagePath}
             />
         {:else}
             <ZoomableImage
-                class="mr-auto ml-auto max-h-[80vh] w-full rounded-xl object-cover"
+                class="mr-auto ml-auto max-h-[750px] w-full rounded-xl object-cover"
                 alt={data.image.description + "(loading)"}
                 src={thumbnailPath}
             />
