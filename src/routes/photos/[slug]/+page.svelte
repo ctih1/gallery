@@ -80,10 +80,14 @@
     {/if}
     <div class="img-container w-full max-w-4xl min-w-32 cursor-pointer md:mb-0">
         {#if imageLoaded}
-            <ZoomableImage class="w-full rounded-xl" alt={data.image.description} src={imagePath} />
+            <ZoomableImage
+                class="mr-auto ml-auto max-h-[80vh] w-full rounded-xl object-cover"
+                alt={data.image.description}
+                src={imagePath}
+            />
         {:else}
             <ZoomableImage
-                class="w-full rounded-xl"
+                class="mr-auto ml-auto max-h-[80vh] w-full rounded-xl object-cover"
                 alt={data.image.description + "(loading)"}
                 src={thumbnailPath}
             />
