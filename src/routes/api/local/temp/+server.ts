@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 
 export async function GET({ url, fetch }) {
     try {
-        const temperature = readFileSync("thermal");
+        const temperature = readFileSync("/sys/class/thermal");
         return new Response(JSON.stringify({ cpu: Number(temperature) / 1000 }), {
             headers: {
                 "Content-Type": "application/json"
