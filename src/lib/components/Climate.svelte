@@ -36,25 +36,26 @@
             <span class="font-sans! text-2xl leading-px font-black text-black!">&lt;</span>
         </div>
     {/if}
-    <div class="flex h-full w-56 flex-col justify-between">
-        <div class="*:text-black!">
-            <h3 class="text-3xl! font-bold">{data?.temperature.toFixed(2)}°C</h3>
-            <p class="mb-4">
-                Offset: <b class="text-black!">{data?.temperature_offset.toFixed(2)}°C</b>
-            </p>
-            <p>Relative Humidity: {data?.relative_humidity.toFixed(2)}%</p>
-            <p>Air Pressure: {data?.air_pressure.toFixed(2)} hPa</p>
-            {#key data}
-                <p>
-                    Air Resistance: <span style={`color: ${getQualityColour()}`}
-                        >{Math.round((data?.air_resistance || 0) / 100) * 100}</span
-                    > Ohms
+    {#if data}
+        {@const date = new Date(data?.last_update * 1000)}
+        <div class="flex h-full w-56 flex-col justify-between">
+            <div class="*:text-black!">
+                <h3 class="text-3xl! font-bold">{data?.temperature.toFixed(2)}°C</h3>
+                <p class="mb-4">
+                    Offset: <b class="text-black!">{data?.temperature_offset.toFixed(2)}°C</b>
                 </p>
-            {/key}
-        </div>
-        <p class="mt-2 text-black!">CPU Temp: {cpuTemp.toFixed(2)}°C</p>
-        {#if data}
-            {@const date = new Date(data?.last_update * 1000)}
+                <p>Relative Humidity: {data?.relative_humidity.toFixed(2)}%</p>
+                <p>Air Pressure: {data?.air_pressure.toFixed(2)} hPa</p>
+                {#key data}
+                    <p>
+                        Air Resistance: <span style={`color: ${getQualityColour()}`}
+                            >{Math.round((data?.air_resistance || 0) / 100) * 100}</span
+                        > Ohms
+                    </p>
+                {/key}
+            </div>
+            <p class="mt-2 text-black!">CPU Temp: {cpuTemp.toFixed(2)}°C</p>
+
             <p class="mt-auto mb-0 text-black!">
                 Last updated: <nobr class="font-medium text-black!"
                     >{getRelativeTime(
@@ -67,6 +68,6 @@
                     })}</nobr
                 >
             </p>
-        {/if}
-    </div>
+        </div>
+    {/if}
 </div>

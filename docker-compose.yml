@@ -6,7 +6,7 @@ services:
         ports:
             - "3001:3000"
         volumes:
-            - /sys/class/thermal:/sys/class/thermal:ro
+            - /sys/class/thermal/thermal_zone0/temp:/sys/class/thermal/thermal_zone0/temp:ro
         environment:
             NODE_ENV: production
         restart: unless-stopped
