@@ -29,3 +29,6 @@ ips.db
 areas.db
 
 /__pycache__
+
+# For testing on Windows lol
+thermal

@@ -2,6 +2,7 @@
     import { browser } from "$app/environment";
     import Badge from "$lib/components/Badge.svelte";
     import ClearBase from "$lib/components/ClearBase.svelte";
+    import Climate from "$lib/components/Climate.svelte";
     import ConvertableFormat from "$lib/components/ConvertableFormat.svelte";
     import PageConfig from "$lib/components/PageConfig.svelte";
     import StravaCard from "$lib/components/StravaCard.svelte";
@@ -21,9 +22,8 @@
     let squaresDisabled: boolean = $state(false);
     let squaresAvailableIn: Date = $state(new Date());
     let currentTime: Date = $state(new Date());
-
-    let gradientTestY = $state(0);
-    let gradientTestY2 = $state(300);
+    let cpuTemp = $state(0);
+    let climateData: ClimateData | undefined = $state();
 
     let nextOccupationRefresh: Date = $state(new Date());
     nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
@@ -70,6 +70,21 @@
                 weatherData = json;
             });
 
+        logg("fetch", "Fetching CPU temp");
+        fetch("/api/local/temp")
+            .then(data => data.json())
+            .then(json => {
+                cpuTemp = json["cpu"];
+                logg("fetch", "CPU temp received");
+            });
+
+        logg("fetch", "Fetching climate data");
+        fetch("/api/local/climate")
+            .then(data => data.json())
+            .then(json => {
+                climateData = json;
+                logg("fetch", "Climate data received");
+            });
         await getOccupations();
     });
 
@@ -219,6 +234,13 @@
             )}s
         </p>
     {/key}
+</div>
+
+<div class="mt-16">
+    <h1>climate</h1>
+    <p>This data has been gathered from my BME680</p>
+
+    <Climate {cpuTemp} data={climateData} />
 </div>
 
 <div class="mt-16">

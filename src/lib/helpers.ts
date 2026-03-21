@@ -34,3 +34,11 @@ export function getNearestMapValue(map: MapData): any {
 
     return nearestValue;
 }
+
+export function getRelativeTime(days: number): string {
+    days = Math.round(days);
+    if (days === 0) return "today";
+    if (days === 1) return "yesterday";
+    if (days === -1) return "tomorrow";
+    return `${days} days ago`;
+}
