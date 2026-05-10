@@ -187,7 +187,7 @@
             );
         }
 
-        const relativeSunStrength = (getSunAngle(date) + 0.9) / 1.8;
+        const relativeSunStrength = (getSunAngle(date) + 90) / 180;
         const sunPos = getSunPositionY(date);
         const sunColor = hslToHex(
             10 * (relativeSunStrength * 2) + 25,
@@ -262,7 +262,7 @@
                 300
             );
             ctx.fillText(
-                `sun ${((getSunAngle(date) * 180) / Math.PI).toFixed(3)}*, ${sunPos.toFixed(3)}Y`,
+                `sun ${getSunAngle(date).toFixed(3)}*, ${sunPos.toFixed(3)}Y`,
                 0,
                 fontSize * 2,
                 300

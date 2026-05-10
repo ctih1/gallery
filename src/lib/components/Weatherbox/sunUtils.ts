@@ -10,9 +10,13 @@ export function dayOfYear(date: Date): number {
 }
 
 export function getSunDeclanationDegrees(date: Date): number {
-    const day = dayOfYear(date);
-    const rads = ((360 / 365.25) * (day - 81) * Math.PI) / 180;
-    return 23.445 * Math.sin(rads);
+    const day = dayOfYear(date) + 1;
+
+    return degToRad(23.445 * Math.sin(degToRad((360 / 365.25) * (day - 81))));
+}
+
+export function radToDeg(rad: number) {
+    return (rad * 180) / Math.PI;
 }
 
 export function degToRad(deg: number) {
@@ -20,16 +24,26 @@ export function degToRad(deg: number) {
 }
 
 export function getSunAngle(date: Date) {
-    const declanationRad = degToRad(getSunDeclanationDegrees(date));
     const hour = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
+    const solarHour = hour + (25.9 - 45) / 15; // 45 is in UTC+3, replace with UTC+2 at some point!!
+    const declanation = getSunDeclanationDegrees(date);
+    const hourAngle = degToRad(15 * (solarHour - 12));
 
-    return Math.asin(
-        Math.sin(declanationRad) * Math.sin(degToRad(62)) +
-            Math.cos(declanationRad) * Math.cos(degToRad(62)) * Math.cos(degToRad(15 * (hour - 12)))
+    let angle = radToDeg(
+        Math.asin(
+            Math.sin(declanation) * Math.sin(degToRad(62.2)) +
+                Math.cos(declanation) * Math.cos(degToRad(62.2)) * Math.cos(hourAngle)
+        )
     );
+
+    if (angle > -1.0) {
+        let refraction = 1.02 / Math.tan(degToRad(angle + 10.3 / (angle + 5.11))) / 60;
+        angle += refraction;
+    }
+    return angle;
 }
 
 export function getSunPositionY(date: Date): number {
-    const y = 350 * Math.tan(getSunAngle(date));
+    const y = 350 * (getSunAngle(date) / 90);
     return y;
 }
