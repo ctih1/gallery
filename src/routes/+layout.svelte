@@ -1,102 +1,7 @@
 <script lang="ts">
-    import { afterNavigate } from "$app/navigation";
-    import { page } from "$app/state";
-    import ClearContainer from "$lib/components/ClearContainer.svelte";
-    import Navbar from "$lib/components/Navbar.svelte";
-    import { hslToHex } from "$lib/helpers";
-    import { onMount } from "svelte";
     import "../app.css";
 
     let { children } = $props();
-
-    function createGrain(baseFreq: number): string {
-        return `data:image/svg+xml,%3Csvg viewBox='0 0 362 362' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='${baseFreq}' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E`;
-    }
-
-    let gradientEnabled = false;
-
-    function createColor(baseHue: number, offset: number) {
-        let result: number = 0;
-
-        result = baseHue + offset;
-        if (result > 360) {
-            result = Math.abs(result) - 360;
-        }
-        if (result < 0) {
-            result = 360 - Math.abs(result);
-        }
-        return result;
-    }
-
-    // https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
-    function invertColor(hex: string) {
-        if (hex.indexOf("#") === 0) {
-            hex = hex.slice(1);
-        }
-        // convert 3-digit hex to 6-digits.
-        if (hex.length === 3) {
-            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-        }
-        if (hex.length !== 6) {
-            throw new Error("Invalid HEX color.");
-        }
-        // invert color components
-        var r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-            g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-            b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-        // pad each with zeros and return
-        return "#" + r.padStart(2, "0") + g.padStart(2, "0") + b.padStart(2, "0");
-    }
-
-    function generateRandomGradient() {
-        if (window.location.pathname.includes("/photos/")) return;
-        if (document.body.classList.contains("index-body")) return;
-
-        console.log("creating new gradient");
-        const grainCss = createGrain(Math.random() + 2);
-
-        const x = Math.random() * 300 - 50;
-        const y = Math.random() * 360 - 80;
-
-        const x2 = Math.random() * 200 - 50;
-        const y2 = Math.random() * 260 - 80;
-
-        const hue = Math.random() * 200;
-        const color = hslToHex(hue, 10, 90);
-
-        const color2 = hslToHex(createColor(hue, -60), 5, 80);
-        const color3 = hslToHex(createColor(hue, 60), 15, 45);
-
-        const linearGradient = `linear-gradient(${Math.round(Math.random() * 1000) / 1000}turn, ${color} 0%, rgba(255,255,255, 0.4) 100%)`;
-        const radialGradient = `radial-gradient(circle at ${x}% ${y}%, ${color2} 0%, rgba(255,255,255, 0.4) 100%)`;
-        const radialGradient2 = `radial-gradient(circle at ${x2}% ${y2}%, ${color3} 0%, rgba(255,255,255, 0.4) 100%)`;
-
-        const gradients =
-            radialGradient +
-            ", " +
-            `url("${grainCss}")` +
-            ", " +
-            radialGradient2 +
-            ", " +
-            linearGradient;
-
-        document.body.style.background = gradients + `, ${invertColor(color2)}`;
-
-        document.body.style.backdropFilter = "invert(1)";
-
-        gradientEnabled = true;
-    }
-
-    afterNavigate(() => {
-        generateRandomGradient();
-        if (window.location.pathname === "/" && gradientEnabled) {
-            window.location.reload();
-        }
-    });
-
-    onMount(() => {
-        generateRandomGradient();
-    });
 </script>
 
 <svelte:head>
@@ -125,20 +30,6 @@
     />
 </svelte:head>
 
-<Navbar>
-    <a class="text-3xl" href="/">Home</a>
-    <a class="text-3xl" href="/photos">Photos</a>
-    <a class="text-3xl" href="/tools">Tools</a>
-    <a class="text-3xl" href="/devices">Devices</a>
-    <a class="text-3xl" href="/fun">Fun stuff</a>
-</Navbar>
-
-{#if !page.url.pathname.includes("/photos/") && !page.url.pathname.includes("local-docs")}
-    <ClearContainer>
-        {@render children?.()}
-    </ClearContainer>
-{:else}
-    {@render children?.()}
-{/if}
+{@render children?.()}
 
 <br />

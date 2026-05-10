@@ -1,361 +1,184 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
-    import Badge from "$lib/components/Badge.svelte";
-    import ClearBase from "$lib/components/ClearBase.svelte";
-    import Climate from "$lib/components/Climate.svelte";
-    import ConvertableFormat from "$lib/components/ConvertableFormat.svelte";
-    import PageConfig from "$lib/components/PageConfig.svelte";
-    import StravaCard from "$lib/components/StravaCard.svelte";
-    import Thermometer from "$lib/components/Thermometer.svelte";
-    import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
-    import { logg } from "$lib/loggy";
-    import { usingImperial } from "$lib/store";
-    import { onDestroy, onMount } from "svelte";
-    import type { OccupationColumn } from "./api/occupation/types";
-    import type { ProcessedActivity } from "./api/strava/types";
-    import type { ServerResponse } from "./api/weather/types";
+    import ContactMethod from "$lib/components/ContactMethod.svelte";
 
-    let stravaData: ProcessedActivity[] | undefined = $state([]);
-    let weatherData: ServerResponse | undefined = $state();
-    let occupationData: OccupationColumn[] = $state([]);
-    let disabledIndexes: boolean[] = $state(new Array(3 * 3).fill(false));
-    let squaresDisabled: boolean = $state(false);
-    let squaresAvailableIn: Date = $state(new Date());
-    let currentTime: Date = $state(new Date());
-    let cpuTemp = $state(0);
-    let climateData: ClimateData | undefined = $state();
+    let catImage: HTMLVideoElement | undefined = $state();
 
-    let nextOccupationRefresh: Date = $state(new Date());
-    nextOccupationRefresh.setTime(nextOccupationRefresh.getTime() + 5000);
-    let occupationInterval = undefined;
-
-    logg("verbose", "hello");
-    logg("info", "hello");
-    logg("warn", "hello");
-    logg("error", "hello");
-
-    async function getOccupations() {
-        if (!browser) return;
-        fetch("/api/occupation")
-            .then(data => data.json())
-            .then(json => {
-                occupationData = json;
-            });
-    }
-
-    setInterval(() => {
-        currentTime = new Date();
-    }, 1000);
-
-    occupationInterval = setInterval(async () => {
-        await getOccupations();
-        nextOccupationRefresh.setTime(new Date().getTime() + 5000);
-        nextOccupationRefresh = nextOccupationRefresh;
-    }, 5000);
-
-    onMount(async () => {
-        logg("fetch", "Fetching Strava data");
-        fetch("/api/strava")
-            .then(data => data.json())
-            .then(json => {
-                logg("fetch", "Strava data received");
-                stravaData = json;
-            });
-
-        logg("fetch", "Fetching weather data");
-        fetch("/api/weather")
-            .then(data => data.json())
-            .then(json => {
-                logg("fetch", "Weather data data received");
-                weatherData = json;
-            });
-
-        logg("fetch", "Fetching CPU temp");
-        fetch("/api/local/temp")
-            .then(data => data.json())
-            .then(json => {
-                cpuTemp = json["cpu"];
-                logg("fetch", "CPU temp received");
-            });
-
-        logg("fetch", "Fetching climate data");
-        fetch("/api/local/climate")
-            .then(data => data.json())
-            .then(json => {
-                climateData = json;
-                logg("fetch", "Climate data received");
-            });
-        await getOccupations();
-    });
-
-    let checked = $state(false);
+    let scrollY = $state(0);
 
     $effect(() => {
-        logg("info", "Setting usingImperial");
-        usingImperial.set(checked);
-    });
+        if (!catImage) return;
 
-    async function claimSpace(index: number) {
-        if (!browser) return;
+        const catRect = catImage.getBoundingClientRect();
+        let relativeScroll = (scrollY - catRect.y) / catRect.height;
 
-        disabledIndexes[index] = true;
-
-        const req = await fetch(`/api/occupation?i=${index}`, {
-            method: "POST"
-        });
-
-        if (req.ok) {
-            const json: OccupationColumn = await req.json();
-            occupationData = occupationData.filter(obj => obj.id !== json.id);
-            occupationData.push(json);
-        }
-        disabledIndexes[index] = false;
-        squaresDisabled = true;
-        squaresAvailableIn = new Date();
-        squaresAvailableIn.setSeconds(squaresAvailableIn.getSeconds() + 30);
-
-        setTimeout(() => {
-            squaresDisabled = false;
-        }, 30000);
-    }
-
-    // stupid ass wakatime wont let you share your current stats, and since I'm not paying for it, I can only show the past 6 days.
-    // if we use a static link (eg. start=2026-02-18&end=2026-02-24) it'll stop working after a day, since "you can't view past stats without buying premium!"
-    function generateWakatimeArgs(): string {
-        const nowMs = new Date().getTime();
-
-        const endDate = new Date(nowMs - 1 * 24 * 60 * 60 * 1000);
-        const startDate = new Date(endDate.getTime() - 6 * 24 * 60 * 60 * 1000);
-
-        return `start=${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}&end=${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
-    }
-
-    onDestroy(() => {
-        if (occupationInterval) {
-            clearInterval(occupationInterval);
-        }
+        let cappedScroll = Math.min(Math.max(0, relativeScroll), 1);
     });
 </script>
 
-<h1>yellooo</h1>
-<p>
-    This is my own very cool little website. It's hosted on <a href="/devices/orangepi3b"
-        >my Orange Pi 3B</a
-    >. Sorry if the site feels a bit slow, the server is located in Finland, and I have residential
-    internet plan, which upload speeds are about 60mbps.
-</p>
-<p>Feel free to explore this site in peace!</p>
-<br />
+<svelte:window bind:scrollY />
 
-<div class="strava-activity">
-    <h1>Strava activities</h1>
-    <div class="strava-container flex flex-row-reverse overflow-x-scroll">
-        {#each stravaData as activity}
-            <StravaCard
-                name={activity.name}
-                avgSpeed={activity.averageSpeed}
-                distance={activity.distance}
-                maxSpeed={activity.maxSpeed}
-                started={activity.startTime}
-                time={activity.time}
-                type={activity.type as "Run" | "Ride"}
-                kilojoules={activity.kilojoules}
-            />
-        {/each}
+<div id="introduction-bg">
+    <div class="absolute top-0 left-0 h-[90vh] w-screen overflow-hidden">
+        <img
+            src="./IMG_7565.jpeg"
+            alt="Nice lake"
+            class="absolute top-0 left-0 -z-20 min-h-[90vh] object-cover object-center will-change-transform transform-3d"
+        />
     </div>
-    <div>
-        <label for="imperial-check">Use imperial units</label>
-        <input bind:checked id="imperial-check" type="checkbox" />
-    </div>
+    <div class="dark-overlay absolute top-0 left-0 -z-10 h-[90vh] w-screen"></div>
 </div>
 
-<div class="mt-16">
-    <h1>Take over the area</h1>
-    <p>Click a square to occupy it</p>
-    <div class="grid grid-cols-2 grid-rows-3 gap-1 lg:grid-cols-3">
-        {#each new Array(3 * 3) as _, index}
-            {#key disabledIndexes}
-                <button
-                    class={`rounded-xl ${squaresDisabled ? "pointer-events-none opacity-50" : ""}`}
-                    disabled={squaresDisabled}
-                    onclick={_ => claimSpace(index)}
-                >
-                    <ClearBase
-                        className="min-h-16 flex justify-center items-center hover:bg-white/10 p-2"
-                    >
-                        {#if occupationData}
-                            {@const data = occupationData.find(obj => obj.id === index)}
-                            {#if disabledIndexes[index]}
-                                <p>Loading...</p>
-                            {:else}
-                                <div class="ml-2 text-left">
-                                    <p>{data?.nation ?? "Unclaimed"}</p>
-                                    {#if data}
-                                        <p class="opacity-60"><i>{data?.isp}</i></p>
-                                        <p class="opacity-40">
-                                            Claimed {new Date(data?.occupied).toLocaleDateString()}
-                                        </p>
-                                    {/if}
-                                </div>
-                                {#if data}
-                                    <img
-                                        class="mr-0 ml-auto w-12"
-                                        alt={`Flag of ${data?.nation}`}
-                                        src={`/flags/${data?.country.toUpperCase()}.webp`}
-                                    />
-                                {/if}
-                            {/if}
-                        {/if}
-                    </ClearBase>
-                </button>
-            {/key}
-        {/each}
+<div id="project-bg">
+    <div class="absolute top-[105vh] left-0 h-[140vh] w-screen overflow-hidden">
+        <img
+            src="./IMG_1280.jpg"
+            class="absolute top-0 left-0 -z-20 min-h-[140vh] object-cover object-top"
+            alt="Forest"
+        />
     </div>
-    {#key currentTime}
-        {#if squaresDisabled}
-            <p>
-                Cooldown: {Math.round(
-                    (squaresAvailableIn.getTime() - currentTime.getTime()) / 1000
-                )}s
-            </p>
-        {/if}
-
-        <p>
-            Next refresh: {Math.round(
-                (nextOccupationRefresh.getTime() - currentTime.getTime()) / 1000
-            )}s
-        </p>
-    {/key}
+    <div class="dark-overlay absolute top-[105vh] left-0 -z-10 h-[140vh] w-screen"></div>
 </div>
 
-<div class="mt-16">
-    <h1>climate</h1>
-    <p>This data has been gathered from my BME680</p>
+<div class="md:p-8 lg:p-16 xl:p-32">
+    <div id="introduction" class="flex h-[80vh] w-screen items-center">
+        <div
+            class="mb-42 max-w-3/5 squircle-md bg-black/30 p-6 outline-1 outline-white/20 backdrop-blur-md"
+        >
+            <h2 class="text-6xl!">Hello!</h2>
+            <h1 class="mb-1! text-2xl! font-medium opacity-80">
+                I'm ctih1, a full-stack dev from Finland
+            </h1>
 
-    <Climate {cpuTemp} data={climateData} />
-</div>
+            <p class="opacity-40">(who occasionally makes some cool things)</p>
 
-<div class="mt-16">
-    <h1>weather</h1>
-    <p>The current weather where the server is located</p>
-    <ClearBase className="p-2 max-w-xl min-h-40 mb-8 squircle-md">
-        {#if weatherData}
-            <div class="justify-between sm:flex">
+            <div class="mt-4 flex">
+                <ContactMethod
+                    link="https://github.com/ctih1/"
+                    imageUrl="./logos/GitHub_Invertocat_White.svg"
+                />
+            </div>
+        </div>
+    </div>
+    <div id="projects">
+        <h1>My programming projects</h1>
+
+        <div class="flex flex-col p-16 md:flex-row md:justify-between">
+            <div class="space-y-52 pr-16 md:w-1/2" id="left">
                 <div>
-                    <h2>Today</h2>
+                    <h2>frii.site</h2>
                     <p>
-                        <b>Sunrise</b>: {new Date(weatherData.sunrise ?? 0).toLocaleTimeString(
-                            "en-US",
-                            {
-                                timeZone: "Europe/Helsinki"
-                            }
-                        )}
+                        A free subdomain registrar, which I've been developing over the past 2
+                        years. The service has amassed <span
+                            class="font-semibold text-[rgb(50,180,255)]!">over 5000 users</span
+                        > from over a hundred different countries.
                     </p>
-                    <p>
-                        <b>Sunset</b>: {new Date(weatherData.sunset ?? 0).toLocaleTimeString(
-                            "en-US",
-                            {
-                                timeZone: "Europe/Helsinki"
-                            }
-                        )}
-                    </p>
-                    <p>
-                        <b>Coldest</b>: <ConvertableFormat
-                            imperialUnit="°F"
-                            metricUnit="°C"
-                            type="c"
-                            metricValue={Math.min(
-                                ...Object.entries(weatherData.temperature)
-                                    .values()
-                                    .map(e => e[1])
-                            )}
-                        />
-                    </p>
-                    <p>
-                        <b>Warmest</b>: <ConvertableFormat
-                            imperialUnit="°F"
-                            metricUnit="°C"
-                            type="c"
-                            metricValue={Math.max(
-                                ...Object.entries(weatherData.temperature)
-                                    .values()
-                                    .map(e => e[1])
-                            )}
-                        />
-                    </p>
-                    <p>
-                        <b>Snowfall in 24h</b>: <ConvertableFormat
-                            imperialUnit="inches"
-                            metricUnit="cm"
-                            metricValue={Math.round(
-                                Object.entries(weatherData.snowfall)
-                                    .map(e => e[1])
-                                    .reduce((partialSum, a) => partialSum + a, 0) * 1000
-                            ) / 1000}
-                        />
-                    </p>
-                    <div>
-                        <h2>weather box</h2>
-                        <p>Simulation of what it currently looks like outside</p>
 
-                        <WeatherBox {weatherData} />
+                    <div class="mt-4 flex space-x-4">
+                        <ContactMethod
+                            imageUrl="./logos/GitHub_Invertocat_White.svg"
+                            link="https://github.com/ctih1/frii.site-frontend"
+                        />
+                        <ContactMethod imageUrl="./logos/open.svg" link="https://www.frii.site" />
                     </div>
                 </div>
 
                 <div>
-                    <h2>Right now</h2>
-                    <Thermometer temperature={weatherData.tempNow} />
+                    <h2>goober</h2>
+                    <p>
+                        A fork of an existing Discord bot. Rewrote a large part of the codebase, and
+                        improved the developer experience. Also wrote many cogs for it, such as a
+                        YouTube song translator, OCR translator (Google Lens alternative), and many
+                        more.
+                    </p>
+
+                    <div class="mt-4 flex space-x-4">
+                        <ContactMethod
+                            imageUrl="./logos/GitHub_Invertocat_White.svg"
+                            link="https://github.com/ctih1/goober"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <h2>fitness-tracker</h2>
+                    <p>
+                        Does exactly what's said on the tin. Let's you create custom exercises, log
+                        progress, and view your progress. Made with Tauri and Svelte
+                    </p>
+
+                    <div class="mt-4 flex space-x-4">
+                        <ContactMethod
+                            imageUrl="./logos/GitHub_Invertocat_White.svg"
+                            link="https://github.com/ctih1/fitness-tracker"
+                        />
+                    </div>
                 </div>
             </div>
-        {/if}
-    </ClearBase>
-</div>
 
-<div class="badges grid-row-col mr-auto ml-auto grid w-fit grid-cols-3 gap-1 sm:grid-cols-4">
-    <Badge redirect="/" imageUrl="/badges/ctih1.png" />
-    <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png" />
-    <Badge redirect="" imageUrl="/badges/human.png" />
-    <Badge
-        redirect="https://en.wikipedia.org/wiki/Port_forwarding"
-        imageUrl="/badges/port-forwarded.png"
-    />
-    <Badge
-        redirect="https://en.wikipedia.org/wiki/Self-hosting_(network)"
-        imageUrl="/badges/self-host.png"
-    />
-    <Badge redirect="https://www.frii.site" imageUrl="/badges/friisite.png" />
-    <Badge redirect="https://www.powerpcfan.xyz" imageUrl="/badges/powerpcfan.png" />
-    <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
-    <Badge redirect="https://whatdidyouexpect.eu" imageUrl="/badges/expect.png" />
-    <Badge
-        redirect={`https://wakatime.com/@ctih1/projects/jbxjzaudtx?${generateWakatimeArgs()}`}
-        imageUrl="/badges/wakatime.png"
-    />
-    <Badge redirect="https://svelte.dev" imageUrl="/badges/svelte.png" />
-    <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
-    <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
-</div>
-<p class="text-center opacity-60">
-    note: want your badge here? <a href="/contact">contact me!</a>
-</p>
+            <div id="timeline" class="hidden h-[900px] w-[3px] md:block"></div>
 
-<div class="mt-12 mr-auto ml-auto w-fit text-center">
-    <h2 class="w-fit text-4xl!">Made with love &lt;3</h2>
-    <p class="opacity-60">(aka <a href="https://svelte.dev/">Svelte</a>)</p>
-    <a href="https://github.com/ctih1/gallery">Source code for this website</a>
-</div>
+            <div class="text-righ mt-52 space-y-52 pl-16 md:w-1/2" id="right">
+                <div>
+                    <h2>kake</h2>
+                    <p>
+                        A "virus" written to joke around with my friends. The client, installer,
+                        updater, and server are all programmed in Rust. I had a lot of fun learning
+                        about low-level stuff, working with the Win32 API, and figuring out how go
+                        undetected by antiviruses.
+                    </p>
+                    <div class="ml-auto flex justify-end space-x-4">
+                        <ContactMethod
+                            imageUrl="./logos/GitHub_Invertocat_White.svg"
+                            link="https://github.com/ctih1/kake"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <h2>betternotifications</h2>
+                    <p>
+                        A Vencord plugin which improved the look and customization of notifications
+                        on the instant messaging service Discord. I learnt a lot about Typescript,
+                        Electron, and reverse-engineering during building this.
+                    </p>
+                    <div class="float-right mt-4 flex space-x-4">
+                        <ContactMethod
+                            imageUrl="./logos/GitHub_Invertocat_White.svg"
+                            link="https://github.com/Vendicated/Vencord/pull/3430"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<PageConfig className="index-body" />
+    <hr class="mt-20 opacity-10" />
+
+    <div class="mt-20" id="fun-stuff">
+        <h1>Local climate</h1>
+        <p>
+            I installed a couple of sensors indoors and outdoors, and here is the data they're
+            currently providing me with:
+        </p>
+    </div>
+</div>
 
 <style>
-    .strava-container {
-        scrollbar-color: white #00000010;
+    .dark-overlay {
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.6) 19%,
+            rgba(0, 0, 0, 0.5) 50%,
+            rgba(0, 0, 0, 0.6) 70%,
+            rgba(0, 0, 0, 1) 100%
+        );
     }
 
-    :global(.index-body) {
-        background: url("/images/img_6973.jpg/thumbnail.webp");
-        background-repeat: no-repeat;
-        background-size: cover;
-        backdrop-filter: blur(8px) saturate(150%);
+    #timeline {
+        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='white' stroke-width='9' stroke-dasharray='20%2c30' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    }
+
+    :global(body) {
+        height: 100%;
+        background-color: black;
     }
 </style>
