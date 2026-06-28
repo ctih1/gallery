@@ -37,7 +37,11 @@
 }
 
 code * {
-    font-family: "JetBrains-Mono", sans-serif;
+    font-family: "JetBrains-Mono", monospace;
+}
+
+code {
+    font-family: "JetBrains-Mono", monospace;
 }
 
 code > span {

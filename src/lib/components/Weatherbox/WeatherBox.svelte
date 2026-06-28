@@ -67,6 +67,7 @@
     let lastRenderTimestamp = 0;
 
     onMount(() => {
+        console.log(weatherData);
         if (weatherData) {
             const coverNow: FullPercentage = getNearestMapValue(weatherData.cloudCover) || 0;
             const rainNowMm: number = getNearestMapValue(weatherData.rain) || 0;
@@ -354,6 +355,7 @@
     onclick={_ => (debugVariables.turnedOn = !debugVariables.turnedOn)}
     width="300px"
     height="300px"
+    class="rounded-2xl"
     bind:this={weatherCanvas}
 ></canvas>
 

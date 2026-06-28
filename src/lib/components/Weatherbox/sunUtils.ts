@@ -40,10 +40,11 @@ export function getSunAngle(date: Date) {
         let refraction = 1.02 / Math.tan(degToRad(angle + 10.3 / (angle + 5.11))) / 60;
         angle += refraction;
     }
+
     return angle;
 }
 
 export function getSunPositionY(date: Date): number {
-    const y = 350 * (getSunAngle(date) / 90);
+    const y = (600 * getSunAngle(date)) / 90 - 70;
     return y;
 }
