@@ -45,21 +45,21 @@
 <svelte:head>
     <link rel="preload" as="image" href={thumbnailPath} type="image/webp" />
 
-    <title>{filename?.toUpperCase()} | ctih1.frii.site</title>
+    <title>{filename?.toUpperCase()} | ctih1.fi</title>
     <meta name="description" content={`${filename} - ${data.image.description}`} />
 
-    <meta property="og:url" content={`https://ctih1.frii.site/photos/${filename}`} />
+    <meta property="og:url" content={`https://ctih1.fi/photos/${filename}`} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={filename} />
     <meta property="og:description" content={`${data.image.description}`} />
-    <meta property="og:image" content={`https://ctih1.frii.site/images/${filename}.webp`} />
+    <meta property="og:image" content={`https://ctih1.fi/images/${filename}.webp`} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta property="twitter:domain" content="ctih1.frii.site" />
-    <meta property="twitter:url" content="https://ctih1.frii.site" />
+    <meta property="twitter:domain" content="ctih1.fi" />
+    <meta property="twitter:url" content="https://ctih1.fi" />
     <meta name="twitter:title" content="ctih1's gallery" />
     <meta name="twitter:description" content={data.image.description} />
-    <meta name="twitter:image" content={`https://ctih1.frii.site/images/${filename}.webp`} />
+    <meta name="twitter:image" content={`https://ctih1.fi/images/${filename}.webp`} />
 </svelte:head>
 
 <img

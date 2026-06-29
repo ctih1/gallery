@@ -20,6 +20,6 @@
 
 <svelte:head>
     <title>
-        {title || "ctih1.frii.site"}
+        {title || "ctih1.fi"}
     </title>
 </svelte:head>

@@ -1,9 +1,11 @@
 <script lang="ts">
     import { browser } from "$app/environment";
+    import Badge from "$lib/components/Badge.svelte";
     import Climate from "$lib/components/Climate.svelte";
     import ContactMethod from "$lib/components/ContactMethod.svelte";
     import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
     import { onDestroy, onMount } from "svelte";
+    import type { OccupationColumn } from "./api/occupation/types";
 
     let catImage: HTMLVideoElement | undefined = $state();
 
@@ -11,6 +13,16 @@
     let mediaDevices: string[] = $state([]);
     let localClimateData: any | undefined = $state();
     let weatherData: {} | undefined = $state();
+
+    let takeoverData: OccupationColumn[] = $state([]);
+    let takeoverInterval: ReturnType<typeof setInterval>;
+
+    let disabledTakeoverIndexes: boolean[] = $state(Array(9).fill(false));
+    let takeoverDisabled: boolean = $state(false);
+    let takeoverAvailableIn: Date = $state(new Date());
+
+    let nextTakeoverRefresh: Date = $state(new Date());
+    nextTakeoverRefresh.setTime(nextTakeoverRefresh.getTime() + 5000);
 
     let tickInterval: ReturnType<typeof setInterval>;
     let tick = $state(0);
@@ -41,13 +53,54 @@
                 weatherData = jason;
             });
 
-        tickInterval = setInterval(() => (tick += 1), 1000);
+        takeoverInterval = setInterval(async () => {
+            await updateTakeover();
+        }, 5000);
+
+        updateTakeover();
+        tickInterval = setInterval(() => (tick += 1), 100);
     });
 
     onDestroy(() => {
-        // @ts-ignore
         clearInterval(tickInterval);
+        clearInterval(takeoverInterval);
     });
+
+    async function updateTakeover() {
+        await fetch("/api/occupation")
+            .then(req => req.json())
+            .then(jason => {
+                takeoverData = jason;
+
+                nextTakeoverRefresh.setTime(new Date().getTime() + 5000);
+                nextTakeoverRefresh = nextTakeoverRefresh;
+            });
+    }
+
+    async function takeoverIndex(index: number) {
+        if (!browser) return;
+
+        disabledTakeoverIndexes[index] = true;
+
+        const req = await fetch(`/api/occupation?i=${index}`, {
+            method: "POST"
+        });
+
+        if (req.ok) {
+            const json: OccupationColumn = await req.json();
+            takeoverData = takeoverData.filter(obj => obj.id !== json.id);
+            takeoverData.push(json);
+        }
+
+        disabledTakeoverIndexes[index] = false;
+        takeoverDisabled = true;
+        takeoverAvailableIn = new Date();
+        takeoverAvailableIn.setSeconds(takeoverAvailableIn.getSeconds() + 30);
+
+        setTimeout(() => {
+            takeoverDisabled = false;
+        }, 30000);
+    }
 
     function getGpuName() {
         if (!browser) return "Checking...";
@@ -88,6 +141,15 @@
         return resp;
     }
 
+    function generateWakatimeArgs(): string {
+        const nowMs = new Date().getTime();
+
+        const endDate = new Date(nowMs - 1 * 24 * 60 * 60 * 1000);
+        const startDate = new Date(endDate.getTime() - 6 * 24 * 60 * 60 * 1000);
+
+        return `start=${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}&end=${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
+    }
+
     function getLanguages() {
         if (!browser) return "Checking...";
 
@@ -101,19 +163,29 @@
 
 <svelte:window bind:scrollY />
 
-<div id="introduction-bg">
-    <div class="absolute top-0 left-0 h-[90vh] w-screen overflow-hidden">
-        <img
-            src="./IMG_7565.jpeg"
-            alt="Nice lake"
-            class="absolute top-0 left-0 -z-20 min-h-[90vh] object-cover object-center will-change-transform transform-3d"
-        />
+{#snippet Background(source: string, alt: string, height?: string | undefined)}
+    {@const h = height ?? "90vh"}
+    <div>
+        <div style={`height: ${h}`} class="absolute top-0 left-0 -z-20 w-screen overflow-hidden">
+            <img
+                draggable="false"
+                src={source}
+                {alt}
+                style={`min-height: ${h}`}
+                class="pointer-events-none absolute top-0 left-0 -z-30 object-cover object-center will-change-transform select-none transform-3d"
+            />
+        </div>
+        <div
+            style={`height: ${h}`}
+            class="dark-overlay pointer-events-none absolute top-0 left-0 -z-20 w-screen"
+        ></div>
     </div>
-    <div class="dark-overlay absolute top-0 left-0 -z-10 h-[90vh] w-screen"></div>
-</div>
+{/snippet}
 
-<div class="[&>div]:p-4 [&>div]:md:p-8 [&>div]:lg:p-16 [&div>]:xl:p-32">
-    <div id="introduction" class="flex h-[80vh] w-screen items-center">
+<div class="mt-18 [&>div]:p-4 [&>div]:md:p-8 [&>div]:lg:p-16 [&div>]:xl:p-32">
+    <div id="introduction relative" class="flex h-[80vh] w-screen items-center">
+        {@render Background("./IMG_7565.jpeg", "Nice lake", "90vh")}
+
         <div
             class="max-w-3/5 squircle-md bg-black/30 p-6 outline-1 outline-white/20 backdrop-blur-md md:mb-24 lg:mb-38"
         >
@@ -133,14 +205,83 @@
         </div>
     </div>
 
-    <div id="fun">
+    <div class="relative mt-8" id="fun">
+        {@render Background("IMG_2420.jpg", "Flowers n hill", "2000px")}
         <h1>Fun stuff</h1>
         <p class="max-w-[65ch]">
             This section of the web page is dedicated to showcasing some fun stuff.<br />Unlike this
             paragraph, some of them might be pretty interesting!
         </p>
 
-        <div class="mt-16" id="fingerprinting">
+        <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
+            <h2>Take over game</h2>
+            <p>Click on a square to steal it!</p>
+
+            <div class="grid max-w-2xl grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
+                {#each new Array(9) as _, index}
+                    <button
+                        onclick={async () => {
+                            await takeoverIndex(index);
+                        }}
+                        disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
+                        class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
+                    >
+                        {#if takeoverData.length == 0}
+                            Loading...
+                        {:else}
+                            {#key takeoverData}
+                                <div class="claim-info flex-col">
+                                    <span class="flex items-center space-x-2">
+                                        <p class="text-left text-xl! font-semibold">
+                                            {takeoverData[index].nation}
+                                        </p>
+                                        <img
+                                            class="h-8"
+                                            src={`/flags/${takeoverData[index].country}.webp`}
+                                            alt={`Flag of ${takeoverData[index].country}`}
+                                        />
+                                    </span>
+                                    <p
+                                        class="h-12 overflow-hidden text-left text-ellipsis opacity-55"
+                                    >
+                                        {takeoverData[index].isp}
+                                    </p>
+                                </div>
+                                <p class="text-left text-sm opacity-55">
+                                    Claimed {new Date(
+                                        takeoverData[index].occupied
+                                    ).toLocaleDateString()}
+                                </p>
+                            {/key}
+                        {/if}
+                    </button>
+                {/each}
+            </div>
+            {#key tick}
+                <p>
+                    Next refresh: <span class="font-[JetBrains-Mono]!">
+                        {(
+                            Math.round(
+                                (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
+                            ) / 10
+                        ).toFixed(1)}s</span
+                    >
+                </p>
+                {#if takeoverDisabled}
+                    <p>
+                        Next turn: <span class="font-[JetBrains-Mono]!">
+                            {(
+                                Math.round(
+                                    (takeoverAvailableIn.getTime() - new Date().getTime()) / 100
+                                ) / 10
+                            ).toFixed(1)}s</span
+                        >
+                    </p>
+                {/if}
+            {/key}
+        </div>
+
+        <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
             <h2>Fingerprinting</h2>
             <p class="max-w-[65ch]">
                 By default, most browser give out a lot of information, which can be used to
@@ -161,8 +302,11 @@
             </ul>
         </div>
 
-        <div class="mt-16" id="weather">
-            <h2>Local weather</h2>
+        <div
+            class="mt-16 rounded-2xl bg-linear-to-b from-gray-800/30 from-70% to-transparent p-4"
+            id="weather"
+        >
+            <h2>Local climate</h2>
             <p>
                 I have a small array of sensors located both outdoors and indoors, and I can use
                 them to monitor trends.
@@ -170,6 +314,7 @@
 
             <div class="mt-4">
                 <h3 class="font-semibold">Indoors</h3>
+                <p>Data from a BME680, and an SCD40</p>
                 {#if localClimateData}
                     <Climate data={localClimateData} cpuTemp={50}></Climate>
                 {:else}
@@ -182,13 +327,14 @@
             </div>
             <div class="mt-4">
                 <h3 class="font-semibold">Outdoors</h3>
+                <p>Data from an SHT30 and SPS30</p>
                 {#if weatherData && localClimateData}
                     <div class="flex flex-col space-y-4 space-x-4 md:flex-row">
                         <div class="flex-row">
                             <WeatherBox {weatherData}></WeatherBox>
                         </div>
                         <code
-                            class="h-fit max-h-[300px] w-96 rounded-2xl bg-gray-900 p-2 md:w-full"
+                            class="h-fit max-h-[300px] w-96 max-w-2xl rounded-2xl bg-zinc-900/60 p-2 md:w-full"
                         >
                             <p>website@ctih1.fi:~$ ./stuff.sh</p>
                             <p>air_temp={localClimateData["temp"]} *C</p>
@@ -223,17 +369,8 @@
         </div>
     </div>
 
-    <div class="relative mt-32" id="projects">
-        <div id="project-bg">
-            <div class="absolute top-20 left-0 min-h-full w-screen overflow-hidden">
-                <img
-                    src="./IMG_1280.jpg"
-                    class="absolute top-0 left-0 -z-20 h-[900px] object-cover object-top"
-                    alt="Forest"
-                />
-            </div>
-            <div class="dark-overlay absolute top-20 left-0 -z-10 h-[900px] w-screen"></div>
-        </div>
+    <div class="relative mt-16" id="projects">
+        {@render Background("./IMG_1280.jpg", "Forest", "1100px")}
 
         <h1>My programming projects</h1>
 
@@ -327,29 +464,91 @@
                 </div>
             </div>
         </div>
+        <div class="text-center">
+            <h2>And many more!</h2>
+            <p>Check out my <a href="https://github.com/ctih1">GitHub account here!</a></p>
+        </div>
     </div>
 
-    <hr class="mt-20 opacity-10" />
+    <div class="relative" id="shoutouts">
+        {@render Background("/images/dsc06074.jpg/primary.jpg", "Northern lights")}
+
+        <div class="mt-32 pt-2! text-center">
+            <h2>made with love &lt;3</h2>
+            <p class="opacity-80">(aka Svelte)</p>
+            <a class="opacity-55" href="https://github.com/ctih1/gallery/"
+                >Source code for this website</a
+            >
+        </div>
+
+        <div
+            class="badges grid-row-col mt-52 mr-auto mb-4 ml-auto grid w-fit grid-cols-3 gap-1 pb-0! sm:grid-cols-4"
+        >
+            <Badge redirect="/" imageUrl="/badges/ctih1.png" />
+            <Badge redirect="http://www.orangepi.org/" imageUrl="/badges/orangepi.png" />
+            <Badge redirect="" imageUrl="/badges/human.png" />
+            <Badge
+                redirect="https://en.wikipedia.org/wiki/Port_forwarding"
+                imageUrl="/badges/port-forwarded.png"
+            />
+            <Badge
+                redirect="https://en.wikipedia.org/wiki/Self-hosting_(network)"
+                imageUrl="/badges/self-host.png"
+            />
+            <Badge redirect="https://www.frii.site" imageUrl="/badges/friisite.png" />
+            <Badge redirect="https://www.powerpcfan.xyz" imageUrl="/badges/powerpcfan.png" />
+            <Badge redirect="https://oskari2.arr.ovh" imageUrl="/badges/oskariwashere.png" />
+            <Badge redirect="https://whatdidyouexpect.eu" imageUrl="/badges/expect.png" />
+            <Badge
+                redirect={`https://wakatime.com/@ctih1/projects/jbxjzaudtx?${generateWakatimeArgs()}`}
+                imageUrl="/badges/wakatime.png"
+            />
+            <Badge redirect="https://svelte.dev" imageUrl="/badges/svelte.png" />
+            <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
+            <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
+        </div>
+        <p class="pt-0! text-center text-sm! opacity-40">note: want your badge here? Contact me</p>
+    </div>
 </div>
 
 <style>
     .dark-overlay {
-        background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 1) 0%,
-            rgba(0, 0, 0, 0.6) 19%,
-            rgba(0, 0, 0, 0.5) 50%,
-            rgba(0, 0, 0, 0.6) 70%,
+        background: rgba(0, 0, 0, 0.6);
+        background: radial-gradient(
+            ellipse 200% 50% at center,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.6) 60%,
             rgba(0, 0, 0, 1) 100%
         );
     }
 
-    #timeline {
-        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='white' stroke-width='9' stroke-dasharray='20%2c30' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+    @keyframes -global-fear-shake {
+        0% {
+            transform: rotate(0deg);
+        }
+        25% {
+            transform: rotate(-4deg);
+        }
+        50% {
+            transform: rotate(0deg);
+        }
+        75% {
+            transform: rotate(4deg);
+        }
+        100% {
+            transfrom: rotate(0deg);
+        }
     }
 
-    :global(body) {
-        height: 100%;
+    .game-button:hover:enabled {
+        animation: 0.2s infinite fear-shake;
+        cursor: pointer;
+    }
+
+    :global(.home-dark) {
         background-color: black;
+    }
+    #timeline {
+        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='white' stroke-width='9' stroke-dasharray='20%2c30' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
     }
 </style>

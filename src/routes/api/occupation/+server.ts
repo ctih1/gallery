@@ -1,6 +1,5 @@
 import { error } from "@sveltejs/kit";
 import Database from "better-sqlite3";
-import net from "node:net";
 import { getCountryFromIp } from "../traceroute/helpers.js";
 import type { OccupationColumn } from "./types.js";
 const database = new Database("areas.db");
