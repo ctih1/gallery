@@ -196,7 +196,7 @@
         {@render Background("/home/IMG_7565.webp", "Nice lake", "90vh")}
 
         <div
-            class="max-w-3/5 squircle-md bg-black/30 p-6 outline-1 outline-white/20 backdrop-blur-md md:mb-24 lg:mb-38"
+            class="mr-4 w-full max-w-lg squircle-md bg-black/30 p-6 outline-1 outline-white/20 backdrop-blur-md md:mb-24 lg:mb-38"
         >
             <h2 class="text-6xl!">Hello!</h2>
             <h1 class="mb-1! text-2xl! font-medium opacity-80">
