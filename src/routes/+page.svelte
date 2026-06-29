@@ -193,7 +193,7 @@
 
 <div class="mt-18 [&>div]:p-4 [&>div]:md:p-8 [&>div]:lg:p-16 [&div>]:xl:p-32">
     <div id="introduction relative" class="flex h-[80vh] w-screen items-center">
-        {@render Background("./IMG_7565.jpeg", "Nice lake", "90vh")}
+        {@render Background("/home/IMG_7565.webp", "Nice lake", "90vh")}
 
         <div
             class="max-w-3/5 squircle-md bg-black/30 p-6 outline-1 outline-white/20 backdrop-blur-md md:mb-24 lg:mb-38"
@@ -215,7 +215,7 @@
     </div>
 
     <div class="relative mt-8" id="fun">
-        {@render Background("IMG_2420.jpg", "Flowers n hill", "2000px")}
+        {@render Background("/home/IMG_2420.webp", "Flowers n hill", "2000px")}
         <h1>Fun stuff</h1>
         <p class="max-w-[65ch]">
             This section of the web page is dedicated to showcasing some fun stuff.<br />Unlike this
@@ -400,7 +400,7 @@
     </div>
 
     <div class="relative mt-16" id="projects">
-        {@render Background("./IMG_1280.jpg", "Forest", "1100px")}
+        {@render Background("/home/IMG_1280.webp", "Forest", "1100px")}
 
         <h1>My programming projects</h1>
 
