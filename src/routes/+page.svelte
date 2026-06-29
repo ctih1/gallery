@@ -6,6 +6,7 @@
     import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
     import { onDestroy, onMount } from "svelte";
     import type { OccupationColumn } from "./api/occupation/types";
+    import type { ProcessedActivity } from "./api/strava/types";
 
     let catImage: HTMLVideoElement | undefined = $state();
 
@@ -23,6 +24,8 @@
 
     let nextTakeoverRefresh: Date = $state(new Date());
     nextTakeoverRefresh.setTime(nextTakeoverRefresh.getTime() + 5000);
+
+    let stravaData: ProcessedActivity[] = $state([]);
 
     let tickInterval: ReturnType<typeof setInterval>;
     let tick = $state(0);
@@ -51,6 +54,12 @@
             .then(req => req.json())
             .then(jason => {
                 weatherData = jason;
+            });
+
+        fetch("/api/strava")
+            .then(req => req.json())
+            .then(jason => {
+                stravaData = jason;
             });
 
         takeoverInterval = setInterval(async () => {
@@ -280,6 +289,27 @@
                 {/if}
             {/key}
         </div>
+
+        <!-- <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="strava">
+            <h2>Strava activities</h2>
+
+            <div
+                class="strava-container flex h-60 max-w-6xl flex-row-reverse space-x-2 overflow-x-scroll"
+            >
+                {#each stravaData as activity}
+                    <StravaCard
+                        name={activity.name}
+                        avgSpeed={activity.averageSpeed}
+                        distance={activity.distance}
+                        maxSpeed={activity.maxSpeed}
+                        started={activity.startTime}
+                        time={activity.time}
+                        type={activity.type as "Run" | "Ride"}
+                        kilojoules={activity.kilojoules}
+                    ></StravaCard>
+                {/each}
+            </div>
+        </div> -->
 
         <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
             <h2>Fingerprinting</h2>
@@ -547,6 +577,10 @@
 
     :global(.home-dark) {
         background-color: black;
+    }
+
+    .strava-container {
+        scrollbar-color: rgba(255, 255, 255, 0.295) rgba(65, 71, 80, 0.6);
     }
     #timeline {
         background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='white' stroke-width='9' stroke-dasharray='20%2c30' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
