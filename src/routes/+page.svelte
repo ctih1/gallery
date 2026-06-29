@@ -40,8 +40,14 @@
     });
 
     onMount(async () => {
-        for (let device of await navigator.mediaDevices.enumerateDevices()) {
-            mediaDevices.push(device.kind);
+        if (!browser) return;
+
+        try {
+            for (let device of await navigator.mediaDevices.enumerateDevices()) {
+                mediaDevices.push(device.kind);
+            }
+        } catch (e) {
+            console.log("Failed to get media devices");
         }
 
         fetch("/api/local/climate")
