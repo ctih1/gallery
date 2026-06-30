@@ -243,7 +243,8 @@
                     >
                         {#if takeoverData.length == 0}
                             Loading...
-                        {:else if takeoverData[index]}
+                        {:else if takeoverData.find(d => d.id === index)}
+                            {@const data = takeoverData.find(d => d.id === index)!}
                             <div class="claim-info flex-col">
                                 <span class="flex items-center space-x-2">
                                     <p class="text-left text-xl! font-semibold">
@@ -251,18 +252,16 @@
                                     </p>
                                     <img
                                         class="h-8"
-                                        src={`/flags/${takeoverData[index].country}.webp`}
-                                        alt={`Flag of ${takeoverData[index].country}`}
+                                        src={`/flags/${data.country}.webp`}
+                                        alt={`Flag of ${data.country}`}
                                     />
                                 </span>
                                 <p class="h-12 overflow-hidden text-left text-ellipsis opacity-55">
-                                    {takeoverData[index].isp}
+                                    {data.isp}
                                 </p>
                             </div>
                             <p class="text-left text-sm opacity-55">
-                                Claimed {new Date(
-                                    takeoverData[index].occupied
-                                ).toLocaleDateString()}
+                                Claimed {new Date(data.occupied).toLocaleDateString()}
                             </p>
                         {:else}
                             Unclaimed!
@@ -545,7 +544,9 @@
             <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
             <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
         </div>
-        <p class="pt-0! text-center text-sm! opacity-40">note: want your badge here? Contact me contact@ctih1.fi</p>
+        <p class="pt-0! text-center text-sm! opacity-40">
+            note: want your badge here? Contact me contact@ctih1.fi
+        </p>
     </div>
 </div>
 
