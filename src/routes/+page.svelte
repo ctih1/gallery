@@ -545,7 +545,7 @@
             <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
             <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
         </div>
-        <p class="pt-0! text-center text-sm! opacity-40">note: want your badge here? Contact me</p>
+        <p class="pt-0! text-center text-sm! opacity-40">note: want your badge here? Contact me contact@ctih1.fi</p>
     </div>
 </div>
 
