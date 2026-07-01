@@ -24,7 +24,7 @@ I did a bit of digging, and spent a few hours trying things, and I eventually go
 
 <details>
     <summary>TikTok made from old footage of me fixing it</summary>
-    <video controls src="https://homecdn.frii.site/v0f044gc0000cir34g3c77u27knteh60.MP4" />
+    <video controls src="https://homecdn.ctih1.fi/v0f044gc0000cir34g3c77u27knteh60.MP4" />
 </details>
 
 <br>
@@ -34,16 +34,16 @@ I started making "techtok" tiktoks in the summer of 2023, and made a couple of v
 
 <details>
     <summary>Some old TikToks of mine which showcased the phone</summary>
-    <video controls src="https://homecdn.frii.site/v0f044gc0000cj0ftqrc77ualmm0nrag.MP4" />
+    <video controls src="https://homecdn.ctih1.fi/v0f044gc0000cj0ftqrc77ualmm0nrag.MP4" />
 
     <br>
 
-    <video controls src="https://homecdn.frii.site/v0f044gc0000cipo963c77ub6hlm11u0.MP4" />
+    <video controls src="https://homecdn.ctih1.fi/v0f044gc0000cipo963c77ub6hlm11u0.MP4" />
     I think this was my first TikTok? (Note: the page has now been privated)
 
     <br>
 
-    <video controls src="https://homecdn.frii.site/v0f044gc0000cjbtl83c77u1m4mu65ag.MP4" />
+    <video controls src="https://homecdn.ctih1.fi/v0f044gc0000cjbtl83c77u1m4mu65ag.MP4" />
     The battery exploded when I accidentally stabbed it with a screwdriver
 </details>
 

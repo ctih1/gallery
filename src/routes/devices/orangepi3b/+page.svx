@@ -29,15 +29,14 @@ Programming:
 * MongoDB
 
 Services:
-* This website (**ctih1.frii.site**)
+* This website (**ctih1.fi**)
 * Thumbnail generator (api.koti.frii.site/thumbnail)
 * AI-model trained on my & some friends' messages (ai.koti.frii.site/generate)
 * API-Wrapper for [KAVI](https://en.wikipedia.org/wiki/National_Audiovisual_Institute_(Finland)) (kavi.frii.site)
-* Personal fileserver (homecdn.frii.site)
+* Personal fileserver (homecdn.ctih1.fi)
 
 
 Misc:
-* frii.site's login notification bot
 * "Goober" discord bot to interact with the AI-Wrapper
 * Room noise measurements (dB counter)
 * WireGuard VPN
@@ -45,6 +44,7 @@ Misc:
 * Grafana
 * Cadvisor
 * Cowrie (SSH honeypot)
+* Indoor and outdoor climate monitoring
 
 Note: the Cowrie instance is meant to ban people from my services.
 The ban page [looks like this](http://koti.frii.site/ban.html)
@@ -57,9 +57,6 @@ Upcoming / planned projects:
 
 * Price scraper for local stores here 
 > Again, I would need more storage, since I'm currently running out
-
-* Indoor Air Quality & Temperature monitoring
-> I would need a soldering iron for the sensor
 
 * Wireless phone backup (iOS)
 > I don't think this is possible on Linux.

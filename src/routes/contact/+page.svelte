@@ -11,7 +11,7 @@
     function sendMessage() {
         sent = true;
         loading = true;
-        fetch("https://mail.koti.frii.site", {
+        fetch("https://mail.ctih1.fi", {
             method: "POST",
             body: JSON.stringify({ msg: message, contact: contact }),
             mode: "no-cors"
@@ -25,8 +25,8 @@
 <h1>How to contact me</h1>
 
 <p>
-    You can either send me a message on Discord (@ctih), email me (contact@mail.ctih1.frii.site), or
-    use the form below! (I promise I'll try to respond quickly)
+    You can either send me a message on Discord (@ctih), email me (contact@ctih1.fi), or use the
+    form below! (I promise I'll try to respond quickly)
 </p>
 
 <div class="mt-8 max-w-xl">
