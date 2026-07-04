@@ -48,7 +48,7 @@
 ></div>
 
 <nav class="h-12 w-full min-w-screen bg-zinc-600/50">
-    <div class="mr-8 ml-8 flex h-12 items-center space-x-4 text-2xl font-semibold">
+    <div class="mr-4 ml-8 flex h-12 items-center space-x-4 text-2xl font-semibold">
         <a href="/">Home</a>
         <a href="/photos">Photos</a>
         <a href="/tools">Tools</a>

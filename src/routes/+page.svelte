@@ -40,8 +40,14 @@
     });
 
     onMount(async () => {
-        for (let device of await navigator.mediaDevices.enumerateDevices()) {
-            mediaDevices.push(device.kind);
+        if (!browser) return;
+
+        try {
+            for (let device of await navigator.mediaDevices.enumerateDevices()) {
+                mediaDevices.push(device.kind);
+            }
+        } catch (e) {
+            console.log("Failed to get media devices");
         }
 
         fetch("/api/local/climate")
@@ -133,18 +139,18 @@
         return `${navigator.hardwareConcurrency} Threads and ${navigator.deviceMemory ?? "Unknown"} GB RAM ${navigator.brave ? "(Inaccurate on Brave)" : ""}`;
     }
 
-    function getSpeechSynthesis() {
-        if (!browser) return "Checking...";
+    function getSpeechSynthesis(): string[] {
+        if (!browser) return ["Checking..."];
 
         try {
             let ss = window.speechSynthesis;
 
-            var resp = "";
+            var resp: string[] = [];
             for (let voice of ss.getVoices()) {
-                resp += voice.name + ",";
+                resp.push(voice.name);
             }
         } catch (e) {
-            var resp = "No voices";
+            var resp = ["No voices"];
         }
 
         return resp;
@@ -227,18 +233,19 @@
             <p>Click on a square to steal it!</p>
 
             <div class="grid max-w-2xl grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
-                {#each new Array(9) as _, index}
-                    <button
-                        onclick={async () => {
-                            await takeoverIndex(index);
-                        }}
-                        disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
-                        class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
-                    >
-                        {#if takeoverData.length == 0}
-                            Loading...
-                        {:else}
-                            {#key takeoverData}
+                {#key takeoverData}
+                    {#each new Array(9) as _, index}
+                        <button
+                            onclick={async () => {
+                                await takeoverIndex(index);
+                            }}
+                            disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
+                            class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
+                        >
+                            {#if takeoverData.length == 0}
+                                Loading...
+                            {:else if takeoverData.find(d => d.id === index)}
+                                {@const data = takeoverData.find(d => d.id === index)!}
                                 <div class="claim-info flex-col">
                                     <span class="flex items-center space-x-2">
                                         <p class="text-left text-xl! font-semibold">
@@ -246,25 +253,25 @@
                                         </p>
                                         <img
                                             class="h-8"
-                                            src={`/flags/${takeoverData[index].country}.webp`}
-                                            alt={`Flag of ${takeoverData[index].country}`}
+                                            src={`/flags/${data.country}.webp`}
+                                            alt={`Flag of ${data.country}`}
                                         />
                                     </span>
                                     <p
                                         class="h-12 overflow-hidden text-left text-ellipsis opacity-55"
                                     >
-                                        {takeoverData[index].isp}
+                                        {data.isp}
                                     </p>
                                 </div>
                                 <p class="text-left text-sm opacity-55">
-                                    Claimed {new Date(
-                                        takeoverData[index].occupied
-                                    ).toLocaleDateString()}
+                                    Claimed {new Date(data.occupied).toLocaleDateString()}
                                 </p>
-                            {/key}
-                        {/if}
-                    </button>
-                {/each}
+                            {:else}
+                                Unclaimed!
+                            {/if}
+                        </button>
+                    {/each}
+                {/key}
             </div>
             {#key tick}
                 <p>
@@ -326,7 +333,11 @@
                     CPU: <code>{getCpuInfo()}</code>
                 </li>
                 <li>Languages: <code>{getLanguages()}</code></li>
-                <li>Speech Synthesis: <code>{getSpeechSynthesis()}</code></li>
+                <li>
+                    Speech Synthesis: <br />{#each getSpeechSynthesis() as voice}
+                        <code>{voice}</code><br />
+                    {/each}
+                </li>
                 <li>Time zone: <code>{getDateStuff()}</code></li>
                 <li>Media devices: <code>{mediaDevices}</code></li>
             </ul>
@@ -537,7 +548,9 @@
             <Badge redirect="https://nginx.org/" imageUrl="/badges/nginx.png" />
             <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
         </div>
-        <p class="pt-0! text-center text-sm! opacity-40">note: want your badge here? Contact me</p>
+        <p class="pt-0! text-center text-sm! opacity-40">
+            note: want your badge here? Contact me contact@ctih1.fi
+        </p>
     </div>
 </div>
 

@@ -11,7 +11,7 @@ interface Location {
 
 function constructSitemap(
     urls: Location[],
-    baseDomain: string = "https://ctih1.frii.site"
+    baseDomain: string = "https://ctih1.fi"
 ): string {
     let stringedUrls = "";
 
