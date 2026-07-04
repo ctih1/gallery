@@ -1,5 +1,16 @@
 <script lang="ts">
     import { formatMinutes } from "$lib";
+    let {
+        metricValue,
+        type = "km",
+        metricUnit,
+        imperialUnit
+    }: {
+        metricValue: number;
+        type?: "km" | "m/km" | "c" | "cm";
+        metricUnit: string;
+        imperialUnit: string;
+    } = $props();
     import { usingImperial } from "$lib/store";
 
     function kilometersToMiles(): number {

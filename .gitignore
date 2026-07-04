@@ -27,6 +27,7 @@ static/speedtest-*
 
 ips.db
 areas.db
+chat.db
 
 /__pycache__
 
