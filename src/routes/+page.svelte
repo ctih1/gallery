@@ -272,12 +272,13 @@
                 </p>
                 {#if takeoverDisabled}
                     <p>
-                        Next turn: <span class="font-[JetBrains-Mono]!">
-                            {(
-                                Math.round(
-                                    (takeoverAvailableIn.getTime() - new Date().getTime()) / 100
-                                ) / 10
-                            ).toFixed(1)}s</span
+                        Next turn: <span class="font-[JetBrains-Mono]!"
+                            >{#key tick}
+                                {(
+                                    Math.round(
+                                        (takeoverAvailableIn.getTime() - new Date().getTime()) / 100
+                                    ) / 10
+                                ).toFixed(1)}s{/key}</span
                         >
                     </p>
                 {/if}
@@ -335,7 +336,7 @@
                     >
                 </p>
             </div>
-            <a class="absolute bottom-0" href="/guides/chat">How to send a message</a>
+            <a href="/guides/chat">How to send a message</a>
         </div>
 
         <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
