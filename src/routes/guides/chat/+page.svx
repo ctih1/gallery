@@ -9,7 +9,7 @@ The main "quirk" of this chatroom is that you can only send messages through som
 
 <br>
 
-### 1. Telent
+### 1. Telnet
 You can send messages by connecting to our Telnet server `ctih1.fi` on port `23`. Follow the instructions given to you
 Your message will usually be processed as soon as you send the final confirmation.
 
