@@ -305,7 +305,7 @@
             </div>
         </div> -->
 
-        <div class="relative mt-16 min-h-96 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
+        <div class="mt-16 min-h-96 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
             <h2>Chat room</h2>
 
             <ol class="list-none! *:ml-0!">
@@ -585,7 +585,7 @@
             transform: rotate(4deg);
         }
         100% {
-            transfrom: rotate(0deg);
+            transform: rotate(0deg);
         }
     }
 
