@@ -89,6 +89,8 @@ export async function POST({ request, url }) {
 
     addEvent(ip);
 
+    console.log("Inserted message into db");
+
     return new Response("oki!");
 }
 

@@ -1,0 +1,12 @@
+## How to send messages to the chatroom
+The main "quirk" of this chatroom is that you can only send messages through some unconventional means.
+
+<br>
+
+### 1. Telent
+You can send messages by connecting to our Telnet server `ctih1.fi` on port `23`. Follow the instructions given to You
+
+<br>
+
+### 2. Minecraft
+Join our Minecraft server `ctih1.fi` (port 25565), type a message in the chat, and confirm by typing "yes"
