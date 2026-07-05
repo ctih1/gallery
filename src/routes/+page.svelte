@@ -5,6 +5,7 @@
     import ContactMethod from "$lib/components/ContactMethod.svelte";
     import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
     import { onDestroy, onMount } from "svelte";
+    import type { ChatColumn } from "./api/chat/types";
     import type { OccupationColumn } from "./api/occupation/types";
     import type { ProcessedActivity } from "./api/strava/types";
 
@@ -24,6 +25,8 @@
 
     let nextTakeoverRefresh: Date = $state(new Date());
     nextTakeoverRefresh.setTime(nextTakeoverRefresh.getTime() + 5000);
+
+    let chatData: ChatColumn[] = $state([]);
 
     let stravaData: ProcessedActivity[] = $state([]);
 
@@ -64,9 +67,12 @@
 
         takeoverInterval = setInterval(async () => {
             await updateTakeover();
+            await updateChatroom();
         }, 5000);
 
         updateTakeover();
+        updateChatroom();
+
         tickInterval = setInterval(() => (tick += 1), 100);
     });
 
@@ -83,6 +89,14 @@
 
                 nextTakeoverRefresh.setTime(new Date().getTime() + 5000);
                 nextTakeoverRefresh = nextTakeoverRefresh;
+            });
+    }
+
+    async function updateChatroom() {
+        fetch("/api/chat")
+            .then(req => req.json())
+            .then(jason => {
+                chatData = jason;
             });
     }
 
@@ -200,7 +214,7 @@
             paragraph, some of them might be pretty interesting!
         </p>
 
-        <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
+        <div class="mt-16 rounded-2xl bg-gray-800/30 p-4 pb-8" id="fingerprinting">
             <h2>Take over game</h2>
             <p>Click on a square to steal it!</p>
 
@@ -245,14 +259,15 @@
                     {/each}
                 {/key}
             </div>
-            {#key tick}
+            <div class="absolute">
                 <p>
                     Next refresh: <span class="font-[JetBrains-Mono]!">
-                        {(
-                            Math.round(
-                                (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
-                            ) / 10
-                        ).toFixed(1)}s</span
+                        {#key tick}
+                            {(
+                                Math.round(
+                                    (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
+                                ) / 10
+                            ).toFixed(1)}s{/key}</span
                     >
                 </p>
                 {#if takeoverDisabled}
@@ -266,7 +281,7 @@
                         >
                     </p>
                 {/if}
-            {/key}
+            </div>
         </div>
 
         <!-- <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="strava">
@@ -289,6 +304,39 @@
                 {/each}
             </div>
         </div> -->
+
+        <div class="relative mt-16 min-h-96 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
+            <h2>Chat room</h2>
+
+            <ol class="list-none! *:ml-0!">
+                {#each [...chatData].reverse() as chat}
+                    <li class="list-none!">
+                        <code
+                            ><p class="max-w-[80ch]">
+                                <span class="opacity-80">
+                                    &#91;{new Date(chat.sent_at).toLocaleTimeString()}&#93; {chat.source}:</span
+                                >
+                                {chat.text}
+                            </p>
+                        </code>
+                    </li>
+                {/each}
+            </ol>
+
+            <div class="absolute">
+                <p>
+                    Next refresh: <span class="font-[JetBrains-Mono]!">
+                        {#key tick}
+                            {(
+                                Math.round(
+                                    (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
+                                ) / 10
+                            ).toFixed(1)}s{/key}</span
+                    >
+                </p>
+            </div>
+            <a class="absolute bottom-0" href="/guides/chat">How to send a message</a>
+        </div>
 
         <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
             <h2>Fingerprinting</h2>

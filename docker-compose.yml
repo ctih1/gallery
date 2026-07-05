@@ -9,6 +9,7 @@ services:
             - /sys/class/thermal/thermal_zone0/temp:/sys/class/thermal/thermal_zone0/temp:ro
             - ./areas.db:/app/areas.db:rw
             - ./ips.db:/app/ips.db:rw
+            - ./chat.db:/app/chat.db:rw
         environment:
             NODE_ENV: production
         restart: unless-stopped

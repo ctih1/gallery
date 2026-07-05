@@ -1,0 +1,33 @@
+# How to send messages to the chatroom
+The main "quirk" of this chatroom is that you can only send messages through some unconventional means.
+
+## Note before sending:
+* You cannot delete a message after it has been sent. If you have a good reason (e.g. personal information), contact me at contact@ctih1.fi
+* I can and will delete messages which contain hate-speech, or other forms of bad things.
+* A delay between messages is enforced. The formula is the following: `8^messages_sent_last_24h`. So if you've sent 4 messages in the past 24 hours, your delay would be `8^4 = 4096` seconds, aka 68 minutes. 
+* Potentially sensitive information (for example, phone numbers if message is sent via SMS) may be saved until the foreseeable future. If you wish to get rid of your data, email me at contact@ctih1.fi 
+
+<br>
+
+### 1. Telent
+You can send messages by connecting to our Telnet server `ctih1.fi` on port `23`. Follow the instructions given to you
+Your message will usually be processed as soon as you send the final confirmation.
+
+<br>
+
+### 2. Minecraft
+Join our Minecraft server `ctih1.fi` (port 25565), type a message in the chat, and confirm by typing "yes"
+Your message will usually be processed as soon as you send the final confirmation.
+
+<br>
+
+### 3. YouTube
+Comment on this YouTube video: https://youtu.be/UE_23gIClQs
+Your message will usually be processed in under a minute.
+
+<br>
+
+### 4. SMS
+Send a message starting with "!" to [+358 40 753 8557](sms:+358407538557). (e.g. "!Hello everyone this is my message")
+Your message will usually be processed in under a minute. Your phone number will remain in my router's internal database until it is cleared manually. 
+The server only support SMS, so no iMessage, or RCS. Additional costs may incur. Please consult your ISP for detailed pricing. You will not receive a confirmation message as to if your message went through.
