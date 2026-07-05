@@ -71,23 +71,14 @@
                 stravaData = jason;
             });
 
-        fetch("/api/chat")
-            .then(req => req.json())
-            .then(jason => {
-                chatData = jason;
-                chatData.push({
-                    id: 500,
-                    sent_at: new Date(),
-                    source: "minecraft",
-                    text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis,"
-                });
-            });
-
         takeoverInterval = setInterval(async () => {
             await updateTakeover();
+            await updateChatroom();
         }, 5000);
 
         updateTakeover();
+        updateChatroom();
+
         tickInterval = setInterval(() => (tick += 1), 100);
     });
 
@@ -104,6 +95,14 @@
 
                 nextTakeoverRefresh.setTime(new Date().getTime() + 5000);
                 nextTakeoverRefresh = nextTakeoverRefresh;
+            });
+    }
+
+    async function updateChatroom() {
+        fetch("/api/chat")
+            .then(req => req.json())
+            .then(jason => {
+                chatData = jason;
             });
     }
 
@@ -352,6 +351,18 @@
                 {/each}
             </ol>
 
+            <div class="absolute">
+                <p>
+                    Next refresh: <span class="font-[JetBrains-Mono]!">
+                        {#key tick}
+                            {(
+                                Math.round(
+                                    (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
+                                ) / 10
+                            ).toFixed(1)}s{/key}</span
+                    >
+                </p>
+            </div>
             <a class="absolute bottom-0" href="/guides/chat">How to send a message</a>
         </div>
 
