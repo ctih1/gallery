@@ -34,9 +34,9 @@
         if (!catImage) return;
 
         const catRect = catImage.getBoundingClientRect();
-        let relativeScroll = (scrollY - catRect.y) / catRect.height;
+        let Scroll = (scrollY - catRect.y) / catRect.height;
 
-        let cappedScroll = Math.min(Math.max(0, relativeScroll), 1);
+        let cappedScroll = Math.min(Math.max(0, Scroll), 1);
     });
 
     onMount(async () => {
@@ -60,12 +60,6 @@
             .then(req => req.json())
             .then(jason => {
                 weatherData = jason;
-            });
-
-        fetch("/api/strava")
-            .then(req => req.json())
-            .then(jason => {
-                stravaData = jason;
             });
 
         takeoverInterval = setInterval(async () => {
@@ -178,29 +172,8 @@
 
 <svelte:window bind:scrollY />
 
-{#snippet Background(source: string, alt: string, height?: string | undefined)}
-    {@const h = height ?? "90vh"}
-    <div>
-        <div style={`height: ${h}`} class="absolute top-0 left-0 -z-20 w-screen overflow-hidden">
-            <img
-                draggable="false"
-                src={source}
-                {alt}
-                style={`min-height: ${h}`}
-                class="pointer-events-none absolute top-0 left-0 -z-30 object-cover object-center will-change-transform select-none transform-3d"
-            />
-        </div>
-        <div
-            style={`height: ${h}`}
-            class="dark-overlay pointer-events-none absolute top-0 left-0 -z-20 w-screen"
-        ></div>
-    </div>
-{/snippet}
-
-<div class="mt-18 [&>div]:p-4 [&>div]:md:p-8 [&>div]:lg:p-16 [&div>]:xl:p-32">
-    <div id="introduction relative" class="flex h-[80vh] w-screen items-center">
-        {@render Background("/home/IMG_7565.webp", "Nice lake", "90vh")}
-
+<div class="[&>div]:p-4 [&>div]:md:p-8 [&>div]:lg:p-16 [&div>]:xl:p-32">
+    <div id="introduction" class="bg flex h-[90vh] w-screen items-center">
         <div
             class="mr-4 w-full max-w-lg squircle-md bg-black/30 p-6 outline-1 outline-white/20 backdrop-blur-md md:mb-24 lg:mb-38"
         >
@@ -220,8 +193,7 @@
         </div>
     </div>
 
-    <div class="relative mt-8" id="fun">
-        {@render Background("/home/IMG_2420.webp", "Flowers n hill", "2000px")}
+    <div class="bg mt-8" id="fun">
         <h1>Fun stuff</h1>
         <p class="max-w-[65ch]">
             This section of the web page is dedicated to showcasing some fun stuff.<br />Unlike this
@@ -410,12 +382,10 @@
         </div>
     </div>
 
-    <div class="relative mt-16" id="projects">
-        {@render Background("/home/IMG_1280.webp", "Forest", "1100px")}
-
+    <div class="bg mt-16" id="projects">
         <h1>My programming projects</h1>
 
-        <div class="flex flex-col p-16 md:flex-row md:justify-between">
+        <div class="flex flex-col md:flex-row md:justify-between md:p-16">
             <div class="space-y-24 pr-16 md:w-1/2 md:space-y-52" id="left">
                 <div>
                     <h2>frii.site</h2>
@@ -511,9 +481,7 @@
         </div>
     </div>
 
-    <div class="relative" id="shoutouts">
-        {@render Background("/images/dsc06074.jpg/primary.jpg", "Northern lights")}
-
+    <div class="bg" id="shoutouts">
         <div class="mt-32 pt-2! text-center">
             <h2>made with love &lt;3</h2>
             <p class="opacity-80">(aka Svelte)</p>
@@ -555,16 +523,6 @@
 </div>
 
 <style>
-    .dark-overlay {
-        background: rgba(0, 0, 0, 0.6);
-        background: radial-gradient(
-            ellipse 200% 50% at center,
-            rgba(0, 0, 0, 0.6) 0%,
-            rgba(0, 0, 0, 0.6) 60%,
-            rgba(0, 0, 0, 1) 100%
-        );
-    }
-
     @keyframes -global-fear-shake {
         0% {
             transform: rotate(0deg);
@@ -581,6 +539,39 @@
         100% {
             transfrom: rotate(0deg);
         }
+    }
+
+    :root {
+        --vignette: radial-gradient(
+            ellipse 200% 50% at center,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.6) 60%,
+            rgba(0, 0, 0, 1) 100%
+        );
+    }
+
+    #shoutouts {
+        background-image: var(--vignette), url("/home/aurora.webp"), url("/home/aurora_tiny.webp");
+    }
+
+    #projects {
+        background-image:
+            var(--vignette), url("/home/IMG_1280.webp"), url("/home/IMG_1280_tiny.webp");
+    }
+
+    #fun {
+        background-image:
+            var(--vignette), url("/home/IMG_2420.webp"), url("/home/IMG_2420_tiny.webp");
+    }
+
+    #introduction {
+        background-image:
+            var(--vignette), url("/home/IMG_7565.webp"), url("/home/IMG_7565_tiny.webp");
+    }
+
+    .bg {
+        background-size: cover;
+        background-position: center;
     }
 
     .game-button:hover:enabled {

@@ -47,8 +47,8 @@
     class="pointer-events-none fixed -z-50 h-full min-h-screen w-full"
 ></div>
 
-<nav class="h-12 w-full min-w-screen bg-zinc-600/50">
-    <div class="mr-4 ml-8 flex h-12 items-center space-x-4 text-2xl font-semibold">
+<nav class="h-12 w-full min-w-screen bg-zinc-600/20">
+    <div class="ml-4 flex h-12 items-center space-x-4 text-lg font-semibold sm:text-xl md:text-2xl">
         <a href="/">Home</a>
         <a href="/photos">Photos</a>
         <a href="/tools">Tools</a>

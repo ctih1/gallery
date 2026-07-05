@@ -94,7 +94,11 @@
         {/if}
     </div>
     <div>
-        <h1 class="mt-2 text-4xl!">{data.image.make} {data.image.model}</h1>
+        <h1 class="mt-2 text-4xl!">
+            <code class="bg-zinc-700/40 font-bold! lowercase"
+                >{data.image.make} {data.image.model}</code
+            >
+        </h1>
         <hr class="opacity-50" />
         <p><i>{data.image.description}</i></p>
         <div class="bottom opacity-70">
