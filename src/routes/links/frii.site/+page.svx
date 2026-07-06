@@ -1,0 +1,55 @@
+# frii.site
+
+A free subdomain registrar
+
+
+## Versions
+
+### 1. Current
+The current version of frii.site running on Vercel with working DNS. This version will stop working on August 25th
+
+https://www.frii.site
+
+<br>
+
+### 2. Pre-shadcn website
+An old archived version of frii.site
+
+https://classic.frii.site.archive.ctih1.fi
+
+```diff
++working registration / signing in
++working account management
++working blogs section
+-cannot register or modify domains
+-email verification does not work
+```
+
+<br>
+
+### 3. Pre-dark-rewrite
+An old archived version of frii.site just before the registration closed
+
+https://old.frii.site.archive.ctih1.fi
+
+```diff
++working registration / signing in
++working account management
++working blogs section
+-cannot register or modify domains
+-email verification does not work
+```
+
+<br>
+
+### 4. Pre-Svelte-rewrite
+A very old and archived version of frii.site written in HTML. First version of the website.
+
+https://legacy.frii.site.archive.ctih1.fi
+```diff
++working registration / signing in
++working account management
+-cannot register or modify domains
+-email verification does not work
+-account data stored in a JSON file
+```

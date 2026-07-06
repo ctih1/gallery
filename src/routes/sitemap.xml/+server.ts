@@ -9,10 +9,7 @@ interface Location {
     changes: ChangeFrequency;
 }
 
-function constructSitemap(
-    urls: Location[],
-    baseDomain: string = "https://ctih1.fi"
-): string {
+function constructSitemap(urls: Location[], baseDomain: string = "https://ctih1.fi"): string {
     let stringedUrls = "";
 
     urls.forEach(url => {
@@ -69,7 +66,8 @@ export const GET: RequestHandler = ({}) => {
         location("/links", 0.4),
         location("/fun", 0.6),
         location("/devices/willow"),
-        location("/maps", 0.4)
+        location("/maps", 0.4),
+        location("/guides/chat", 0.4, "hourly")
     ];
 
     images.forEach(image => {

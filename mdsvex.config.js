@@ -20,7 +20,8 @@ export default {
                 "java",
                 "bash",
                 "html",
-                "svelte"
+                "svelte",
+                "diff"
             ]
         })
     }

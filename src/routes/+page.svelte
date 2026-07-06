@@ -324,7 +324,7 @@
                 {/each}
             </ol>
 
-            <div class="absolute">
+            <div>
                 <p>
                     Next refresh: <span class="font-[JetBrains-Mono]!">
                         {#key tick}
@@ -451,7 +451,7 @@
                             imageUrl="./logos/GitHub_Invertocat_White.svg"
                             link="https://github.com/ctih1/frii.site-frontend"
                         />
-                        <ContactMethod imageUrl="./logos/open.svg" link="https://www.frii.site" />
+                        <ContactMethod imageUrl="./logos/open.svg" link="/links/frii.site" />
                     </div>
                 </div>
 
