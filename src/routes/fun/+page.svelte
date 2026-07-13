@@ -1,4 +1,5 @@
 <script lang="ts">
+    import PageConfig from "$lib/components/PageConfig.svelte";
 </script>
 
 {#snippet Link(link: string)}
@@ -45,3 +46,5 @@
 
 <p>planned background image: <img src="/bg-tile.png" alt="squiggly lines thing" /></p>
 <p>old background image: <img src="/background.webp" alt="Tree" class="max-h-[400px]" /></p>
+
+<PageConfig title="Fun stuff related to the website"></PageConfig>

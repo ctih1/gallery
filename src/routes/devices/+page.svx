@@ -3,3 +3,5 @@ And some info about them
 
 * [Orange Pi 3B](/devices/orangepi3b)
 * [Xiaomi Redmi Note 8T](/devices/willow)
+* [Huawei Matebook X Pro 2018](/devices/matebook)
+

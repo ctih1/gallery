@@ -1,0 +1,82 @@
+
+
+# Devices: Huawei Matebook X Pro 2018
+*A nice looking laptop from, you guessed it, 2018.*
+
+<br>
+
+## Specs
+I bought the laptop used for 400 € in 2024. My model has the i7-8550U, 16GB of LPDDR3, and an NVIDIA MX150 laptop GPU. The GPU is the less powerful variant, meaning you'll get about 80 % of the performance of a GT 1030. I found the GPU useful for AI work accelerated with CUDA though. 
+
+<br>
+
+## Performance
+The laptop in its base condition was not very powerful, or nice to use. Huawei decided to use a strange never-before seen method of cooling: Not connecting the heat pipes to the fan..? This coupled with the fact that the laptop only has a single, tiny fan supporting the SSD, CPU, and GPU means that the performance is quite a lot lower out-of-the-box than on other laptops. 
+<br>
+The performance varies wildly by workload type, mods done to the laptop, software tweaks, etc.. so take the benchmarks I have taken with an unhealthy sized grain of salt.
+
+<br>
+
+<br>
+
+## Benchmarks
+All of the benchmarks were run sequentially, with around 5 minutes in between. Tests were run at 23*C room temp. Laptop was plugged in, and set to balanced power mode, with the battery slider at "Best Performance".
+<br>
+Geekbench 6: 
+- https://browser.geekbench.com/v6/cpu/18692797
+- Max temp reached: 80*C
+- Max wattage reached: 21,1 W
+- Limits: EDP other (all 3)
+
+Cinebench R20 Multicore:
+- 1188 Points
+- Max temp reached: 76*C
+- Max wattage reached: 19,9 W
+- Limits: EDP other (all 3)
+
+Speedometer 3.1:
+- 10.4 (+- 0.49)
+- Max temp reached: 79*C
+- Max wattage reached: 19,0 W
+- Limits: EDP other (all 3)
+
+<br>
+
+## Mods done to it
+### Hardware mods
+I have done a few hardware mods to the device in order to get it run better. My unit didn't have a working fan in the beginning, so I bought a new one. Too bad I didn't realize that the fan clip was also missing. Once I got the fan, I had to use a piece of paper to get the fan to stay in place. 
+<br>
+<img src="/devices/matebook/mb.jpg" width="300px">
+
+<br>
+I also did Brad's Hacks' cooling mod, specifically the one that adds thermal pads to the under side of the heatsink. This fixed an issue with slow charging (due to the regulator heating up), and improved performance by quite a lot.
+
+### Software mods
+I'm currently using a very stable undervolt configuration (via ThrottleStop). I have `-202 mV` on CPU Core & Cache, and `-120 mV` on iGPU + iGPU Unslice. These turned out to be some very useful modifications, as they significantly improved battery life (I'll get back to that later), and made the device run cooler, and therefore faster.
+<br>
+I have also used a BIOS unlock mod to make the fan spin up earlier, since I don't like how hot the palm rests and keyboard get during heavy work. 
+
+<br>
+<br>
+
+## Please use Windows 10
+I've found that Windows 10 is the best operating system you can run on this thing. Not only is the UI buttery smooth, battery life is undeniably better than ANY other operating system. Huawei's drivers also work perfectly on it, such as the fingerprint scanner, which don't seem to work on Windows 11. 
+
+<br>
+
+## Battery life
+The battery life is highly dependent on what OS you're using. I found that Windows 10 get's around 50 % more battery life in total compared to other operating systems (e.g. Windows 11, Linux distros with power management). I get anywhere from around 2 to 5 hours of battery life on a single charge, depending on what I'm doing. I would consider this perfectly adequate. I'm currently dualbooting macOS Sonoma, and get around 1-2,5 hours of battery life on that.
+<br>
+What isn't adequate is the charging speed. Even though I'm using a 65-Watt adapter, it takes multiple hours to charge to 100 % from empty. I'm not sure if this is due to overheating charging circuitry, bad charging speeds negotiations etc
+<br>
+My battery pack has a full charge capacity of `48 374 mWh` out of the original `56 316 mWh`, with 206 cycles (I doubt this number is accurate, but hey - what do I know.)
+
+<br>
+<br>
+
+## Durability
+I have had this laptop for over 2 years now, and it has stood my abuse pretty well. The screen is broken due to someone stepping on it during a school day. Only the top part is cracked though, so I'm not planning on buying another screen. Unfortunately the screen cracking also broke the touch screen, which I do kind of miss. 
+<br>
+The trackpad is also broken due to me not being careful while using a hammer. The trackpad is attached via metal tabs, and when I tried to knock the tabs back into place with the hammer, the beautiful glass trackpad shattered.
+<br>
+The Lite-ON SSD inside the laptop also died in April 2025, so I ordered a new one from Crucial, and it has worked well. 

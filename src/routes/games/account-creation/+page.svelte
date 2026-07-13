@@ -1,5 +1,6 @@
 <script lang="ts">
     import Input from "$lib/components/Input.svelte";
+    import PageConfig from "$lib/components/PageConfig.svelte";
 
     let email: string = $state("");
     let password: string = $state("");
@@ -117,3 +118,5 @@
         <li>#{index + 1}: {issue}</li>
     {/each}
 </ol>
+
+<PageConfig title="Account Creation Game"></PageConfig>
