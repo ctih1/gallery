@@ -35,16 +35,17 @@ Services:
 * API-Wrapper for [KAVI](https://en.wikipedia.org/wiki/National_Audiovisual_Institute_(Finland)) (kavi.frii.site)
 * Personal fileserver (homecdn.ctih1.fi)
 
-
 Misc:
 * "Goober" discord bot to interact with the AI-Wrapper
 * Room noise measurements (dB counter)
 * WireGuard VPN
-* Tor Relay
 * Grafana
 * Cadvisor
 * Cowrie (SSH honeypot)
 * Indoor and outdoor climate monitoring
+* YouTube bot scraper (chatroom)
+* Telnet server (chatroom)
+* Minecraft server (chatroom)
 
 Note: the Cowrie instance is meant to ban people from my services.
 The ban page [looks like this](http://koti.frii.site/ban.html)

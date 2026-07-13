@@ -1,4 +1,6 @@
 <script lang="ts">
+    import PageConfig from "$lib/components/PageConfig.svelte";
+
     let iframeElement: HTMLIFrameElement | undefined = $state();
 
     function restart() {
@@ -27,3 +29,5 @@
     height="800"
     title="The game"
 ></iframe>
+
+<PageConfig title="Bouncy Ball Game"></PageConfig>

@@ -67,6 +67,7 @@ export const GET: RequestHandler = ({}) => {
         location("/fun", 0.6),
         location("/devices/willow"),
         location("/maps", 0.4),
+        location("/links/frii.site", 0.5, "daily"),
         location("/guides/chat", 0.4, "hourly")
     ];
 
