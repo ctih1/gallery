@@ -22,6 +22,7 @@ The performance varies wildly by workload type, mods done to the laptop, softwar
 ## Benchmarks
 All of the benchmarks were run sequentially, with around 5 minutes in between. Tests were run at 23*C room temp. Laptop was plugged in, and set to balanced power mode, with the battery slider at "Best Performance".
 <br>
+
 Geekbench 6: 
 - https://browser.geekbench.com/v6/cpu/18692797
 - Max temp reached: 80*C
