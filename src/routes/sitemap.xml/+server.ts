@@ -58,7 +58,7 @@ export const GET: RequestHandler = ({}) => {
         location("/guides/telia-portforwarding"),
         location("/lightpollution", 0.7),
         location("/sensors", 0.7),
-        location("/photos", 0.9, "weekly"),
+        location("/photos", 0.8, "weekly"),
         location("/speedtest", 0.3),
         location("/tools/local-docs", 0.6, "weekly"),
         location("/tools/custom-wordle-descrambler", 0.6),
@@ -68,7 +68,8 @@ export const GET: RequestHandler = ({}) => {
         location("/devices/willow"),
         location("/maps", 0.4),
         location("/links/frii.site", 0.5, "daily"),
-        location("/guides/chat", 0.4, "hourly")
+        location("/guides/chat", 0.4, "hourly"),
+        location("/devices/matebook", 0.6)
     ];
 
     images.forEach(image => {
