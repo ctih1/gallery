@@ -45,6 +45,7 @@
     id="fake-body"
     class:home-dark={page.url.pathname === "/"}
     class:body-error={page.error?.message !== undefined}
+    class:default-body={page.url.pathname !== "/" && page.error?.message === undefined}
     class="pointer-events-none fixed -z-50 h-full min-h-screen w-full"
 ></div>
 
@@ -66,3 +67,19 @@
     {@render children?.()}
 {/if}
 <br />
+
+<style>
+    /* :global(.default-body) {
+        background-color: var(--color-zinc-900);
+        background:
+            radial-gradient(circle at 80% 40%, rgba(64, 0, 255, 0.1), transparent 80%),
+            radial-gradient(circle at -10% 10%, rgba(230, 0, 255, 0.1), transparent 80%),
+            linear-gradient(200deg, rgba(255, 192, 203, 0.01), rgba(128, 0, 128, 0.3)),
+            linear-gradient(
+                180deg,
+                rgba(0, 2, 14, 0.8) 0%,
+                rgba(3, 5, 29, 0.8) 40%,
+                rgba(1, 7, 29, 0.9) 90%
+            );
+    } */
+</style>

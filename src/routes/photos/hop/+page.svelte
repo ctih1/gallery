@@ -12,6 +12,8 @@
     <p>Some creations I've made with Photoshop</p>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <img alt="" src={`https://cdn.ctih1.fi/photoshop/${artwork}`} />
+        {#each artworks as artwork}
+        <img alt="" src={`https://cdn.ctih1.fi/photoshop/${artwork}`} /> 
+        {/each}
     </div>
 </Holder>
