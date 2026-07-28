@@ -58,3 +58,4 @@
 <Input bind:value={color2percentage} label="Colour 2s starting %" type="range" />
 
 <div bind:this={testElement} class="aspect-square w-64"></div>
+<a href="/tools/crash/ignore">Crash page</a>
