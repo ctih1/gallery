@@ -1,8 +1,13 @@
+import { error } from "@sveltejs/kit";
 import { readFileSync } from "fs";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, fetch, url }) => {
-    const metadata = readFileSync(`static/images/${params.slug}/metadata.json`);
+    try {
+        var metadata = readFileSync(`static/images/${params.slug}/metadata.json`);
+    } catch (err) {
+        throw error(404, "Image not found");
+    }
     const dataJson = JSON.parse(metadata.toString());
 
     return {
