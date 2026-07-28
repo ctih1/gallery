@@ -44,11 +44,12 @@
 <div
     id="fake-body"
     class:home-dark={page.url.pathname === "/"}
+    class:body-error={page.error?.message !== undefined}
     class="pointer-events-none fixed -z-50 h-full min-h-screen w-full"
 ></div>
 
 <nav class="h-12 w-full min-w-screen bg-zinc-600/20">
-    <div class="ml-4 flex h-12 items-center space-x-4 text-lg font-semibold sm:text-xl md:text-2xl">
+    <div class="text-md ml-4 flex h-12 items-center space-x-4 font-semibold sm:text-xl md:text-2xl">
         <a href="/">Home</a>
         <a href="/photos">Photos</a>
         <a href="/tools">Tools</a>
@@ -57,7 +58,7 @@
     </div>
 </nav>
 
-{#if page.url.pathname !== "/" && !page.url.pathname.toString().includes("/photos/")}
+{#if page.url.pathname !== "/" && !page.url.pathname.toString().includes("/photos/") && !page.error}
     <Holder>
         {@render children?.()}
     </Holder>

@@ -69,7 +69,8 @@ export const GET: RequestHandler = ({}) => {
         location("/maps", 0.4),
         location("/links/frii.site", 0.5, "daily"),
         location("/guides/chat", 0.4, "hourly"),
-        location("/devices/matebook", 0.6)
+        location("/devices/matebook", 0.6),
+        location("/photos/hop", 0.4)
     ];
 
     images.forEach(image => {
