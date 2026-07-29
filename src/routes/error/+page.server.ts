@@ -1,5 +1,7 @@
 import type { PageServerLoad } from "./$types";
 export const csr = false;
+export const prerender = false;
+
 const NOT_FOUND_TEXTS: string[][] = [
     [
         "<h1>My eyes are over here</h1>",
