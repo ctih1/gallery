@@ -1,8 +1,8 @@
+import { building } from "$app/environment";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-
 export const load: PageServerLoad = async ({ params }) => {
-    if (params.slug === "me") {
+    if (!building) {
         throw error(500, "Internal server error");
     }
 

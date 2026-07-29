@@ -8,6 +8,9 @@ export default defineConfig({
         host: true
     },
     preview: {
-        allowedHosts: ["gallery.frii.site", "ctih1.frii.site", "ctih1.fi", "www.ctih1.fi"]
+        allowedHosts: true,
+        port: 3001,
+        strictPort: true,
+        host: "0.0.0.0"
     }
 });

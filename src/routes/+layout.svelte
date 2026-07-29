@@ -44,8 +44,10 @@
 <div
     id="fake-body"
     class:home-dark={page.url.pathname === "/"}
-    class:body-error={page.error?.message !== undefined}
-    class:default-body={page.url.pathname !== "/" && page.error?.message === undefined}
+    class:body-error={page.error?.message !== undefined || page.url.pathname.startsWith("/error")}
+    class:default-body={page.url.pathname !== "/" &&
+        page.error?.message === undefined &&
+        !page.url.pathname.startsWith("/error")}
     class="pointer-events-none fixed -z-50 h-full min-h-screen w-full"
 ></div>
 
@@ -59,7 +61,9 @@
     </div>
 </nav>
 
-{#if page.url.pathname !== "/" && !page.url.pathname.toString().includes("/photos/") && !page.error}
+{#if page.url.pathname !== "/" && !page.url.pathname
+        .toString()
+        .includes("/photos/") && !page.error && !page.url.pathname.startsWith("/error")}
     <Holder>
         {@render children?.()}
     </Holder>
