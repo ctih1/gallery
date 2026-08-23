@@ -10,13 +10,18 @@ The main "quirk" of this chatroom is that you can only send messages through som
 <br>
 
 ### 1. Telnet
-You can send messages by connecting to our Telnet server `ctih1.fi` on port `23`. Follow the instructions given to you
+You can send messages by connecting to our Telnet server `ctih1.fi` on port two ports.
+- 23: Using kludge mode. Use on Windows clients
+- 2323: Does not use kludge. Use on Linux, if doesn't work, change to 23.
+
+
+Follow the instructions given to you
 Your message will usually be processed as soon as you send the final confirmation.
 
 <br>
 
 ### 2. Minecraft
-Join our Minecraft server `ctih1.fi` (port 25565), type a message in the chat, and confirm by typing "yes"
+Join our Minecraft server `minecraft.ctih1.fi` (port 25566 if required), type a message in the chat, and confirm by typing "yes"
 Your message will usually be processed as soon as you send the final confirmation.
 
 <br>

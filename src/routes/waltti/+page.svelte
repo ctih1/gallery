@@ -8,7 +8,7 @@
     import "maplibre-gl/dist/maplibre-gl.css";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
-    import type { Root } from "./types";
+    import type { Entity, Root } from "./types";
 
     let loading = $state(true);
 
@@ -40,24 +40,23 @@
         const stopReqs = await fetch("/api/waltti/stops");
         const stopJson = await stopReqs.json();
         // initStops(stopJson);
-        addBuses(json);
+        addBuses(json, stopJson);
         setInterval(async () => {
             const req = await fetch("/api/waltti");
             const json = await req.json();
-            addBuses(json);
+            addBuses(json, stopJson);
         }, 1000);
 
         popup.addTo(map);
     });
 
-    function addBuses(data: Root) {
+    function addBuses(data: Root, stopJson: [string, string, string, string, string][]) {
         if (!map) return;
         const busRouteMap = new Map();
         const routeMap = new Map();
+        const stopMap = new Map();
 
         for (let route of data["trip"]["entity"]) {
-            console.log(route);
-
             if (!route["tripUpdate"]["vehicle"]) {
                 continue;
             }
@@ -65,10 +64,18 @@
             routeMap.set(route["id"], route);
         }
 
+        for (let stop of stopJson) {
+            const [id, name, lat, lon, zoneId] = stop;
+            stopMap.set(id, { name, lat, lon, zoneId });
+        }
+
         for (let bus of data["vehicles"]["entity"]) {
-            const lineNumber =
-                String(busRouteMap.get(bus["id"])).matchAll(LINE_NUMBER_REGEX).next().value?.[1] ??
-                "??";
+            const routeId = busRouteMap.get(bus["id"]);
+            const route: Entity = routeMap.get(routeId);
+
+            const lineNumber = !routeId
+                ? "??"
+                : (routeId.matchAll(LINE_NUMBER_REGEX).next().value?.[1] ?? "??");
 
             const [lat, lon] = [
                 bus["vehicle"]["position"]["latitude"],
@@ -101,75 +108,40 @@
                     <div>
                         <h2 style="color: black">${lineNumber}</h2>
                         <p style="color: black">${bus["vehicle"]["vehicle"]["label"]}</p>
-                        <code style="color: black">${busRouteMap.get(bus["id"])} . ${bus["id"]}</code>
+                        <ul style="color: black">
+                        
+                        ${route.tripUpdate.stopTimeUpdate
+                            .map(
+                                update => `
+                            <li style="color: black">
+                            
+                                ${stopMap.get(update.stopId)?.name} - ${new Date(Number(update.departure?.time ?? update.arrival?.time) * 1000).toLocaleTimeString("fi", { hour: "2-digit", minute: "2-digit" })}
+                            </li>
+                            `
+                            )
+                            .join("")}
+                        </ul>
                         <button style="color: black; width: 100%; margin-top: 8px; text-align: center; border: solid 2px green; border-radius: 0.5em;">Route info</button>
                     </div>
                 `);
 
                 popup.setLngLat([lon, lat]);
             };
-            // busHist.marker.bindPopup(`
-            //         <div>
-            //             <h3 style="color: black">${lineNumber} - ${bus["vehicle"]["vehicle"]["label"]}</h3>
-            //             <div style="border-radius: 4px; outline: 1px solid black; width: 64px; text-align: center; background-color: rgb(230, 230, 230)">
-            //                 <code style="color: black">${bus["vehicle"]["vehicle"]["licensePlate"]}</code>
-            //             </div>
-            //             <p style="color: black">${Math.round(bus["vehicle"]["position"]["speed"] * 3.6)}km/h</p>
-            //         </div>
-            //         `);
-
-            // busHist.marker.setIcon(
-            //     new L.DivIcon({
-            //         className: "sexy-marker",
-            //         html: `
-            //             <div style="background: white;  width: 28px; height: 28px; border-radius: 100%; display: flex; align-items: center; text-align: center;">
-            //                 <span style="color: black; text-align: center; width: 28px;">${lineNumber}</span>
-            //             </div>
-            //             `
-            //     })
-            // );
-            // busHist.marker.setLatLng([lat, lon]);
             busHist.marker.setLngLat([lon, lat]);
             busHist.history.push([lat, lon]);
         }
     }
-
-    // function initStops(stops: string[]) {
-    //     for (let stop of stops) {
-    //         let [id, name, lat, lon, zone] = stop;
-
-    //         const marker = L.marker([Number(lat), Number(lon)], {
-    //             icon: new L.DivIcon({
-    //                 className: "sexy-stop",
-    //                 html: `
-    //                     <div style="background: white;  width: 18px; height: 18px; border-radius: 100%; display: flex; align-items: center; text-align: center;">
-    //                         <span></span>
-    //                     </div>
-    //                 `
-    //             })
-    //         });
-
-    //         marker.bindPopup(`
-    //             <div>
-    //                 <h3 style="color: black">${name}<h3>
-    //             </div>
-    //         `);
-
-    //         marker.addTo(map!);
-    //     }
-    // }
 </script>
 
-<PageConfig title="Traceroute map" />
+<PageConfig title="Waltti map" />
 
-<h1>Waltti bus locations in Jyväskylä</h1>
 {#if loading}
-    <div class="flex items-center" transition:slide>
+    <div class="absolute z-100 flex items-center rounded-2xl bg-zinc-900/50 p-2" transition:slide>
         <Loader></Loader>
         <p>Finding buses!</p>
     </div>
 {/if}
-<div class="aspect-video" id="map"></div>
+<div class="aspect-video h-screen max-h-screen w-screen" id="map"></div>
 
 <style>
     :global(.bus-marker) {
