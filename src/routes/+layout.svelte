@@ -61,7 +61,7 @@
     </div>
 </nav>
 
-{#if page.url.pathname !== "/" && !page.url.pathname
+{#if page.url.pathname !== "/" && page.url.pathname !== "/waltti" && !page.url.pathname
         .toString()
         .includes("/photos/") && !page.error && !page.url.pathname.startsWith("/error")}
     <Holder>
