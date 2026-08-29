@@ -4,6 +4,8 @@
 import { hslToHex } from "$lib/helpers";
 import type { Cloud, RainlikeParticle, RenderEnvironment, Star } from "./types";
 
+const DARKNESS_MULTIPLIER = 50; // how quickly the sky tusrns dark
+
 export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStrength: number) => {
     ctx.fillStyle = hslToHex(41, 100, 36.2 * Math.max(0.3, relativeSunStrength));
     ctx.beginPath();
@@ -22,7 +24,7 @@ export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStreng
                     0,
                     Math.min(
                         1,
-                        (1 - (relativeSunStrength + 0.4)) * (relativeSunStrength > 0.4 ? 0 : 1)
+                        (1 - (relativeSunStrength + 0.4)) * (relativeSunStrength > 0.45 ? 0 : 1)
                     ) * 255
                 )
             )
@@ -41,6 +43,7 @@ export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStreng
     ctx.fillStyle = hslToHex(0, 0, 50);
     ctx.beginPath();
     // Sorry I was supposed to give these variables but I forgot what they were. Just figure it out
+    // thanks very much earlier me I'm just not gonna touch these...
     ctx.fillRect(250 - 50 + 20 + 5, 300 - 170 - 15, 50, 15);
     ctx.fill();
 
@@ -207,7 +210,7 @@ export const drawStar = (
         star.blinkReversing = false;
     }
 
-    const starOpacity = Math.max(0, 1 - relativeSunStrength - 0.6) * 3;
+    const starOpacity = Math.max(0, 1 - relativeSunStrength - 0.5) * 3;
 
     ctx.fillStyle =
         "#ffffff" +
@@ -246,7 +249,7 @@ export function createSunGradient(
 
     const lightMultiplier = Math.min(
         1,
-        Math.max(0, 1 / (1 + Math.exp(-20 * (relativeSunStrength - 0.5))))
+        Math.max(0, 1 / (1 + Math.exp(-DARKNESS_MULTIPLIER * (relativeSunStrength - 0.5))))
     );
 
     skyGradient.addColorStop(0, hslToHex(215, 100 * saturationMultiplier, 50 * lightMultiplier));

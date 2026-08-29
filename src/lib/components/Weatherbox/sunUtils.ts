@@ -1,3 +1,5 @@
+const SUN_ANGLE_OVERRIDE = undefined;
+
 export function dayOfYear(date: Date): number {
     return (
         (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
@@ -41,7 +43,7 @@ export function getSunAngle(date: Date) {
         angle += refraction;
     }
 
-    return angle;
+    return SUN_ANGLE_OVERRIDE ?? angle;
 }
 
 export function getSunPositionY(date: Date): number {
