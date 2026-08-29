@@ -52,6 +52,12 @@ export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStreng
     ctx.fill();
 };
 
+export const drawTree = (
+    ctx: CanvasRenderingContext2D,
+    renderEnvironment: RenderEnvironment,
+    timeDelta: number
+) => {};
+
 export const drawFlake = (
     ctx: CanvasRenderingContext2D,
     flake: RainlikeParticle,

@@ -214,74 +214,109 @@
             paragraph, some of them might be pretty interesting!
         </p>
 
-        <div class="mt-16 rounded-2xl bg-gray-800/30 p-4 pb-8" id="fingerprinting">
-            <h2>Take over game</h2>
-            <p>Click on a square to steal it!</p>
+        <div class="w-full space-x-8 lg:flex">
+            <div class="mt-16 w-full rounded-2xl bg-gray-800/30 p-4 pb-8">
+                <h2>Take over game</h2>
+                <p>Click on a square to steal it!</p>
 
-            <div class="grid max-w-2xl grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
-                {#key takeoverData}
-                    {#each new Array(9) as _, index}
-                        <button
-                            onclick={async () => {
-                                await takeoverIndex(index);
-                            }}
-                            disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
-                            class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
-                        >
-                            {#if takeoverData.length == 0}
-                                Loading...
-                            {:else if takeoverData.find(d => d.id === index)}
-                                {@const data = takeoverData.find(d => d.id === index)!}
-                                <div class="claim-info flex-col">
-                                    <span class="flex items-center space-x-2">
-                                        <p class="text-left text-xl! font-semibold">
-                                            {takeoverData[index].nation}
+                <div class="grid max-w-2xl grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
+                    {#key takeoverData}
+                        {#each new Array(9) as _, index}
+                            <button
+                                onclick={async () => {
+                                    await takeoverIndex(index);
+                                }}
+                                disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
+                                class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
+                            >
+                                {#if takeoverData.length == 0}
+                                    Loading...
+                                {:else if takeoverData.find(d => d.id === index)}
+                                    {@const data = takeoverData.find(d => d.id === index)!}
+                                    <div class="claim-info flex-col">
+                                        <span class="flex items-center space-x-2">
+                                            <p class="text-left text-xl! font-semibold">
+                                                {takeoverData[index].nation}
+                                            </p>
+                                            <img
+                                                class="h-8"
+                                                src={`/flags/${data.country}.webp`}
+                                                alt={`Flag of ${data.country}`}
+                                            />
+                                        </span>
+                                        <p
+                                            class="h-12 overflow-hidden text-left text-ellipsis opacity-55"
+                                        >
+                                            {data.isp}
                                         </p>
-                                        <img
-                                            class="h-8"
-                                            src={`/flags/${data.country}.webp`}
-                                            alt={`Flag of ${data.country}`}
-                                        />
-                                    </span>
-                                    <p
-                                        class="h-12 overflow-hidden text-left text-ellipsis opacity-55"
-                                    >
-                                        {data.isp}
+                                    </div>
+                                    <p class="text-left text-sm opacity-55">
+                                        Claimed {new Date(data.occupied).toLocaleDateString()}
                                     </p>
-                                </div>
-                                <p class="text-left text-sm opacity-55">
-                                    Claimed {new Date(data.occupied).toLocaleDateString()}
-                                </p>
-                            {:else}
-                                Unclaimed!
-                            {/if}
-                        </button>
-                    {/each}
-                {/key}
-            </div>
-            <div class="absolute">
-                <p>
-                    Next refresh: <span class="font-[JetBrains-Mono]!">
-                        {#key tick}
-                            {(
-                                Math.round(
-                                    (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
-                                ) / 10
-                            ).toFixed(1)}s{/key}</span
-                    >
-                </p>
-                {#if takeoverDisabled}
+                                {:else}
+                                    Unclaimed!
+                                {/if}
+                            </button>
+                        {/each}
+                    {/key}
+                </div>
+                <div class="absolute">
                     <p>
-                        Next turn: <span class="font-[JetBrains-Mono]!"
-                            >{#key tick}
+                        Next refresh: <span class="font-[JetBrains-Mono]!">
+                            {#key tick}
                                 {(
                                     Math.round(
-                                        (takeoverAvailableIn.getTime() - new Date().getTime()) / 100
+                                        (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
                                     ) / 10
                                 ).toFixed(1)}s{/key}</span
                         >
                     </p>
-                {/if}
+                    {#if takeoverDisabled}
+                        <p>
+                            Next turn: <span class="font-[JetBrains-Mono]!"
+                                >{#key tick}
+                                    {(
+                                        Math.round(
+                                            (takeoverAvailableIn.getTime() - new Date().getTime()) /
+                                                100
+                                        ) / 10
+                                    ).toFixed(1)}s{/key}</span
+                            >
+                        </p>
+                    {/if}
+                </div>
+            </div>
+            <div class="mt-16 min-h-96 w-full rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
+                <h2>Chat room</h2>
+
+                <ol class="list-none! *:ml-0!">
+                    {#each [...chatData].reverse() as chat}
+                        <li class="list-none!">
+                            <code
+                                ><p class="max-w-[80ch]">
+                                    <span class="opacity-80">
+                                        &#91;{new Date(chat.sent_at).toLocaleTimeString()}&#93; {chat.source}:</span
+                                    >
+                                    {chat.text}
+                                </p>
+                            </code>
+                        </li>
+                    {/each}
+                </ol>
+
+                <div>
+                    <p>
+                        Next refresh: <span class="font-[JetBrains-Mono]!">
+                            {#key tick}
+                                {(
+                                    Math.round(
+                                        (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
+                                    ) / 10
+                                ).toFixed(1)}s{/key}</span
+                        >
+                    </p>
+                </div>
+                <a href="/guides/chat">How to send a message</a>
             </div>
         </div>
 
@@ -305,64 +340,6 @@
                 {/each}
             </div>
         </div> -->
-
-        <div class="mt-16 min-h-96 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
-            <h2>Chat room</h2>
-
-            <ol class="list-none! *:ml-0!">
-                {#each [...chatData].reverse() as chat}
-                    <li class="list-none!">
-                        <code
-                            ><p class="max-w-[80ch]">
-                                <span class="opacity-80">
-                                    &#91;{new Date(chat.sent_at).toLocaleTimeString()}&#93; {chat.source}:</span
-                                >
-                                {chat.text}
-                            </p>
-                        </code>
-                    </li>
-                {/each}
-            </ol>
-
-            <div>
-                <p>
-                    Next refresh: <span class="font-[JetBrains-Mono]!">
-                        {#key tick}
-                            {(
-                                Math.round(
-                                    (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
-                                ) / 10
-                            ).toFixed(1)}s{/key}</span
-                    >
-                </p>
-            </div>
-            <a href="/guides/chat">How to send a message</a>
-        </div>
-
-        <div class="mt-16 rounded-2xl bg-gray-800/30 p-4" id="fingerprinting">
-            <h2>Fingerprinting</h2>
-            <p class="max-w-[65ch]">
-                By default, most browser give out a lot of information, which can be used to
-                fingerprint you. For example, here are a few things I noted from your browser:
-            </p>
-
-            <ul class="mt-4 list-disc">
-                <li>
-                    GPU: <code>{getGpuName()}</code>
-                </li>
-                <li>
-                    CPU: <code>{getCpuInfo()}</code>
-                </li>
-                <li>Languages: <code>{getLanguages()}</code></li>
-                <li>
-                    Speech Synthesis: <br />{#each getSpeechSynthesis() as voice}
-                        <code>{voice}</code><br />
-                    {/each}
-                </li>
-                <li>Time zone: <code>{getDateStuff()}</code></li>
-                <li>Media devices: <code>{mediaDevices}</code></li>
-            </ul>
-        </div>
 
         <div
             class="mt-16 rounded-2xl bg-linear-to-b from-gray-800/30 from-70% to-transparent p-4"
@@ -446,12 +423,16 @@
                         to monetary issues.
                     </p>
 
-                    <div class="mt-4 flex space-x-4">
+                    <div class="mt-4 flex items-center space-x-4">
                         <ContactMethod
                             imageUrl="./logos/GitHub_Invertocat_White.svg"
                             link="https://github.com/ctih1/frii.site-frontend"
                         />
                         <ContactMethod imageUrl="./logos/open.svg" link="/links/frii.site" />
+                        <ContactMethod
+                            imageUrl="./logos/youtube-app-white-icon.svg"
+                            link="https://www.youtube.com/watch?v=riQSuRN2gFg"
+                        />
                     </div>
                 </div>
 
@@ -522,6 +503,20 @@
                         />
                     </div>
                 </div>
+                <div>
+                    <h2>BicycleSpeedo</h2>
+                    <p>
+                        A digital speedo for my bike. Uses an ESP32 with LVGL for rendering,
+                        ILI9341, and some hall-effect sensors to show you your travelled distance,
+                        speed, and cadence.
+                    </p>
+                    <div class="mt-4 flex space-x-4 md:float-right">
+                        <ContactMethod
+                            imageUrl="./logos/GitHub_Invertocat_White.svg"
+                            link="https://github.com/ctih1/bicycle-speedo"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="text-center">
@@ -566,7 +561,7 @@
             <Badge redirect="https://www.visitfinland.com/en/" imageUrl="/badges/finland.png" />
         </div>
         <p class="pt-0! text-center text-sm! opacity-40">
-            note: want your badge here? Contact me contact@ctih1.fi
+            note: want your badge here? Contact me contact@ctih1.fi<br />I won't bite!
         </p>
     </div>
 </div>
@@ -610,7 +605,7 @@
 
     #fun {
         background-image:
-            var(--vignette), url("/home/IMG_2420.webp"), url("/home/IMG_2420_tiny.webp");
+            var(--vignette), url("/home/IMG_6975.webp"), url("/home/IMG_6975_tiny.webp");
     }
 
     #introduction {
