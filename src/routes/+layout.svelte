@@ -53,11 +53,11 @@
 
 <nav class="h-12 w-full min-w-screen bg-zinc-600/20">
     <div class="text-md ml-4 flex h-12 items-center space-x-4 font-semibold sm:text-xl md:text-2xl">
-        <a href="/">Home</a>
-        <a href="/photos">Photos</a>
-        <a href="/tools">Tools</a>
-        <a href="/devices">Devices</a>
-        <a href="/fun">Misc</a>
+        <a target="_parent" href="/">Home</a>
+        <a target="_parent" href="/photos">Photos</a>
+        <a target="_parent" href="/tools">Tools</a>
+        <a target="_parent" href="/devices">Devices</a>
+        <a target="_parent" href="/fun">Misc</a>
     </div>
 </nav>
 
