@@ -4,7 +4,7 @@
 import { hslToHex } from "$lib/helpers";
 import type { Cloud, RainlikeParticle, RenderEnvironment, Star } from "./types";
 
-const DARKNESS_MULTIPLIER = 50; // how quickly the sky tusrns dark
+const DARKNESS_MULTIPLIER = 60; // how quickly the sky tusrns dark
 
 export const drawStreetlight = (ctx: CanvasRenderingContext2D, relativeSunStrength: number) => {
     ctx.fillStyle = hslToHex(41, 100, 36.2 * Math.max(0.3, relativeSunStrength));
@@ -216,7 +216,7 @@ export const drawStar = (
         star.blinkReversing = false;
     }
 
-    const starOpacity = Math.max(0, 1 - relativeSunStrength - 0.5) * 3;
+    const starOpacity = Math.max(0, 1 - relativeSunStrength - 0.55) * 3;
 
     ctx.fillStyle =
         "#ffffff" +

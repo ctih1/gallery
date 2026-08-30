@@ -79,7 +79,7 @@
             logg("info", `Snow in 1h: ${snowNowCm}cm`);
 
             renderEnvironment = {
-                cloudCover: rainNowMm > 1 ? Math.max(0.8, coverNow) : coverNow,
+                cloudCover: rainNowMm > 0.1 ? Math.max(0.85, coverNow) : coverNow,
                 snowFallSpeed: weatherData.windNow / 2 + snowNowCm * 4,
                 snowAmount: snowNowCm * 3000,
                 waterAmount: rainNowMm * 100,

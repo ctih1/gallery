@@ -101,7 +101,7 @@ export async function GET({ request, url }) {
         JSON.stringify(
             database
                 .prepare(
-                    "SELECT id, source, text, sent_at FROM chats ORDER BY sent_at DESC LIMIT 10"
+                    "SELECT id, source, text, sent_at FROM chats ORDER BY sent_at DESC LIMIT 15"
                 )
                 .all()
         )

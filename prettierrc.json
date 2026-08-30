@@ -23,5 +23,6 @@
                 "parser": "svelte"
             }
         }
-    ]
+    ],
+    "html-whitespace-sensitivity": "ignore"
 }

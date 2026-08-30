@@ -1,8 +1,5 @@
-import { env } from "$env/dynamic/private";
+import { LATITUDE, LONGITUDE } from "$env/static/private";
 import type { MeteoResponse, ServerResponse } from "./types.js";
-
-const LATITUDE = env.WEATHER_LATITUDE;
-const LONGITUDE = env.WEATHER_LONGITUDE;
 
 type MeasurementMap = Map<string, number>;
 
@@ -36,6 +33,10 @@ export async function GET({ request, fetch }) {
 
         const res = await fetch(url);
         const json: MeteoResponse = await res.json();
+        if (!res.ok) {
+            console.log(res);
+            console.log(json);
+        }
         cacheMap = [new Date(), json];
     }
 

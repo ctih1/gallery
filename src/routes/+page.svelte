@@ -3,6 +3,9 @@
     import Badge from "$lib/components/Badge.svelte";
     import Climate from "$lib/components/Climate.svelte";
     import ContactMethod from "$lib/components/ContactMethod.svelte";
+    import Project from "$lib/components/Project.svelte";
+    import TakeoverGrid from "$lib/components/TakeoverGrid.svelte";
+    import TimerSpan from "$lib/components/TimerSpan.svelte";
     import WeatherBox from "$lib/components/Weatherbox/WeatherBox.svelte";
     import { onDestroy, onMount } from "svelte";
     import type { ChatColumn } from "./api/chat/types";
@@ -18,13 +21,13 @@
 
     let takeoverData: OccupationColumn[] = $state([]);
     let takeoverInterval: ReturnType<typeof setInterval>;
-
-    let disabledTakeoverIndexes: boolean[] = $state(Array(9).fill(false));
-    let takeoverDisabled: boolean = $state(false);
     let takeoverAvailableIn: Date = $state(new Date());
 
     let nextTakeoverRefresh: Date = $state(new Date());
+
+    // svelte-ignore state_referenced_locally
     nextTakeoverRefresh.setTime(nextTakeoverRefresh.getTime() + 5000);
+    let takeoverDisabled = $state(false);
 
     let chatData: ChatColumn[] = $state([]);
 
@@ -98,31 +101,6 @@
             .then(jason => {
                 chatData = jason;
             });
-    }
-
-    async function takeoverIndex(index: number) {
-        if (!browser) return;
-
-        disabledTakeoverIndexes[index] = true;
-
-        const req = await fetch(`/api/occupation?i=${index}`, {
-            method: "POST"
-        });
-
-        if (req.ok) {
-            const json: OccupationColumn = await req.json();
-            takeoverData = takeoverData.filter(obj => obj.id !== json.id);
-            takeoverData.push(json);
-        }
-
-        disabledTakeoverIndexes[index] = false;
-        takeoverDisabled = true;
-        takeoverAvailableIn = new Date();
-        takeoverAvailableIn.setSeconds(takeoverAvailableIn.getSeconds() + 30);
-
-        setTimeout(() => {
-            takeoverDisabled = false;
-        }, 30000);
     }
 
     function getGpuName() {
@@ -219,69 +197,14 @@
                 <h2>Take over game</h2>
                 <p>Click on a square to steal it!</p>
 
-                <div class="grid max-w-2xl grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
-                    {#key takeoverData}
-                        {#each new Array(9) as _, index}
-                            <button
-                                onclick={async () => {
-                                    await takeoverIndex(index);
-                                }}
-                                disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
-                                class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
-                            >
-                                {#if takeoverData.length == 0}
-                                    Loading...
-                                {:else if takeoverData.find(d => d.id === index)}
-                                    {@const data = takeoverData.find(d => d.id === index)!}
-                                    <div class="claim-info flex-col">
-                                        <span class="flex items-center space-x-2">
-                                            <p class="text-left text-xl! font-semibold">
-                                                {takeoverData[index].nation}
-                                            </p>
-                                            <img
-                                                class="h-8"
-                                                src={`/flags/${data.country}.webp`}
-                                                alt={`Flag of ${data.country}`}
-                                            />
-                                        </span>
-                                        <p
-                                            class="h-12 overflow-hidden text-left text-ellipsis opacity-55"
-                                        >
-                                            {data.isp}
-                                        </p>
-                                    </div>
-                                    <p class="text-left text-sm opacity-55">
-                                        Claimed {new Date(data.occupied).toLocaleDateString()}
-                                    </p>
-                                {:else}
-                                    Unclaimed!
-                                {/if}
-                            </button>
-                        {/each}
-                    {/key}
-                </div>
+                <TakeoverGrid {takeoverData} {takeoverDisabled} {takeoverAvailableIn} />
                 <div class="absolute">
                     <p>
-                        Next refresh: <span class="font-[JetBrains-Mono]!">
-                            {#key tick}
-                                {(
-                                    Math.round(
-                                        (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
-                                    ) / 10
-                                ).toFixed(1)}s{/key}</span
-                        >
+                        Next refresh: <TimerSpan nextDate={nextTakeoverRefresh} {tick} />
                     </p>
                     {#if takeoverDisabled}
                         <p>
-                            Next turn: <span class="font-[JetBrains-Mono]!"
-                                >{#key tick}
-                                    {(
-                                        Math.round(
-                                            (takeoverAvailableIn.getTime() - new Date().getTime()) /
-                                                100
-                                        ) / 10
-                                    ).toFixed(1)}s{/key}</span
-                            >
+                            Next turn: <TimerSpan nextDate={takeoverAvailableIn} {tick} />
                         </p>
                     {/if}
                 </div>
@@ -413,110 +336,88 @@
 
         <div class="flex flex-col md:flex-row md:justify-between md:p-16">
             <div class="space-y-24 pr-16 md:w-1/2 md:space-y-52" id="left">
-                <div>
-                    <h2>frii.site</h2>
-                    <p>
-                        A free subdomain registrar, which I developed for over 2 years. The service
-                        has amassed <span class="font-semibold text-[rgb(50,180,255)]!"
-                            >over 5000 users</span
-                        > from over a hundred different countries. I had to shut down the service due
-                        to monetary issues.
-                    </p>
+                <Project
+                    name="frii.site"
+                    description={`A free subdomain registrar, which I developed for over 2 years. 
+                    The service has amassed <span class="font-semibold text-[rgb(50,180,255)]!">over 5000 users</span>
+                    from over a hundred different countries. I had to shut down the service due to monetary issues.`}
+                >
+                    <ContactMethod
+                        imageUrl="./logos/GitHub_Invertocat_White.svg"
+                        link="https://github.com/ctih1/frii.site-frontend"
+                    />
+                    <ContactMethod imageUrl="./logos/open.svg" link="/links/frii.site" />
+                    <ContactMethod
+                        imageUrl="./logos/youtube-app-white-icon.svg"
+                        link="https://www.youtube.com/watch?v=riQSuRN2gFg"
+                    />
+                </Project>
 
-                    <div class="mt-4 flex items-center space-x-4">
-                        <ContactMethod
-                            imageUrl="./logos/GitHub_Invertocat_White.svg"
-                            link="https://github.com/ctih1/frii.site-frontend"
-                        />
-                        <ContactMethod imageUrl="./logos/open.svg" link="/links/frii.site" />
-                        <ContactMethod
-                            imageUrl="./logos/youtube-app-white-icon.svg"
-                            link="https://www.youtube.com/watch?v=riQSuRN2gFg"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <h2>goober</h2>
-                    <p>
-                        A fork of an existing Discord bot. Rewrote a large part of the codebase, and
+                <Project
+                    name="goober"
+                    description="A fork of an existing Discord bot. Rewrote a large part of the codebase, and
                         improved the developer experience. Also wrote many cogs for it, such as a
                         YouTube song translator, OCR translator (Google Lens alternative), and many
-                        more.
-                    </p>
-
-                    <div class="mt-4 flex space-x-4">
-                        <ContactMethod
-                            imageUrl="./logos/GitHub_Invertocat_White.svg"
-                            link="https://github.com/ctih1/goober"
-                        />
-                    </div>
-                </div>
-                <div>
-                    <h2>fitness-tracker</h2>
-                    <p>
-                        Does exactly what's said on the tin. Let's you create custom exercises, log
-                        progress, and view your progress. Made with Tauri and Svelte
-                    </p>
-
-                    <div class="mt-4 flex space-x-4">
-                        <ContactMethod
-                            imageUrl="./logos/GitHub_Invertocat_White.svg"
-                            link="https://github.com/ctih1/fitness-tracker"
-                        />
-                    </div>
-                </div>
+                        more."
+                >
+                    <ContactMethod
+                        imageUrl="./logos/GitHub_Invertocat_White.svg"
+                        link="https://github.com/ctih1/goober"
+                    />
+                </Project>
+                <Project
+                    name="fitness-tracker"
+                    description="Does exactly what's said on the tin. Let's you create custom exercises, log
+                        progress, and view your progress. Made with Tauri and Svelte"
+                >
+                    <ContactMethod
+                        imageUrl="./logos/GitHub_Invertocat_White.svg"
+                        link="https://github.com/ctih1/fitness-tracker"
+                    />
+                </Project>
             </div>
 
             <div id="timeline" class="hidden h-[900px] w-[3px] md:block"></div>
 
             <div
-                class="mt-24 space-y-24 md:mt-52 md:w-1/2 md:space-y-52 md:pl-16 md:text-right"
+                class="mt-24 justify-end space-y-24 md:mt-52 md:w-1/2 md:space-y-52 md:pl-16 md:text-right"
                 id="right"
             >
-                <div>
-                    <h2>kake</h2>
-                    <p>
-                        A "virus" written to joke around with my friends. The client, installer,
+                <Project
+                    name="kake"
+                    description="A 'virus' written to joke around with my friends. The client, installer,
                         updater, and server are all programmed in Rust. I had a lot of fun learning
                         about low-level stuff, working with the Win32 API, and figuring out how go
-                        undetected by antiviruses.
-                    </p>
-                    <div class="ml-auto flex space-x-4 md:justify-end">
-                        <ContactMethod
-                            imageUrl="./logos/GitHub_Invertocat_White.svg"
-                            link="https://github.com/ctih1/kake"
-                        />
-                    </div>
-                </div>
-                <div>
-                    <h2>betternotifications</h2>
-                    <p>
-                        A Vencord plugin which improved the look and customization of notifications
+                        undetected by antiviruses."
+                >
+                    <ContactMethod
+                        imageUrl="./logos/GitHub_Invertocat_White.svg"
+                        link="https://github.com/ctih1/kake"
+                    />
+                </Project>
+                <Project
+                    name="betternotifications"
+                    description="A Vencord plugin which improved the look and customization of notifications
                         on the instant messaging service Discord. I learnt a lot about Typescript,
-                        Electron, and reverse-engineering during building this.
-                    </p>
-                    <div class="mt-4 flex space-x-4 md:float-right">
-                        <ContactMethod
-                            imageUrl="./logos/GitHub_Invertocat_White.svg"
-                            link="https://github.com/Vendicated/Vencord/pull/3430"
-                        />
-                    </div>
-                </div>
-                <div>
-                    <h2>BicycleSpeedo</h2>
-                    <p>
-                        A digital speedo for my bike. Uses an ESP32 with LVGL for rendering,
+                        Electron, and reverse-engineering during building this."
+                >
+                    <ContactMethod
+                        imageUrl="./logos/GitHub_Invertocat_White.svg"
+                        link="https://github.com/Vendicated/Vencord/pull/3430"
+                    />
+                </Project>
+                <Project
+                    name="BicycleSpeedo"
+                    description="A digital speedo for my bike. Uses an ESP32 with LVGL for rendering,
                         ILI9341, and some hall-effect sensors to show you your travelled distance,
-                        speed, and cadence.
-                    </p>
-                    <div class="mt-4 flex space-x-4 md:float-right">
-                        <ContactMethod
-                            imageUrl="./logos/GitHub_Invertocat_White.svg"
-                            link="https://github.com/ctih1/bicycle-speedo"
-                        />
-                    </div>
-                </div>
+                        speed, and cadence."
+                >
+                    <ContactMethod
+                        imageUrl="./logos/GitHub_Invertocat_White.svg"
+                        link="https://github.com/ctih1/bicycle-speedo"
+                    />
+                </Project>
+                <br />
             </div>
         </div>
         <div class="text-center">
