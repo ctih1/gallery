@@ -9,7 +9,7 @@ const NOT_FOUND_TEXTS: string[][] = [
     ],
     [
         "<h1>Not found</h1>",
-        "<p>There is no such thing as <code>{path}</code>...</p><p>If you're that lost, <a href=\"/sitemap.xml\">here's a map</a></p>"
+        '<p>There is no such thing as <code>{path}</code>...</p><p>If you\'re that lost, <a target="_parent" href="/sitemap.xml">here\'s a map</a></p>'
     ],
     [
         "<h1>Four-oh-no!</h1>",
