@@ -70,7 +70,7 @@ export const GET: RequestHandler = ({}) => {
         location("/links/frii.site", 0.5, "daily"),
         location("/guides/chat", 0.4, "hourly"),
         location("/devices/matebook", 0.6),
-        location("/photos/hop", 0.4)
+        location("/fun/projects", 0.5, "weekly")
     ];
 
     images.forEach(image => {

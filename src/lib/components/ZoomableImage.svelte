@@ -2,7 +2,10 @@
     import type { HTMLImgAttributes } from "svelte/elements";
     import PageConfig from "./PageConfig.svelte";
 
-    let { ...rest }: HTMLImgAttributes & {} = $props();
+    let {
+        relativeCaption = undefined,
+        ...rest
+    }: HTMLImgAttributes & { relativeCaption?: string | undefined } = $props();
     let maximized: boolean = $state(false);
     let previousScroll = 0;
 
@@ -39,9 +42,20 @@
 
 <svelte:window onkeyup={keypressEvent} />
 
-<button class={`cursor-zoom-in ${rest.class}`} onclick={_ => toggleZoom()}>
-    <img {...rest} />
-</button>
+{#snippet imageButton()}
+    <button class={`w-[inherit] cursor-zoom-in ${rest.class}`} onclick={_ => toggleZoom()}>
+        <img {...rest} />
+    </button>
+{/snippet}
+
+{#if relativeCaption === undefined}
+    {@render imageButton()}
+{:else}
+    <div class="relative h-[inherit] w-[inherit]">
+        {@render imageButton()}
+        <p class="absolute bottom-2 left-0.5 bg-black/70 p-1">{@html relativeCaption}</p>
+    </div>
+{/if}
 
 {#if maximized}
     <div class="absolute top-0 left-0 z-50 flex min-h-screen w-screen items-center bg-[#000000ee]">

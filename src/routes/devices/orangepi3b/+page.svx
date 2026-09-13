@@ -20,6 +20,7 @@ Media:
 * Transmission
 * Jackett
 * PhotoPrism (for sorting clips)
+* Immich
 
 Productivity:
 * Umami analytics
@@ -33,7 +34,7 @@ Services:
 * Thumbnail generator (api.koti.frii.site/thumbnail)
 * AI-model trained on my & some friends' messages (ai.koti.frii.site/generate)
 * API-Wrapper for [KAVI](https://en.wikipedia.org/wiki/National_Audiovisual_Institute_(Finland)) (kavi.frii.site)
-* Personal fileserver (homecdn.ctih1.fi)
+* Personal fileserver (cdn.ctih1.fi)
 
 Misc:
 * "Goober" discord bot to interact with the AI-Wrapper
@@ -53,17 +54,8 @@ The ban page [looks like this](http://koti.frii.site/ban.html)
 <br>
 
 Upcoming / planned projects:
-* Immich server to replace Google Photos
-> I would need to buy two 2TB hard drives, to setup RAID.
-
-* Price scraper for local stores here 
-> Again, I would need more storage, since I'm currently running out
-
 * Wireless phone backup (iOS)
 > I don't think this is possible on Linux.
-
-* PxE server with iVentoy
-> I don't have enough ethernet ports in my router to allow for more than one device (+the orange pi). I have an old router which I could use as a switch, but I only have 3 ethernet cables.
 
 ![Image of my Orange Pi 3B](/devices/orangepi/ondesk.webp)
 The heatsink has been harvested from an old router

@@ -153,6 +153,11 @@
 </script>
 
 <svelte:window bind:scrollY />
+<svelte:head>
+    <link rel="preload" as="image" href="/home/IMG_7565_tiny.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/home/IMG_6975_tiny.webp" fetchpriority="high" />
+    <title>Homepage - ctih1.fi</title>
+</svelte:head>
 
 <div class="[&>div]:p-4 [&>div]:md:p-8 [&>div]:lg:p-16 [&div>]:xl:p-32">
     <div id="introduction" class="bg flex h-[90vh] w-screen items-center">
@@ -357,7 +362,7 @@
                 </Project>
             </div>
 
-            <div id="timeline" class="hidden h-[900px] w-[3px] md:block"></div>
+            <div id="timeline" class="hidden h-[1200px] w-[3px] md:block"></div>
 
             <div
                 class="mt-24 space-y-24 md:mt-52 md:w-1/2 md:justify-end md:space-y-52 md:pl-16 md:text-right"

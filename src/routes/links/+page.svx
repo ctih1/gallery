@@ -6,6 +6,6 @@ This repo: https://github.com/ctih1/gallery
 
 frii.site: https://www.frii.site
 
-CDN: https://homecdn.ctih1.fi
+CDN: https://cdn.ctih1.fi
 
 Uptime: https://uptime.ctih1.fi

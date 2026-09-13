@@ -11,6 +11,7 @@
 <h2>hacky stuff</h2>
 <p>Sitemap: {@render Link("/sitemap.xml")}</p>
 <p>Background grain test: {@render Link("/tools/testing")}</p>
+<p>Server error example: {@render Link("/tools/crash")}</p>
 
 <h2>games</h2>
 <p>Some of the little games I've made.</p>
@@ -41,6 +42,9 @@
 <p>Desktop thing: {@render Link("https://desktop.arr.ovh")}</p>
 <p>some random maps {@render Link("/maps")}</p>
 <p>Archive of my websites: {@render Link("https://archive.ctih1.fi")}</p>
+<p>Uptime: {@render Link("https://uptime.ctih1.fi/status/home")}</p>
+<p>Real life projects: {@render Link("/fun/projects")}</p>
+
 <p>insane song:</p>
 <audio src="/misc/MU1_own_song.mp3" controls></audio>
 

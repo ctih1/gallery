@@ -37,8 +37,7 @@
         name="description"
         content="An objectively super cool website made for showcasing little stuff I (aka ctih1) have done. Also includes some useful tools, atleast for some people."
     />
-    <link rel="dns-prefetch" href="https://analytics.ctih1.fi" />
-    <link rel="dns-prefetch" href="https://homecdn.ctih1.fi" />
+    <title>{page.url.pathname} - ctih1.fi</title>
 </svelte:head>
 
 <div
