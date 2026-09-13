@@ -166,7 +166,6 @@
         return stars;
     }
 
-    // TODO: Move everything into a separate component (but I know I'll never do that.) 08/02/2026 (dd/mm/yyyy)
     function canvasUpdate(timestampMs: number) {
         const frameStart = performance.now();
         if (lastRenderTimestamp == 0) {

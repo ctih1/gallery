@@ -150,16 +150,6 @@
 
         return `start=${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}&end=${endDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate()}`;
     }
-
-    function getLanguages() {
-        if (!browser) return "Checking...";
-
-        return window.navigator.languages.join(",");
-    }
-
-    function getDateStuff() {
-        return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    }
 </script>
 
 <svelte:window bind:scrollY />
@@ -227,18 +217,8 @@
                     {/each}
                 </ol>
 
-                <div>
-                    <p>
-                        Next refresh: <span class="font-[JetBrains-Mono]!">
-                            {#key tick}
-                                {(
-                                    Math.round(
-                                        (nextTakeoverRefresh.getTime() - new Date().getTime()) / 100
-                                    ) / 10
-                                ).toFixed(1)}s{/key}</span
-                        >
-                    </p>
-                </div>
+                <TimerSpan nextDate={nextTakeoverRefresh} {tick} />
+
                 <a href="/guides/chat">How to send a message</a>
             </div>
         </div>
