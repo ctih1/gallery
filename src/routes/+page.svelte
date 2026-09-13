@@ -318,7 +318,7 @@
             <div class="space-y-24 pr-16 md:w-1/2 md:space-y-52" id="left">
                 <Project
                     name="frii.site"
-                    description={`A free subdomain registrar, which I developed for over 2 years. 
+                    description={`A free subdomain registrar, which I developed for over 2 years.
                     The service has amassed <span class="font-semibold text-[rgb(50,180,255)]!">over 5000 users</span>
                     from over a hundred different countries. I had to shut down the service due to monetary issues.`}
                 >
@@ -360,7 +360,7 @@
             <div id="timeline" class="hidden h-[900px] w-[3px] md:block"></div>
 
             <div
-                class="mt-24 justify-end space-y-24 md:mt-52 md:w-1/2 md:space-y-52 md:pl-16 md:text-right"
+                class="mt-24 space-y-24 md:mt-52 md:w-1/2 md:justify-end md:space-y-52 md:pl-16 md:text-right"
                 id="right"
             >
                 <Project
