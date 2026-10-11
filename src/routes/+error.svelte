@@ -10,4 +10,5 @@
     src={`/error?code=${page.status}&message=${page.error?.message}&path=${page.url.pathname}`}
     title="Error"
     class="absolute top-0 left-0 z-10 h-full min-h-screen w-screen"
+    sandbox="allow-top-navigation allow-scripts allow-forms"
 ></iframe>

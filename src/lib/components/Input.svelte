@@ -20,6 +20,8 @@
         children?: Snippet;
     } = $props();
 
+    let id = $derived(label || (Math.random() * 10000).toString().replace(".", ""));
+
     let hintShown: boolean = $state(false);
 
     let className = $state("");
@@ -102,7 +104,7 @@
                 onpaste={e => (disablePasting ? e.preventDefault() : "")}
                 bind:this={element}
                 bind:value
-                id={label + "-input"}
+                id={id + "-input"}
                 {...rest}
                 class={`col-1 row-1 opacity-0 ${rest.class ?? "w-64"}`}
             />
@@ -112,7 +114,7 @@
             type="checkbox"
             bind:this={element}
             bind:checked={value}
-            id={label + "-input"}
+            id={id + "-input"}
             {...rest}
             class={twMerge(className, rest.class?.toString() ?? "")}
         />
@@ -125,7 +127,7 @@
             onpaste={e => (disablePasting ? e.preventDefault() : "")}
             bind:this={element}
             bind:value
-            id={label + "-input"}
+            id={id + "-input"}
             {...rest}
             class={twMerge(className, rest.class?.toString() ?? "")}
         />
