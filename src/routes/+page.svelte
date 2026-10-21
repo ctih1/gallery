@@ -412,7 +412,7 @@
     </div>
 
     <div class="bg" id="shoutouts">
-        <div class="mt-32 pt-2! text-center">
+        <div class="mt-64 pt-2! text-center">
             <h2>made with love &lt;3</h2>
             <p class="opacity-80">(aka Svelte)</p>
             <a class="opacity-55" href="https://github.com/ctih1/gallery/"

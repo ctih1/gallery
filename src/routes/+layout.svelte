@@ -6,6 +6,7 @@
     import "../app.css";
 
     let { children } = $props();
+    let uptimeDownItems: string[] = $state([]);
 
     onMount(async () => {
         if (!browser) return;
@@ -15,6 +16,51 @@
         script.async = true;
         script.setAttribute("data-website-id", "6cb4b927-0ef8-418b-8463-3818804b2c90");
         window.document.head.appendChild(script);
+
+        const indexResponse = fetch("https://uptime.ctih1.fi/status/home");
+        let erroredIndices: number[] = [];
+
+        await fetch("https://uptime.ctih1.fi/api/status-page/heartbeat/home")
+            .then(res => res.json())
+            .then(jason => {
+                for (const [id, heartbeats] of Object.entries(jason.heartbeatList)) {
+                    const latestStatus = (heartbeats as { [key: string]: any }[]).at(-1)!.status;
+                    if (latestStatus === 1) {
+                        continue;
+                    }
+                    erroredIndices.push(Number(id));
+                }
+            });
+
+        if (erroredIndices.length >= 1) {
+            const idNames: { [key: number]: string } = {};
+
+            const statusHtml = await (await indexResponse).text();
+            const parser = new DOMParser();
+            const parsedHtml = parser.parseFromString(statusHtml, "text/html");
+            const fuckedJason = parsedHtml
+                .getElementById("preload-data")
+                ?.innerHTML.replaceAll("'", '"')
+                .replaceAll(";", "")
+                .replaceAll("window.preloadData =", "");
+
+            const properJason = JSON.parse(fuckedJason!);
+            console.log(properJason);
+
+            for (const [_, group] of Object.entries(properJason.publicGroupList)) {
+                console.log(group);
+                for (const monitor of (group as any).monitorList as {
+                    [key: string]: any;
+                }[]) {
+                    console.log(monitor);
+                    idNames[monitor.id] = monitor.name.replace("\n", "");
+                }
+            }
+
+            for (let errorIndex of erroredIndices) {
+                uptimeDownItems.push(idNames[errorIndex]);
+            }
+        }
     });
 </script>
 
@@ -50,6 +96,20 @@
     class="pointer-events-none fixed -z-50 h-full min-h-screen w-full"
 ></div>
 
+{#if uptimeDownItems.length >= 1}
+    <div class="w-full bg-red-500/20 pr-2 pb-2 pl-2">
+        <div class="mr-4 flex items-center justify-between">
+            <h3 class="font-bold">The following services are offline:</h3>
+            <a href="https://uptime.ctih1.fi">Visit status page</a>
+        </div>
+
+        <ul class="flex">
+            {#each uptimeDownItems as downItem}
+                <li>{downItem}</li>
+            {/each}
+        </ul>
+    </div>
+{/if}
 <nav class="h-12 w-full min-w-screen bg-zinc-600/20">
     <div class="text-md ml-4 flex h-12 items-center space-x-4 font-semibold sm:text-xl md:text-2xl">
         <a target="_parent" href="/">Home</a>
