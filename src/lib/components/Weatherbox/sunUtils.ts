@@ -27,7 +27,7 @@ export function degToRad(deg: number) {
 
 export function getSunAngle(date: Date) {
     const hour = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
-    const solarHour = hour + (25.9 - 45) / 15; // 45 is in UTC+3, replace with UTC+2 at some point!!
+    const solarHour = hour + (25.9 - 30) / 15; // 45 is in UTC+2, replace with UTC+3 at some point!!
     const declanation = getSunDeclanationDegrees(date);
     const hourAngle = degToRad(15 * (solarHour - 12));
 
