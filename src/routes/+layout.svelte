@@ -90,6 +90,7 @@
     id="fake-body"
     class:home-dark={page.url.pathname === "/"}
     class:body-error={page.error?.message !== undefined || page.url.pathname.startsWith("/error")}
+    class:controller-body={page.url.pathname === "/tools/controller"}
     class:default-body={page.url.pathname !== "/" &&
         page.error?.message === undefined &&
         !page.url.pathname.startsWith("/error")}
@@ -100,7 +101,7 @@
     <div class="w-full bg-red-500/20 pr-2 pb-2 pl-2">
         <div class="mr-4 flex items-center justify-between">
             <h3 class="font-bold">The following services are offline:</h3>
-            <a href="https://uptime.ctih1.fi">Visit status page</a>
+            <a target="_parent" href="https://uptime.ctih1.fi">Visit status page</a>
         </div>
 
         <ul class="flex">
@@ -120,7 +121,7 @@
     </div>
 </nav>
 
-{#if page.url.pathname !== "/" && page.url.pathname !== "/waltti" && !page.url.pathname
+{#if page.url.pathname !== "/" && page.url.pathname !== "/tools/controller" && page.url.pathname !== "/waltti" && !page.url.pathname
         .toString()
         .includes("/photos/") && !page.error && !page.url.pathname.startsWith("/error")}
     <Holder>

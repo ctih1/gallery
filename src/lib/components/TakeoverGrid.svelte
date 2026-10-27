@@ -39,7 +39,7 @@
     }
 </script>
 
-<div class="grid max-w-2xl grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
+<div class="grid max-w-2xl auto-rows-fr grid-cols-2 gap-2 rounded-2xl md:grid-cols-3">
     {#key takeoverData}
         {#each new Array(9) as _, index}
             <button
@@ -47,7 +47,7 @@
                     await takeoverIndex(index);
                 }}
                 disabled={takeoverDisabled || disabledTakeoverIndexes[index]}
-                class="game-button aspect-video rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl"
+                class="game-button h-full rounded-sm bg-black/40 p-2 pt-0 pb-0 transition-transform hover:scale-105 enabled:hover:bg-red-500/30 disabled:opacity-55 nth-[1]:rounded-tl-2xl nth-[2]:rounded-tr-2xl nth-[9]:rounded-bl-2xl md:nth-[1]:rounded-tl-2xl md:nth-[3]:rounded-tr-2xl md:nth-[7]:rounded-bl-2xl md:nth-[9]:rounded-br-2xl md:nth-[9]:rounded-bl-none"
             >
                 {#if takeoverData.length == 0}
                     Loading...
@@ -55,7 +55,7 @@
                     {@const data = takeoverData.find(d => d.id === index)!}
                     <div class="claim-info flex-col">
                         <span class="flex items-center space-x-2">
-                            <p class="text-left text-xl! font-semibold">
+                            <p class="w-lg:text-xl! text-left text-lg! font-semibold">
                                 {takeoverData[index].nation}
                             </p>
                             <img

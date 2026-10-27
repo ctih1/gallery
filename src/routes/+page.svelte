@@ -85,7 +85,8 @@
     });
 
     async function updateTakeover() {
-        await fetch("/api/occupation")
+        if (takeoverData.length !== 0) return;
+        await fetch("http://192.168.32.88:3001/api/occupation")
             .then(req => req.json())
             .then(jason => {
                 takeoverData = jason;
